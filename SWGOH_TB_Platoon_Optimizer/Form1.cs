@@ -17,6 +17,7 @@ namespace SWGOH_TB_Platoon_Optimizer
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             string connectionString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=SWGOH;Data Source=(LocalDb)\\V11.0";
             DataTable dtCharacters = DbProvider.FillDataTable(connectionString, "Select * FROM Characters");
             DataTable dtMembers = DbProvider.FillDataTable(connectionString, "Select * FROM GuildMembers");
@@ -35,17 +36,6 @@ namespace SWGOH_TB_Platoon_Optimizer
 
             listMembers.Remove("\n");
 
-            //DataTable dtGuildMembers = new DataTable();
-            //dtGuildMembers.Columns.Add("URL");
-            //dtGuildMembers.Columns.Add("CharacterContent");
-
-            //DataTable dtMemberCharacters = new DataTable();
-            //dtMemberCharacters.Columns.Add("Name");
-            //dtMemberCharacters.Columns.Add("Level");
-            //dtMemberCharacters.Columns.Add("Gear");
-            //dtMemberCharacters.Columns.Add("Stars");
-            //dtMemberCharacters.Columns.Add("Power");
-
             foreach (var member in listMembers)
             {
                 Guid memberGuid = Guid.NewGuid();
@@ -53,13 +43,13 @@ namespace SWGOH_TB_Platoon_Optimizer
                 string href = "https://swgoh.gg" + memberSplit[1] + "collection/";
                 string name = memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
 
-                if (dtMembers.AsEnumerable().Any(x => x.Field<String>("MemberName").Equals(name)))
+                if (dtMembers.AsEnumerable().Any(x => x.Field<String>("Name").Equals(name)))
                 {
-                    memberGuid = dtMembers.AsEnumerable().Where(x => x.Field<String>("MemberName").Equals(name)).FirstOrDefault().Field<Guid>("Id");
+                    memberGuid = dtMembers.AsEnumerable().Where(x => x.Field<String>("Name").Equals(name)).FirstOrDefault().Field<Guid>("Id");
                 }
                 else
                 {
-                    DbProvider.EXEC(connectionString, "INSERT INTO [dbo].[GuildMembers] ([Id], [MemberName]) VALUES ('" + memberGuid + "','" + name + "')");
+                    DbProvider.EXEC(connectionString, "INSERT INTO [dbo].[GuildMembers] ([Id], [Name]) VALUES ('" + memberGuid + "','" + name + "')");
                 }
 
                 DataTable dtMembersChars = DbProvider.FillDataTable(connectionString, "Select * FROM GuildMember_MemberCharacter_Mapping where GuildMember_Id = '" + memberGuid + "'");
@@ -84,43 +74,65 @@ namespace SWGOH_TB_Platoon_Optimizer
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char collection-char-light-side\">"));
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char collection-char-dark-side\">"));
 
-                //DataRow row1 = dtMemberCharacters.NewRow();
-
                 MemberCharacter newMemberCharacter = new MemberCharacter();
 
                 foreach (var item in listCharacters)
                 {
                     if (item == "<div class=\"col-xs-6 col-sm-3 col-md-3 col-lg-2\">")
                     {
-                        //row1 = dtMemberCharacters.NewRow();
-                        newMemberCharacter = new MemberCharacter();
+                        //newMemberCharacter = new MemberCharacter();
                     }
                     else if (item.Contains("<div class=\"char-portrait-full-level"))
                     {
-                        //row1[1] = item.Trim().Substring(38, 2).Replace("<", "");
                         newMemberCharacter.Level = Convert.ToInt16(item.Trim().Substring(38, 2).Replace("<", ""));
                     }
                     else if (item.Contains("<div class=\"char-portrait-full-gear-level\">"))
                     {
-                        //row1[2] = item.Trim().Substring(43, 2).Replace("<", "");
                         newMemberCharacter.Gear = item.Trim().Substring(43, 2).Replace("<", "");
                     }
                     else if (item.Contains("<div class=\"collection-char-gp\""))
                     {
-                        //row1[4] = item.Trim().Substring(83).Replace("\">", "");
                         newMemberCharacter.Power = item.Trim().Substring(83).Replace("\">", "");
                     }
                     else if (item.Contains("<div class=\"star") && !item.Contains("inactive"))
                     {
-                        //row1[3] = item.Trim().Substring(21, 1);
                         newMemberCharacter.Stars = Convert.ToInt16(item.Trim().Substring(21, 1));
                     }
                     else if (item.Contains("<div class=\"collection-char-name\">"))
                     {
                         var index = item.IndexOf("w\">");
-                        var charName = item.Trim().Substring(index+3);
+                        var charName = item.Trim().Substring(index + 3);
                         charName = charName.Replace("</a></div>", "");
-                        newMemberCharacter.CharacterId = dtCharacters.AsEnumerable().Where(x => x.Field<String>("CharacterName").Contains(charName)).FirstOrDefault().Field<Guid>("Id");
+                        DataRow[] charNames = dtCharacters.AsEnumerable().Where(x => x.Field<String>("Name").Contains(charName)).ToArray();
+
+                        if (charNames.Count() == 1)
+                        {
+                            newMemberCharacter.CharacterId = charNames.FirstOrDefault().Field<Guid>("Id");
+                        }
+                        else
+                        {
+                            //do something
+                            if (charName.Contains("Fulcrum"))
+                            {
+                                newMemberCharacter.CharacterId = charNames.AsEnumerable().Where(x => x.Field<String>("Name").Equals("Ahsoka Tano (Fulcrum)")).FirstOrDefault().Field<Guid>("Id");
+                            }
+                            else if(charName.Equals("Ahsoka Tano"))
+                            {
+                                newMemberCharacter.CharacterId = charNames.AsEnumerable().Where(x => x.Field<String>("Name").Equals("Ahsoka Tano")).FirstOrDefault().Field<Guid>("Id");
+                            }
+                            else if (charName.Equals("Jawa"))
+                            {
+                                newMemberCharacter.CharacterId = charNames.AsEnumerable().Where(x => x.Field<String>("Name").Equals("Jawa")).FirstOrDefault().Field<Guid>("Id");
+                            }
+                            else if (charName.Equals("Han Solo"))
+                            {
+                                newMemberCharacter.CharacterId = charNames.AsEnumerable().Where(x => x.Field<String>("Name").Equals("Han Solo")).FirstOrDefault().Field<Guid>("Id");
+                            }
+                            else if (charName.Equals("StormTrooper"))
+                            {
+                                newMemberCharacter.CharacterId = charNames.AsEnumerable().Where(x => x.Field<String>("Name").Equals("Stormtrooper")).FirstOrDefault().Field<Guid>("Id");
+                            }
+                        }
 
                         if (newMemberCharacter.Stars != null)
                         {
@@ -138,13 +150,10 @@ namespace SWGOH_TB_Platoon_Optimizer
                         }
 
                         newMemberCharacter = new MemberCharacter();
-                        //row1[0] = item.Trim().Substring(index + 10).Replace("</a></div>", "");
-                        //dtMemberCharacters.Rows.Add(row1);
-                        //row1 = dtMemberCharacters.NewRow();
                     }
                 }
             }
-            //dgvMembers.DataSource = dtMemberCharacters;
+            Cursor.Current = Cursors.Default;
         }
     }
 }
