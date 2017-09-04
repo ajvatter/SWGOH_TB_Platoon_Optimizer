@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    AWC's Awesome TB Tools
+</div>
+
+@if (Request.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <h2>
+                @Html.ActionLink("My Guild", "Details", "Guilds")
+            </h2>
+        </div>
+    </div>
+}

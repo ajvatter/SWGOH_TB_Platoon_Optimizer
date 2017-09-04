@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SWGOH.Web.ViewModels.CharCount>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OneStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TwoStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ThreeStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FourStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FiveStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SixStarCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SevenStarCount)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OneStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TwoStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ThreeStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FourStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FiveStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SixStarCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SevenStarCount)
+        </td>
+    </tr>
+}
+
+</table>
