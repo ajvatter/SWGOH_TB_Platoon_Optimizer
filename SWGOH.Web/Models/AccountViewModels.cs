@@ -71,11 +71,10 @@ namespace SWGOH.Web.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Display(Name = "Guild")]
-        [Required(ErrorMessage ="Guild is Required.")]
+        [Display(Name = "Guild")]        
         public List<Guild> Guilds { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Guild is Required.")]
         public Guid Guild_Id { get; set; }
 
 
