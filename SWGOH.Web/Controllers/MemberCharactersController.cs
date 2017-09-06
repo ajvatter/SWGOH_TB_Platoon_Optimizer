@@ -19,7 +19,7 @@ namespace SWGOH.Web.Controllers
         // GET: MemberCharacters
         public ActionResult Index(Guid id)
         {
-            var memberCharacters = db.MemberCharacters.Where(x => x.Member_Id == id);
+            var memberCharacters = db.MemberCharacters.Where(x => x.Member_Id == id).OrderBy(x => x.Character.Name);
             return View(memberCharacters.ToList());
         }
 
@@ -133,9 +133,10 @@ namespace SWGOH.Web.Controllers
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
             List<CharCount> charCount = new List<CharCount>();
 
-            foreach(var character in characters)
+            foreach (var character in characters)
             {
                 CharCount newCharCount = new CharCount();
+                newCharCount.Id = character.Id;
                 newCharCount.Name = character.Name;
                 newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
                 newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
@@ -150,6 +151,20 @@ namespace SWGOH.Web.Controllers
             return View(charCount);
         }
 
+        public ActionResult MembersWithCharacter(Guid id)
+        {
+            var character = db.Characters.Where(x => x.Id == id).FirstOrDefault();
+            var membersCharacters = db.MemberCharacters.Where(x => x.Character_Id == character.Id).OrderBy(x => x.Member.Name);
+
+            MembersWithCharacter membersWithCharacter = new MembersWithCharacter() { Character = character, MembersCharacters = new List<MemberCharacter>() };
+
+            foreach (var member in membersCharacters)
+            {
+                membersWithCharacter.MembersCharacters.Add(member);
+            }
+
+            return View(membersWithCharacter);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

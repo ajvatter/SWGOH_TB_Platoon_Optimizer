@@ -8,8 +8,16 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
+    <h4>Password Requirements</h4>
+    <ul>
+        <li>1 Uppercase Letter</li>
+        <li>1 Lowercase Letter</li>
+        <li>1 Number</li>
+        <li>1 Special Character</li>
+        <li>At least 6 Characters</li>
+    </ul>
     <hr />
+    <h4 class="text-danger">@ViewBag.Error</h4>
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
@@ -20,8 +28,8 @@
     <div class="form-group">
         @Html.LabelFor(m => m.Guilds, new { @class = "col-md-2 control-label" })
         <div class=" col-md-10">
-        @Html.DropDownListFor(x => x.Guild_Id, new SelectList(Model.Guilds, "ID", "Name"), "-- Select Guild --", new { @class = "form-control" })
-        </div>       
+            @Html.DropDownListFor(x => x.Guild_Id, new SelectList(Model.Guilds, "ID", "Name"), "-- Select Guild --", new { @class = "form-control" })
+        </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })

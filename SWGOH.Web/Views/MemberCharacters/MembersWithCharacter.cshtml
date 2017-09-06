@@ -1,0 +1,176 @@
+﻿@model SWGOH.Web.ViewModels.MembersWithCharacter
+
+@{
+    ViewBag.Title = "MembersWithCharacter";
+}
+
+
+<h2>Members with @Model.Character.Name</h2>
+<p>
+    @Html.ActionLink("Back to Guild", "Details", "Guilds")
+</p>
+<div>
+    <hr />
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 7).Count() != 0)
+    {
+        <h2><Strong>@Model.MembersCharacters.Where(x => x.Stars == 7).Count() </Strong>@@
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>
+            <i class="fa fa-star-o" aria-hidden="true"></i>            
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 7)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 6).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 6).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 6)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 5).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 5).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 5)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 4).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 4).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 4)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 3).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 3).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 3)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 2).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 2).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 2)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    @if (@Model.MembersCharacters.Where(x => x.Stars == 1).Count() != 0)
+    {
+        <h2>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 1).Count() </Strong>@@
+            <i class="fa fa-star-o " aria-hidden="true"></i>
+        </h2>
+        <table class="table">
+            @foreach (var item in Model.MembersCharacters)
+            {
+                if (item.Stars == 1)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Name)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+</div>
+

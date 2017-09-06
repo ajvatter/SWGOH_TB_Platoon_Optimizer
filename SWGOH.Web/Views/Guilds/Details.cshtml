@@ -3,7 +3,7 @@
 <h2><a href="@Model.UrlExt">@Html.DisplayFor(model => model.Name)</a></h2>
 
 <div>
-    @if (Model.LastScrape < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+    @if (Model.LastScrape > Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
     {
         <button class="btn btn-primary disabled">Get Roster</button>
     }

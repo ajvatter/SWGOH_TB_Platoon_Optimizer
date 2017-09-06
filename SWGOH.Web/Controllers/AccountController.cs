@@ -159,6 +159,17 @@ namespace SWGOH.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                if(UserManager.Users.Any(x => x.Email == model.Email))
+                {
+                    SwgohDb db = new SwgohDb();
+
+                    model.Guilds = db.Guilds.ToList();
+
+                    ViewBag.Error = "User already exists for that email.";
+                    return View(model);
+                }
+                
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Guild_Id = model.Guild_Id };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
