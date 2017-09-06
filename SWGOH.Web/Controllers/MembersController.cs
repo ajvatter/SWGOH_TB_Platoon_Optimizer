@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SWGOH.Entities;
+using SWGOH.Web.DataContexts;
+using System;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using SWGOH.Entities;
-using SWGOH.Web.DataContexts;
 
 namespace SWGOH.Web.Controllers
 {
@@ -125,7 +123,7 @@ namespace SWGOH.Web.Controllers
             Member member = db.Members.Find(id);
             db.Members.Remove(member);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
         }
 
         protected override void Dispose(bool disposing)

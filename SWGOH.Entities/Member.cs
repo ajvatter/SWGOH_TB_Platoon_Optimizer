@@ -12,6 +12,8 @@ namespace SWGOH.Entities
         [StringLength(255)]
         public string Name { get; set; }
         [StringLength(255)]
+        public string DisplayName { get; set; }
+        [StringLength(255)]
         public string UrlExt { get; set; }
         public Guid Guild_Id { get; set; }
 

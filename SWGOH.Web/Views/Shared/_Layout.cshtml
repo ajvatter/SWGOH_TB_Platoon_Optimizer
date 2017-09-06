@@ -4,6 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - AWC Platoon Optimizer</title>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-6545874400007675",
+            enable_page_level_ads: true
+        });
+    </script>
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <script src="https://use.fontawesome.com/8bd7970907.js"></script>
@@ -16,15 +25,21 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     @*<span class="icon-bar"></span>
-                    <span class="icon-bar"></span>*@
+                        <span class="icon-bar"></span>*@
                 </button>
                 @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @if (Request.IsAuthenticated)
+                    {
+
+                        <li>@Html.ActionLink("My Guild", "Details", "Guilds")</li>
+                    }
                     @*<li>@Html.ActionLink("Characters", "Index", "Characters")</li>
-                    <li>@Html.ActionLink("Guilds", "Index", "Guilds")</li>*@
+
+                        <li>@Html.ActionLink("Guilds", "Index", "Guilds")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

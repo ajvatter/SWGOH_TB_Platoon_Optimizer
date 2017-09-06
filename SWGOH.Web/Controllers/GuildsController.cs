@@ -1,16 +1,15 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using SWGOH.Entities;
+using SWGOH.Web.DataContexts;
+using SWGOH.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web.Mvc;
-using SWGOH.Entities;
-using SWGOH.Web.DataContexts;
-using HtmlAgilityPack;
 using System.Text.RegularExpressions;
-using System.Data.Entity.Infrastructure;
-using SWGOH.Web.Models;
+using System.Web.Mvc;
 
 namespace SWGOH.Web.Controllers
 {
@@ -151,7 +150,7 @@ namespace SWGOH.Web.Controllers
                 return HttpNotFound();
             }
 
-            if (guild.LastScrape < guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+            if (guild.LastScrape > guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
             {
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
                 return RedirectToAction("Details", new { id = id });
@@ -200,7 +199,7 @@ namespace SWGOH.Web.Controllers
                     //db.SaveChanges();
                 }
 
-                IQueryable<MemberCharacter> memberCharacters = db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id));
+                List<MemberCharacter> memberCharacters = db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
 
                 HtmlWeb webMember = new HtmlWeb();
                 HtmlAgilityPack.HtmlDocument docMember = web.Load(href);
@@ -221,6 +220,7 @@ namespace SWGOH.Web.Controllers
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char-gp-label\">"));
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char collection-char-light-side\">"));
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char collection-char-dark-side\">"));
+                listCharacters.RemoveAll(x => x.Equals("<div class=\"col-xs-6 col-sm-3 col-md-3 col-lg-2\">"));
 
                 MemberCharacter newMemberCharacter = new MemberCharacter();
                 newMemberCharacter.Member_Id = guildMember.Id;
@@ -230,11 +230,7 @@ namespace SWGOH.Web.Controllers
 
                 foreach (var item in listCharacters)
                 {
-                    if (item == "<div class=\"col-xs-6 col-sm-3 col-md-3 col-lg-2\">")
-                    {
-                        //newMemberCharacter = new MemberCharacter();
-                    }
-                    else if (item.Contains("<div class=\"char-portrait-full-level"))
+                    if (item.Contains("<div class=\"char-portrait-full-level"))
                     {
                         newMemberCharacter.Level = Convert.ToInt16(item.Trim().Substring(38, 2).Replace("<", ""));
                     }
@@ -252,12 +248,8 @@ namespace SWGOH.Web.Controllers
                     }
                     else if (item.Contains("<div class=\"collection-char-name\">"))
                     {
-                        //var index = item.IndexOf("w\">");                   
-                        //var charName = item.Trim().Substring(index + 3);
-                        //charName = charName.Replace("</a></div>", "");
-
                         string charName = Regex.Replace(item, "<.*?>", String.Empty);
-                        IEnumerable<Character> charNames = characters.Where(x => x.Name.Equals(charName.Trim())).ToList();  //dtCharacters.AsEnumerable().Where(x => x.Field<String>("Name").Contains(charName)).ToArray();
+                        IEnumerable<Character> charNames = characters.Where(x => x.Name.Equals(charName.Trim())).ToList(); 
 
                         if (charNames.Count() == 1)
                         {
@@ -297,21 +289,30 @@ namespace SWGOH.Web.Controllers
                         {
                             if (memberCharacters.Any(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)))
                             {
-                                db.Entry(newMemberCharacter).State = EntityState.Modified;
-                                try
-                                {
-                                    db.SaveChanges();
-                                }
-                                catch (DbUpdateConcurrencyException ex)
-                                {
-                                    ex.Entries.Single().Reload();
-                                }
+                                MemberCharacter memberCharacterUpdate = memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault();
+                                //try
+                                //{
+                                //    MemberCharacter changed = db.MemberCharacters.Where(x => x.Character_Id == newMemberCharacter.Character_Id && x.Member_Id == newMemberCharacter.Member_Id).FirstOrDefault();
+
+                                memberCharacterUpdate.Level = newMemberCharacter.Level;
+                                memberCharacterUpdate.Power = newMemberCharacter.Power;
+                                memberCharacterUpdate.Stars = newMemberCharacter.Stars;
+
+                                memberCharacters.Remove(memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault());
+                                memberCharacters.Add(memberCharacterUpdate);
+
+                                //    db.Entry(changed).State = EntityState.Modified;
+                                //}
+                                //catch (DbUpdateConcurrencyException ex)
+                                //{
+                                //    ex.Entries.Single().Reload();
+                                //}
                             }
                             else
                             {
-                                db.MemberCharacters.Add(newMemberCharacter);
+                                //db.MemberCharacters.Add(newMemberCharacter);
                                 memberCharactersAdd.Add(newMemberCharacter);
-                                //db.SaveChanges();
+
                             }
                         }
                         newMemberCharacter = new MemberCharacter();
@@ -319,7 +320,9 @@ namespace SWGOH.Web.Controllers
                         newMemberCharacter.Id = Guid.NewGuid();
                     }
                 }
-                db.SaveChanges();
+                db.BulkInsert(memberCharactersAdd);
+                db.BulkUpdate(memberCharacters);
+                //db.SaveChanges();
             }
             return RedirectToAction("Details", new { id = id });
         }
