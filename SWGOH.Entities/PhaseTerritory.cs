@@ -11,20 +11,11 @@ namespace SWGOH.Entities
     {
         [Required]
         public Guid Id { get; set; }
-        public Guid Character1 { get; set; }
-        public Guid Character2 { get; set; }
-        public Guid Character3 { get; set; }
-        public Guid Character4 { get; set; }
-        public Guid Character5 { get; set; }
-        public Guid Character6 { get; set; }
-        public Guid Character7 { get; set; }
-        public Guid Character8 { get; set; }
-        public Guid Character9 { get; set; }
-        public Guid Character10 { get; set; }
-        public Guid Character11 { get; set; }
-        public Guid Character12 { get; set; }
-        public Guid Character13 { get; set; }
-        public Guid Character14 { get; set; }
-        public Guid Character15 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon1 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon2 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon3 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon4 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon5 { get; set; }
+        public TerritoryPlatoon TerritoryPlatoon6 { get; set; }
     }
 }

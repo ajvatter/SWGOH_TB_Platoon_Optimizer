@@ -18,5 +18,9 @@ namespace SWGOH.Web.DataContexts
         public DbSet<Guild> Guilds { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberCharacter> MemberCharacters { get; set; }
+        public DbSet<TerritoryBattle> TerritoryBattles { get; set; }
+        public DbSet<TerritoryBattlePhase> TerritoryBattlePhases { get; set; }
+        public DbSet<PhaseTerritory> PhaseTerritories { get; set; }
+        public DbSet<TerritoryPlatoon> TerritoryPlatoons { get; set; }
     }
 }
