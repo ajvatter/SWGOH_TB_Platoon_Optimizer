@@ -7,3 +7,9 @@
 
     This is currently a work in progress and only open for select guilds.
 </div>
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
+{
+    @Html.ActionLink("Guilds", "Index", "Guilds", new { }, new { @class = "btn btn-default" })<span/>
+    @Html.ActionLink("Characters", "Index", "Characters", new { }, new { @class = "btn btn-default" })
+}

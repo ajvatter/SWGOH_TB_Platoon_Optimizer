@@ -20,6 +20,7 @@ namespace SWGOH.Web.Controllers
         //    return View(members.ToList());
         //}
 
+        [Authorize]
         public ActionResult Index(Guid id)
         {
             var members = db.Members.Where(m => m.Guild.Id == id).OrderBy(x => x.Name);
@@ -27,6 +28,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Members/Details/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Details(Guid? id)
         {
             if (id == null)
@@ -42,6 +44,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Members/Create
+        [Authorize(Roles = "Administrators")]    
         public ActionResult Create()
         {
             ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name");
@@ -52,6 +55,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Administrators")]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,UrlExt,Guild_Id")] Member member)
         {
@@ -64,10 +68,11 @@ namespace SWGOH.Web.Controllers
             }
 
             ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", member.Guild_Id);
-            return View(member);
+            return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
         }
 
         // GET: Members/Edit/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -88,19 +93,22 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,UrlExt,Guild_Id")] Member member)
+        [ValidateInput(false)]
+        [Authorize(Roles = "Administrators")]
+        public ActionResult Edit(Member updateMember)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(member).State = EntityState.Modified;
+                db.Entry(updateMember).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Guilds", new { id = updateMember.Guild_Id });
             }
-            ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", member.Guild_Id);
-            return View(member);
+            ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", updateMember.Guild_Id);
+            return RedirectToAction("Details", "Guilds", new { id = updateMember.Guild_Id });
         }
 
         // GET: Members/Delete/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -118,6 +126,7 @@ namespace SWGOH.Web.Controllers
         // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             Member member = db.Members.Find(id);

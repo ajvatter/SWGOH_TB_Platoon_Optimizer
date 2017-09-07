@@ -3,37 +3,40 @@
 <h2><a href="@Model.UrlExt">@Html.DisplayFor(model => model.Name)</a></h2>
 
 <div>
-    @if (Model.LastScrape > Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+    @if (DateTime.Now < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
     {
         <button class="btn btn-primary disabled">Get Roster</button>
+        <br /><br />
+        <p>You can refresh your guild roster every 60 minutes. Your last refresh was at @Model.LastScrape.</p>
     }
     else
     {
         @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Id }, new { @class = "btn btn-primary" })
-    }        
-    You can refresh your guild roster every 60 minutes.
+        <br /><br />
+        <p>You can refresh your guild roster every 60 minutes.</p>
+    }
     <h3>@ViewBag.Error</h3>
     <hr />
     <div>
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item active">
-                <a class="nav-link active" data-toggle="tab" href="#members" role="tab">Members</a>
+                <a class="nav-link active" data-toggle="tab" href="#charCounts" role="tab">Character Counts</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#charCounts" role="tab">Character Counts</a>
+                <a class="nav-link" data-toggle="tab" href="#members" role="tab">Members</a>
             </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="members" role="tabpanel">
+            <div class="tab-pane " id="members" role="tabpanel">
                 @Html.Action("Index", "Members", new { id = Model.Id })
             </div>
-            <div class="tab-pane" id="charCounts" role="tabpanel">
+            <div class="tab-pane active" id="charCounts" role="tabpanel">
                 @Html.Action("CharCount", "MemberCharacters", new { id = Model.Id })
             </div>
         </div>
     </div>
 </div>
 @*<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>*@
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@

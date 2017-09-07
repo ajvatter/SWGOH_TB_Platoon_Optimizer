@@ -8,7 +8,9 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SWGOH.Web.Controllers
@@ -21,7 +23,7 @@ namespace SWGOH.Web.Controllers
         // GET: Guilds
         [Authorize(Roles = "Administrators")]
         public ActionResult Index()
-        {            
+        {
             return View(db.Guilds.ToList().OrderBy(x => x.Name));
         }
 
@@ -58,12 +60,14 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,UrlExt")] Guild guild)
+        public ActionResult Create(Guild guild)
         {
             if (ModelState.IsValid)
             {
                 guild.Id = Guid.NewGuid();
+                guild.LastScrape = DateTime.Now.AddHours(-2);
                 db.Guilds.Add(guild);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -91,8 +95,9 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,UrlExt")] Guild guild)
+        public ActionResult Edit(Guild guild)
         {
             if (ModelState.IsValid)
             {
@@ -150,7 +155,7 @@ namespace SWGOH.Web.Controllers
                 return HttpNotFound();
             }
 
-            if (guild.LastScrape > guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+            if (DateTime.Now < guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
             {
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
                 return RedirectToAction("Details", new { id = id });
@@ -161,7 +166,7 @@ namespace SWGOH.Web.Controllers
             db.SaveChanges();
 
             IEnumerable<Character> characters = db.Characters.ToList();
-            IEnumerable<Member> members = db.Members.ToList();
+            IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);
 
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt);
@@ -176,14 +181,22 @@ namespace SWGOH.Web.Controllers
 
             listMembers.Remove("\n");
 
+            List<Member> newMembers = new List<Member>();
+            List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
+
             foreach (var member in listMembers)
             {
-                db = new SwgohDb();
-                db.Configuration.AutoDetectChangesEnabled = false;
                 Member guildMember = new Member();
                 string[] memberSplit = member.Split('"');
                 string href = "https://swgoh.gg" + memberSplit[1] + "collection/";
                 string name = memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
+
+                if (!members.Any(x => x.UrlExt == href))
+                {
+                    db.Members.Remove(db.Members.Where(x => x.UrlExt == href).FirstOrDefault());
+                    db.SaveChanges();
+                    continue;
+                }
 
                 if (members.Any(x => x.UrlExt.Equals(href)))
                 {
@@ -193,10 +206,10 @@ namespace SWGOH.Web.Controllers
                 {
                     guildMember.Id = Guid.NewGuid();
                     guildMember.Name = name;
+                    guildMember.DisplayName = HttpUtility.HtmlDecode(name);
                     guildMember.UrlExt = href;
                     guildMember.Guild_Id = guild.Id;
-                    db.Members.Add(guildMember);
-                    //db.SaveChanges();
+                    newMembers.Add(guildMember);
                 }
 
                 List<MemberCharacter> memberCharacters = db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
@@ -226,8 +239,6 @@ namespace SWGOH.Web.Controllers
                 newMemberCharacter.Member_Id = guildMember.Id;
                 newMemberCharacter.Id = Guid.NewGuid();
 
-                List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
-
                 foreach (var item in listCharacters)
                 {
                     if (item.Contains("<div class=\"char-portrait-full-level"))
@@ -249,7 +260,7 @@ namespace SWGOH.Web.Controllers
                     else if (item.Contains("<div class=\"collection-char-name\">"))
                     {
                         string charName = Regex.Replace(item, "<.*?>", String.Empty);
-                        IEnumerable<Character> charNames = characters.Where(x => x.Name.Equals(charName.Trim())).ToList(); 
+                        IEnumerable<Character> charNames = characters.Where(x => x.Name.Equals(charName.Trim())).ToList();
 
                         if (charNames.Count() == 1)
                         {
@@ -257,7 +268,6 @@ namespace SWGOH.Web.Controllers
                         }
                         else
                         {
-                            //do something
                             if (charName.Contains("Fulcrum"))
                             {
                                 newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Ahsoka Tano (Fulcrum)")).FirstOrDefault().Id;
@@ -281,7 +291,6 @@ namespace SWGOH.Web.Controllers
                             else
                             {
                                 newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Substring(1).Contains(charName)).FirstOrDefault().Id;
-                                //something
                             }
                         }
 
@@ -290,9 +299,6 @@ namespace SWGOH.Web.Controllers
                             if (memberCharacters.Any(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)))
                             {
                                 MemberCharacter memberCharacterUpdate = memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault();
-                                //try
-                                //{
-                                //    MemberCharacter changed = db.MemberCharacters.Where(x => x.Character_Id == newMemberCharacter.Character_Id && x.Member_Id == newMemberCharacter.Member_Id).FirstOrDefault();
 
                                 memberCharacterUpdate.Level = newMemberCharacter.Level;
                                 memberCharacterUpdate.Power = newMemberCharacter.Power;
@@ -300,17 +306,9 @@ namespace SWGOH.Web.Controllers
 
                                 memberCharacters.Remove(memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault());
                                 memberCharacters.Add(memberCharacterUpdate);
-
-                                //    db.Entry(changed).State = EntityState.Modified;
-                                //}
-                                //catch (DbUpdateConcurrencyException ex)
-                                //{
-                                //    ex.Entries.Single().Reload();
-                                //}
                             }
                             else
                             {
-                                //db.MemberCharacters.Add(newMemberCharacter);
                                 memberCharactersAdd.Add(newMemberCharacter);
 
                             }
@@ -320,10 +318,11 @@ namespace SWGOH.Web.Controllers
                         newMemberCharacter.Id = Guid.NewGuid();
                     }
                 }
-                db.BulkInsert(memberCharactersAdd);
                 db.BulkUpdate(memberCharacters);
-                //db.SaveChanges();
             }
+            db.BulkInsert(newMembers);
+            db.BulkInsert(memberCharactersAdd);
+
             return RedirectToAction("Details", new { id = id });
         }
     }

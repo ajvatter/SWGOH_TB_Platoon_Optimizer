@@ -129,7 +129,7 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult CharCount(Guid id)
         {
-            var memberCharacters = db.MemberCharacters.ToList();
+            var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
             List<CharCount> charCount = new List<CharCount>();
 
@@ -137,7 +137,7 @@ namespace SWGOH.Web.Controllers
             {
                 CharCount newCharCount = new CharCount();
                 newCharCount.Id = character.Id;
-                newCharCount.Name = character.Name;
+                newCharCount.Name = character.DisplayName;
                 newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
                 newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
                 newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();

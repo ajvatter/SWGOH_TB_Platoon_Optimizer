@@ -5,7 +5,7 @@
 }
 
 
-<h2>Members with @Model.Character.Name</h2>
+<h2>Members with @Model.Character.DisplayName</h2>
 <p>
     @Html.ActionLink("Back to Guild", "Details", "Guilds")
 </p>
@@ -13,14 +13,14 @@
     <hr />
     @if (@Model.MembersCharacters.Where(x => x.Stars == 7).Count() != 0)
     {
-        <h2><Strong>@Model.MembersCharacters.Where(x => x.Stars == 7).Count() </Strong>@@
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-            <i class="fa fa-star-o" aria-hidden="true"></i>            
+        <h2><Strong>@Model.MembersCharacters.Where(x => x.Stars == 7).Count() </Strong>@@ 7 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>            
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
@@ -39,13 +39,13 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 6).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 6).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 6).Count() </Strong>@@ 6 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
@@ -64,12 +64,12 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 5).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 5).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 5).Count() </Strong>@@ 5 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
@@ -88,11 +88,11 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 4).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 4).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 4).Count() </Strong>@@ 4 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
@@ -111,10 +111,10 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 3).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 3).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 3).Count() </Strong>@@ 3 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
 
         <table class="table">
@@ -134,9 +134,9 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 2).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 2).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 2).Count() </Strong>@@ 2 Stars
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
@@ -155,8 +155,8 @@
     @if (@Model.MembersCharacters.Where(x => x.Stars == 1).Count() != 0)
     {
         <h2>
-            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 1).Count() </Strong>@@
-            <i class="fa fa-star-o " aria-hidden="true"></i>
+            <Strong>@Model.MembersCharacters.Where(x => x.Stars == 1).Count() </Strong>@@ 1 Star
+            <i class="fa fa-star-o pull-right" aria-hidden="true"></i>
         </h2>
         <table class="table">
             @foreach (var item in Model.MembersCharacters)
