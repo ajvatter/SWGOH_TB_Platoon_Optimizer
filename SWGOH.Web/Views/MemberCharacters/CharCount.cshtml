@@ -10,7 +10,7 @@
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.OneStarCount)
+            1 <span class="fade fa-star"> Count</span>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.TwoStarCount)
@@ -34,7 +34,7 @@
 
     @foreach (var item in Model)
     {
-        <tr>
+        <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")" >
             <td>
                 @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
             </td>

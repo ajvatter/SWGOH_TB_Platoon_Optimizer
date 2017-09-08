@@ -14,7 +14,13 @@ namespace SWGOH.Entities
         public string DisplayName { get; set; }
         [StringLength(255)]
         public string UrlExt { get; set; }
+        public Alignment Alignment { get; set; }
 
         public virtual ICollection<MemberCharacter> MemberCharacters { get; set; }
+    }
+    public enum Alignment
+    {
+        LightSide = 1,
+        DarkSide = 2
     }
 }

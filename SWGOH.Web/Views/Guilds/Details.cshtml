@@ -2,8 +2,9 @@
 
 <h2><a href="@Model.UrlExt">@Html.DisplayFor(model => model.Name)</a></h2>
 
+<h4>Registered Members: @Model.Members.Count()</h4>
 <div>
-    @if (DateTime.Now < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+    @if (DateTime.Now < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
     {
         <button class="btn btn-primary disabled">Get Roster</button>
         <br /><br />
@@ -13,7 +14,7 @@
     {
         @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Id }, new { @class = "btn btn-primary" })
         <br /><br />
-        <p>You can refresh your guild roster every 60 minutes.</p>
+        <p>You can refresh your guild roster every 60 minutes. This is based on your members being up to date on swgoh.gg.</p>
     }
     <h3>@ViewBag.Error</h3>
     <hr />

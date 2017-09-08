@@ -210,6 +210,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SelectExtensions.cs" />
     <Compile Include="Migrations\201709040457028_Initial.cs" />
     <Compile Include="Migrations\201709040457028_Initial.Designer.cs">
       <DependentUpon>201709040457028_Initial.cs</DependentUpon>
@@ -225,6 +226,10 @@
     <Compile Include="Migrations\201709062106587_DisplayNames.cs" />
     <Compile Include="Migrations\201709062106587_DisplayNames.Designer.cs">
       <DependentUpon>201709062106587_DisplayNames.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709071134315_CharAlignment.cs" />
+    <Compile Include="Migrations\201709071134315_CharAlignment.Designer.cs">
+      <DependentUpon>201709071134315_CharAlignment.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
@@ -365,6 +370,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709062106587_DisplayNames.resx">
       <DependentUpon>201709062106587_DisplayNames.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709071134315_CharAlignment.resx">
+      <DependentUpon>201709071134315_CharAlignment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

@@ -57,3 +57,11 @@ input {
     color: #FF0000;
     font-size: 10pt;
 }
+
+.lsRow{
+    background-color: dodgerblue
+}
+
+.dsRow {
+    background-color: firebrick
+}

@@ -155,15 +155,17 @@ namespace SWGOH.Web.Controllers
                 return HttpNotFound();
             }
 
-            if (DateTime.Now < guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")))
+            if (DateTime.Now < guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
             {
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
                 return RedirectToAction("Details", new { id = id });
             }
-
-            guild.LastScrape = DateTime.Now;
-            db.Entry(guild).State = EntityState.Modified;
-            db.SaveChanges();
+            if (User.IsInRole("Administrators"))
+            {
+                guild.LastScrape = DateTime.Now;
+                db.Entry(guild).State = EntityState.Modified;
+                db.SaveChanges();
+            }            
 
             IEnumerable<Character> characters = db.Characters.ToList();
             IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);
@@ -184,6 +186,30 @@ namespace SWGOH.Web.Controllers
             List<Member> newMembers = new List<Member>();
             List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
 
+            List<Member> memberDelete = new List<Member>();
+
+            List<string> memberExt = new List<string>();
+
+            foreach (var member in listMembers)
+            {
+                Member guildMember = new Member();
+                string[] memberSplit = member.Split('"');
+                memberExt.Add("https://swgoh.gg" + memberSplit[1] + "collection/");
+            }
+
+
+            foreach (var member in members)
+            {
+                if (!memberExt.Any(x => x.Contains(member.UrlExt)))
+                {
+                    memberDelete.Add(db.Members.Where(x => x.UrlExt == member.UrlExt).FirstOrDefault());
+                    db.SaveChanges();
+                    continue;
+                }
+            }
+
+            db.BulkDelete(memberDelete);
+
             foreach (var member in listMembers)
             {
                 Member guildMember = new Member();
@@ -191,12 +217,12 @@ namespace SWGOH.Web.Controllers
                 string href = "https://swgoh.gg" + memberSplit[1] + "collection/";
                 string name = memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
 
-                if (!members.Any(x => x.UrlExt == href))
-                {
-                    db.Members.Remove(db.Members.Where(x => x.UrlExt == href).FirstOrDefault());
-                    db.SaveChanges();
-                    continue;
-                }
+                //if (members.Any(x => x.UrlExt == href))
+                //{
+                //    db.Members.Remove(db.Members.Where(x => x.UrlExt == href).FirstOrDefault());
+                //    db.SaveChanges();
+                //    continue;
+                //}
 
                 if (members.Any(x => x.UrlExt.Equals(href)))
                 {
