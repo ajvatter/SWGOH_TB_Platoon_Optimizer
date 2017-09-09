@@ -26,13 +26,19 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#members" role="tab">Members</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#territoryBattles" role="tab">Territory Battles</a>
+            </li>
         </ul>
         <div class="tab-content">
+            <div class="tab-pane active" id="charCounts" role="tabpanel">
+                @Html.Action("CharCount", "MemberCharacters", new { id = Model.Id })
+            </div>
             <div class="tab-pane " id="members" role="tabpanel">
                 @Html.Action("Index", "Members", new { id = Model.Id })
             </div>
-            <div class="tab-pane active" id="charCounts" role="tabpanel">
-                @Html.Action("CharCount", "MemberCharacters", new { id = Model.Id })
+            <div class="tab-pane " id="territoryBattles" role="tabpanel">
+                @Html.Action("Index", "TerritoryBattles", new { id = Model.Id })
             </div>
         </div>
     </div>

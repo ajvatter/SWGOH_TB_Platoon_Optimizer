@@ -18,7 +18,7 @@ namespace SWGOH.Web.Controllers
     public class GuildsController : Controller
     {
         private SwgohDb db = new SwgohDb();
-        ApplicationDbContext userDb = new ApplicationDbContext();
+        private ApplicationDbContext userDb = new ApplicationDbContext();
 
         // GET: Guilds
         [Authorize(Roles = "Administrators")]

@@ -24,6 +24,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Details/5
+        [Authorize]
         public ActionResult Details(Guid? id)
         {
             if (id == null)

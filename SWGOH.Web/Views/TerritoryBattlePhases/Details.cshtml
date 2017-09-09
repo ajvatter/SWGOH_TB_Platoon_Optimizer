@@ -1,0 +1,50 @@
+﻿@model SWGOH.Entities.TerritoryBattlePhase
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TerritoryBattlePhase</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Territory1.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Territory1.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Territory2.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Territory2.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RequiredStars)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequiredStars)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasSecondTerritory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasSecondTerritory)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -206,6 +206,8 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MemberCharactersController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
+    <Compile Include="Controllers\TerritoryBattlesController.cs" />
     <Compile Include="DataContexts\SwgohDb.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -230,6 +232,10 @@
     <Compile Include="Migrations\201709071134315_CharAlignment.cs" />
     <Compile Include="Migrations\201709071134315_CharAlignment.Designer.cs">
       <DependentUpon>201709071134315_CharAlignment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709082245412_TerritoryBattleModel.cs" />
+    <Compile Include="Migrations\201709082245412_TerritoryBattleModel.Designer.cs">
+      <DependentUpon>201709082245412_TerritoryBattleModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
@@ -345,6 +351,16 @@
     <Content Include="Views\MemberCharacters\MembersWithCharacter.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Views\TerritoryBattles\Create.cshtml" />
+    <Content Include="Views\TerritoryBattles\Delete.cshtml" />
+    <Content Include="Views\TerritoryBattles\Details.cshtml" />
+    <Content Include="Views\TerritoryBattles\Edit.cshtml" />
+    <Content Include="Views\TerritoryBattles\Index.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\Create.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\Delete.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\Details.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\Edit.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -373,6 +389,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709071134315_CharAlignment.resx">
       <DependentUpon>201709071134315_CharAlignment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709082245412_TerritoryBattleModel.resx">
+      <DependentUpon>201709082245412_TerritoryBattleModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

@@ -28,7 +28,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Members/Details/5
-        [Authorize(Roles = "Administrators")]
+        [Authorize]
         public ActionResult Details(Guid? id)
         {
             if (id == null)

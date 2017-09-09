@@ -1,0 +1,140 @@
+﻿@model SWGOH.Entities.TerritoryBattle
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TerritoryBattle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Guild.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Guild.Name)
+        </dd>
+
+        <dt>
+            Phase 1:
+        </dt>
+
+        <dd>
+            @if (Model.Phase1_Id == null)
+            {
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            }
+            else
+            {
+                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase1.Id })
+            }
+        </dd>
+
+        <dt>
+            Phase 2:
+        </dt>
+
+        <dd>
+           @if (Model.Phase2_Id == null)
+            {
+            @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+           }
+           else
+           {
+            @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase2.Id })
+           }
+        </dd>
+
+        <dt>
+            Phase 3:
+        </dt>
+
+        <dd>
+            @if (Model.Phase3_Id == null)
+            {
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            }
+            else
+            {
+                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase3.Id })
+            }
+        </dd>
+
+        <dt>
+            Phase 4:
+        </dt>
+
+        <dd>
+            @if (Model.Phase4_Id == null)
+            {
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            }
+            else
+            {
+                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase4.Id })
+            }
+        </dd>
+
+        <dt>
+            Phase 5:
+        </dt>
+
+        <dd>
+            @if (Model.Phase5_Id == null)
+            {
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            }
+            else
+            {
+                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase5.Id })
+            }
+        </dd>
+
+        <dt>
+            Phase 6:
+        </dt>
+
+        <dd>
+            @if (Model.Phase6_Id == null)
+            {
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            }
+            else
+            {
+                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase6.Id })
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalStars)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalStars)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
