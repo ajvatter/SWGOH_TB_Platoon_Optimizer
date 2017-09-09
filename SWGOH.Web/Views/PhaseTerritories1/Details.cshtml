@@ -1,0 +1,74 @@
+﻿@model SWGOH.Entities.PhaseTerritory
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PhaseTerritory</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon1.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon1_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon2.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon2_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon3.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon3_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon4.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon4_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon5.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon5_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon6.Id)
+        </dt>
+
+        <dd>
+            @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon6_Id })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPointsEarned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPointsEarned)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

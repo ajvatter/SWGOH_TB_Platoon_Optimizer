@@ -25,11 +25,11 @@
         <dd>
             @if (Model.Phase1_Id == null)
             {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
             }
             else
             {
-                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase1.Id })
+                @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase1_Id }, new { })
             }
         </dd>
 
@@ -40,11 +40,11 @@
         <dd>
            @if (Model.Phase2_Id == null)
             {
-            @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+            @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
            }
            else
            {
-            @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase2.Id })
+            @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase2_Id }, new { })
            }
         </dd>
 
@@ -55,11 +55,11 @@
         <dd>
             @if (Model.Phase3_Id == null)
             {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
             }
             else
             {
-                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase3.Id })
+                @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase3_Id }, new { })
             }
         </dd>
 
@@ -70,11 +70,11 @@
         <dd>
             @if (Model.Phase4_Id == null)
             {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
             }
             else
             {
-                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase4.Id })
+                @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase4_Id }, new { })
             }
         </dd>
 
@@ -85,11 +85,11 @@
         <dd>
             @if (Model.Phase5_Id == null)
             {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
             }
             else
             {
-                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase5.Id })
+                @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase5_Id }, new { })
             }
         </dd>
 
@@ -100,11 +100,11 @@
         <dd>
             @if (Model.Phase6_Id == null)
             {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 })
+                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
             }
             else
             {
-                @Html.ActionLink("View Phase", "Edit", new { id = Model.Phase6.Id })
+                @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase6_Id }, new { })
             }
         </dd>
 

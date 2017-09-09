@@ -206,8 +206,11 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MemberCharactersController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\PhaseTerritories1Controller.cs" />
+    <Compile Include="Controllers\PhaseTerritoriesController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
     <Compile Include="Controllers\TerritoryBattlesController.cs" />
+    <Compile Include="Controllers\TerritoryPlatoonsController.cs" />
     <Compile Include="DataContexts\SwgohDb.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -236,6 +239,10 @@
     <Compile Include="Migrations\201709082245412_TerritoryBattleModel.cs" />
     <Compile Include="Migrations\201709082245412_TerritoryBattleModel.Designer.cs">
       <DependentUpon>201709082245412_TerritoryBattleModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709091509401_ChangePlatoonModel.cs" />
+    <Compile Include="Migrations\201709091509401_ChangePlatoonModel.Designer.cs">
+      <DependentUpon>201709091509401_ChangePlatoonModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
@@ -1017,6 +1024,21 @@
     <Content Include="Scripts\kendo\2014.1.318\kendo.view.min.js.map" />
     <Content Include="Scripts\kendo\2014.1.318\kendo.web.min.js.map" />
     <Content Include="Scripts\kendo\2014.1.318\kendo.window.min.js.map" />
+    <Content Include="Views\PhaseTerritories\Create.cshtml" />
+    <Content Include="Views\PhaseTerritories\Delete.cshtml" />
+    <Content Include="Views\PhaseTerritories\Details.cshtml" />
+    <Content Include="Views\PhaseTerritories\Edit.cshtml" />
+    <Content Include="Views\PhaseTerritories\Index.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\Create.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\Delete.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\Details.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\Edit.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\Index.cshtml" />
+    <Content Include="Views\PhaseTerritories1\Create.cshtml" />
+    <Content Include="Views\PhaseTerritories1\Delete.cshtml" />
+    <Content Include="Views\PhaseTerritories1\Details.cshtml" />
+    <Content Include="Views\PhaseTerritories1\Edit.cshtml" />
+    <Content Include="Views\PhaseTerritories1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1048,6 +1070,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709082245412_TerritoryBattleModel.resx">
       <DependentUpon>201709082245412_TerritoryBattleModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709091509401_ChangePlatoonModel.resx">
+      <DependentUpon>201709091509401_ChangePlatoonModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

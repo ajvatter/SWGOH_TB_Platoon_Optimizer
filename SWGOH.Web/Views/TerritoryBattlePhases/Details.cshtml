@@ -11,38 +11,36 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Territory1.Id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Territory1.Id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Territory2.Id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Territory2.Id)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.RequiredStars)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.RequiredStars)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HasSecondTerritory)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HasSecondTerritory)
-        </dd>
-
     </dl>
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item active">
+                <a class="nav-link active" data-toggle="tab" href="#mid" role="tab">Middle Territory</a>
+            </li>
+            @if (Model.HasSecondTerritory == true)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#bottom" role="tab">Bottom Territory</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="mid" role="tabpanel">
+                @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory1_Id })
+            </div>
+            @if (Model.HasSecondTerritory == true)
+            {
+                <div class="tab-pane " id="bottom" role="tabpanel">
+                    @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory2_Id })
+                </div>
+            }
+        </div>
+    </div>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |

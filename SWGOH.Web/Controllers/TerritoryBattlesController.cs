@@ -40,18 +40,16 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattles/Create
+        [Authorize(Roles = "Officers")]
         public ActionResult Create()
         {
             TerritoryBattle territoryBattle = new TerritoryBattle();
 
+            territoryBattle.Id = Guid.NewGuid();
             territoryBattle.Guild_Id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
-            //ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name");
-            //ViewBag.Phase1_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
-            //ViewBag.Phase2_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
-            //ViewBag.Phase3_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
-            //ViewBag.Phase4_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
-            //ViewBag.Phase5_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
-            //ViewBag.Phase6_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id");
+            territoryBattle.StartDate = DateTime.Now;
+            territoryBattle.IsActive = true;
+
             return View(territoryBattle);
         }
 
@@ -60,8 +58,163 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Officers")]
         public ActionResult Create(TerritoryBattle territoryBattle)
         {
+            territoryBattle.Id = Guid.NewGuid();
+
+            territoryBattle.Phase1 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 2,
+                HasSecondTerritory = false,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
+            territoryBattle.Phase2 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 3,
+                HasSecondTerritory = true,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+                Territory2 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
+            territoryBattle.Phase3 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 4,
+                HasSecondTerritory = true,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+                Territory2 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
+            territoryBattle.Phase4 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 5,
+                HasSecondTerritory = true,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+                Territory2 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
+            territoryBattle.Phase5 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 6,
+                HasSecondTerritory = true,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+                Territory2 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
+            territoryBattle.Phase6 = new TerritoryBattlePhase()
+            {
+                Id = Guid.NewGuid(),
+                RequiredStars = 7,
+                HasSecondTerritory = true,
+                Territory1 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+                Territory2 = new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
+                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                },
+            };
+
             if (ModelState.IsValid)
             {
                 territoryBattle.Id = Guid.NewGuid();
@@ -70,17 +223,11 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Details", new { id = territoryBattle.Id });
             }
 
-            //ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", territoryBattle.Guild_Id);
-            //ViewBag.Phase1_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase1_Id);
-            //ViewBag.Phase2_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase2_Id);
-            //ViewBag.Phase3_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase3_Id);
-            //ViewBag.Phase4_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase4_Id);
-            //ViewBag.Phase5_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase5_Id);
-            //ViewBag.Phase6_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase6_Id);
             return View(territoryBattle);
         }
 
         // GET: TerritoryBattles/Edit/5
+        [Authorize(Roles = "Officers")]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -107,7 +254,8 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Guild_Id,StartDate,TotalStars,IsActive,Phase1_Id,Phase2_Id,Phase3_Id,Phase4_Id,Phase5_Id,Phase6_Id")] TerritoryBattle territoryBattle)
+        [Authorize(Roles = "Officers")]
+        public ActionResult Edit(TerritoryBattle territoryBattle)
         {
             if (ModelState.IsValid)
             {

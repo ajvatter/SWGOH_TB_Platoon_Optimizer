@@ -1,0 +1,80 @@
+﻿@model SWGOH.Entities.PhaseTerritory
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>PhaseTerritory</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon1.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon1.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon2.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon2.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon3.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon3.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon4.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon4.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon5.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon5.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TerritoryPlatoon6.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TerritoryPlatoon6.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPointsEarned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPointsEarned)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

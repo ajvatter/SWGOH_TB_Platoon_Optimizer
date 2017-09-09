@@ -14,34 +14,31 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Guild.Name)
+            Start Date
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase1.Id)
+            Is Active
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase2.Id)
+            Phase 1
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase3.Id)
+            Phase 2
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase4.Id)
+            Phase 3
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase5.Id)
+            Phase 4
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phase6.Id)
+            Phase 5
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDate)
+            Phase 6
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TotalStars)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActive)
+            Stars Earned
         </th>
         <th></th>
     </tr>
@@ -50,47 +47,44 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Guild.Name)
-            </td>
-            <td>
-                @if (item.Phase1_Id == null)
-                {
-                    @Html.ActionLink("Create New", "Create", "TerritoryBattlePhases")
-                }
-                else
-                {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })                    
-                }
-                @Html.DisplayFor(modelItem => item.Phase1.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phase2.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phase3.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phase4.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phase5.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phase6.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalStars)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { })
+            </td>
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2_Id }, new { })
+            </td>
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3_Id }, new { })
+            </td>
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4_Id }, new { })
+            </td>
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase5_Id }, new { })
+            </td>
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalStars)
+            </td>
+            <td>
+                @if (User.IsInRole("Officers"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <span> | </span>
+                }
+
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                @if (User.IsInRole("Administrators"))
+                {
+                   <span> | </span> @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                }
+
             </td>
         </tr>
     }
