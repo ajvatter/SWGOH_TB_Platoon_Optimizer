@@ -244,6 +244,10 @@
     <Compile Include="Migrations\201709091509401_ChangePlatoonModel.Designer.cs">
       <DependentUpon>201709091509401_ChangePlatoonModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709110208291_AddTbRelation.cs" />
+    <Compile Include="Migrations\201709110208291_AddTbRelation.Designer.cs">
+      <DependentUpon>201709110208291_AddTbRelation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -1073,6 +1077,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709091509401_ChangePlatoonModel.resx">
       <DependentUpon>201709091509401_ChangePlatoonModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709110208291_AddTbRelation.resx">
+      <DependentUpon>201709110208291_AddTbRelation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

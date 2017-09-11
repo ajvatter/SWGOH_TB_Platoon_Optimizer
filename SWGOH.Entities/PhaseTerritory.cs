@@ -18,31 +18,36 @@ namespace SWGOH.Entities
         public Guid? TerritoryPlatoon1_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon1_Id")]
-        public TerritoryPlatoon TerritoryPlatoon1 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon1 { get; set; }
 
         public Guid? TerritoryPlatoon2_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon2_Id")]
-        public TerritoryPlatoon TerritoryPlatoon2 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon2 { get; set; }
 
         public Guid? TerritoryPlatoon3_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon3_Id")]
-        public TerritoryPlatoon TerritoryPlatoon3 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon3 { get; set; }
 
         public Guid? TerritoryPlatoon4_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon4_Id")]
-        public TerritoryPlatoon TerritoryPlatoon4 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon4 { get; set; }
 
         public Guid? TerritoryPlatoon5_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon5_Id")]
-        public TerritoryPlatoon TerritoryPlatoon5 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon5 { get; set; }
 
         public Guid? TerritoryPlatoon6_Id { get; set; }
 
         [ForeignKey("TerritoryPlatoon6_Id")]
-        public TerritoryPlatoon TerritoryPlatoon6 { get; set; }
+        public virtual TerritoryPlatoon TerritoryPlatoon6 { get; set; }
+
+        public Guid TerritoryBattle_Id { get; set; }
+
+        [ForeignKey("TerritoryBattle_Id")]
+        public virtual TerritoryBattle TerritoryBattle { get; set; }
     }
 }

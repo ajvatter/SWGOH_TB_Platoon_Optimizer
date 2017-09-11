@@ -173,7 +173,8 @@ namespace SWGOH.Web.Controllers
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt);
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div/table/tbody")[0].InnerHtml;
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[2]/div/table")[0].InnerHtml;
+
 
             Regex regexChar = new Regex(@"\n");
             Regex regex = new Regex(@"<tr>");
@@ -181,7 +182,8 @@ namespace SWGOH.Web.Controllers
 
             List<string> listMembers = substrings.ToList();
 
-            listMembers.Remove("\n");
+            listMembers.Remove("\n<thead>\n");
+            listMembers.Remove("\n<th>Name</th>\n<th class=\"text-center\" data-type=\"number\" data-sorted=\"true\" data-direction=\"DESC\">GP</th>\n<th class=\"text-center\" data-type=\"number\">CS</th>\n<th class=\"text-center\" data-type=\"number\">Arena Rank</th>\n<th class=\"text-center\" data-type=\"number\">Arena Average</th>\n</tr>\n</thead>\n<tbody>\n");
 
             List<Member> newMembers = new List<Member>();
             List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
