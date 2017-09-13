@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace SWGOH.Entities
 {
     public class Character

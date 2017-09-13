@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
+using SWGOH.Web.ViewModels;
+using AutoMapper;
 
 namespace SWGOH.Web.Controllers
 {
@@ -18,7 +20,7 @@ namespace SWGOH.Web.Controllers
         // GET: TerritoryBattlePhases
         public ActionResult Index()
         {
-            var territoryBattlePhases = db.TerritoryBattlePhases.Include(t => t.Territory1).Include(t => t.Territory2);
+            var territoryBattlePhases = db.TerritoryBattlePhases;
             return View(territoryBattlePhases.ToList());
         }
 
@@ -29,12 +31,13 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TerritoryBattlePhase territoryBattlePhase = db.TerritoryBattlePhases.Find(id);
+            TerritoryBattlePhase territoryBattlePhase = db.TerritoryBattlePhases.Include(x => x.PhaseTerritories).SingleOrDefault(x => x.Id == id);
             if (territoryBattlePhase == null)
             {
                 return HttpNotFound();
             }
-            return View(territoryBattlePhase);
+            TerritoryBattlePhaseModel model = Mapper.Map<TerritoryBattlePhase, TerritoryBattlePhaseModel>(territoryBattlePhase);
+            return View(model);
         }
 
         // GET: TerritoryBattlePhases/Create
@@ -60,8 +63,6 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Territory1_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory1_Id);
-            ViewBag.Territory2_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory2_Id);
             return View(territoryBattlePhase);
         }
 
@@ -77,8 +78,7 @@ namespace SWGOH.Web.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Territory1_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory1_Id);
-            ViewBag.Territory2_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory2_Id);
+
             return View(territoryBattlePhase);
         }
 
@@ -95,8 +95,7 @@ namespace SWGOH.Web.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Territory1_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory1_Id);
-            ViewBag.Territory2_Id = new SelectList(db.PhaseTerritories, "Id", "Id", territoryBattlePhase.Territory2_Id);
+
             return View(territoryBattlePhase);
         }
 

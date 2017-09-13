@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SWGOH.Entities.TerritoryBattle>
+﻿@model IEnumerable<SWGOH.Web.ViewModels.TerritoryBattleModel>
 
 @{
     ViewBag.Title = "Index";
@@ -19,7 +19,7 @@
         <th>
             Is Active
         </th>
-        <th>
+        @*<th>
             Phase 1
         </th>
         <th>
@@ -36,7 +36,7 @@
         </th>
         <th>
             Phase 6
-        </th>
+        </th>*@
         <th>
             Stars Earned
         </th>
@@ -52,7 +52,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
-            <td>
+            @*<td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { })
             </td>
             <td>
@@ -69,7 +69,7 @@
             </td>
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { })
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.TotalStars)
             </td>

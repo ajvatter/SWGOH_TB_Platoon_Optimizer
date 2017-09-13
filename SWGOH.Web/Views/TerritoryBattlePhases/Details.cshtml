@@ -1,4 +1,4 @@
-﻿@model SWGOH.Entities.TerritoryBattlePhase
+﻿@model SWGOH.Web.ViewModels.TerritoryBattlePhaseModel
 
 @{
     ViewBag.Title = "Details";
@@ -31,12 +31,12 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="mid" role="tabpanel">
-                @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory1_Id })
+                @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory1.Id })
             </div>
             @if (Model.HasSecondTerritory == true)
             {
                 <div class="tab-pane " id="bottom" role="tabpanel">
-                    @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory2_Id })
+                    @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory2.Id })
                 </div>
             }
         </div>

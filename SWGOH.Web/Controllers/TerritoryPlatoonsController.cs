@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
+using SWGOH.Web.ViewModels;
+using AutoMapper;
 
 namespace SWGOH.Web.Controllers
 {
@@ -29,47 +31,18 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Find(id);
+            TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == id);
             if (territoryPlatoon == null)
             {
                 return HttpNotFound();
             }
-            return View(territoryPlatoon);
+            TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
+            return View(model);
         }
 
         // GET: TerritoryPlatoons/Create
         public ActionResult Create()
         {
-            ViewBag.Character1_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character10_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character10Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character11_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character11Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character12_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character12Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character13_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character13Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character14_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character14Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character15_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character15Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character1Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character2_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character2Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character3_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character3Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character4_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character4Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character5_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character5Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character6_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character6Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character7_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character7Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character8_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character8Member_Id = new SelectList(db.Members, "Id", "Name");
-            ViewBag.Character9_Id = new SelectList(db.Characters, "Id", "Name");
-            ViewBag.Character9Member_Id = new SelectList(db.Members, "Id", "Name");
             return View();
         }
 
@@ -88,36 +61,6 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Character1_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character1_Id);
-            ViewBag.Character10_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character10_Id);
-            ViewBag.Character10Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character10Member_Id);
-            ViewBag.Character11_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character11_Id);
-            ViewBag.Character11Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character11Member_Id);
-            ViewBag.Character12_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character12_Id);
-            ViewBag.Character12Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character12Member_Id);
-            ViewBag.Character13_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character13_Id);
-            ViewBag.Character13Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character13Member_Id);
-            ViewBag.Character14_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character14_Id);
-            ViewBag.Character14Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character14Member_Id);
-            ViewBag.Character15_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character15_Id);
-            ViewBag.Character15Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character15Member_Id);
-            ViewBag.Character1Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character1Member_Id);
-            ViewBag.Character2_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character2_Id);
-            ViewBag.Character2Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character2Member_Id);
-            ViewBag.Character3_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character3_Id);
-            ViewBag.Character3Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character3Member_Id);
-            ViewBag.Character4_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character4_Id);
-            ViewBag.Character4Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character4Member_Id);
-            ViewBag.Character5_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character5_Id);
-            ViewBag.Character5Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character5Member_Id);
-            ViewBag.Character6_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character6_Id);
-            ViewBag.Character6Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character6Member_Id);
-            ViewBag.Character7_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character7_Id);
-            ViewBag.Character7Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character7Member_Id);
-            ViewBag.Character8_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character8_Id);
-            ViewBag.Character8Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character8Member_Id);
-            ViewBag.Character9_Id = new SelectList(db.Characters, "Id", "Name", territoryPlatoon.Character9_Id);
-            ViewBag.Character9Member_Id = new SelectList(db.Members, "Id", "Name", territoryPlatoon.Character9Member_Id);
             return View(territoryPlatoon);
         }
 
@@ -128,27 +71,29 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Find(id);
+            TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == id);
             if (territoryPlatoon == null)
             {
                 return HttpNotFound();
             }
+            TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
 
-            ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character1_Id);
-            ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character10_Id);
-            ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character11_Id);
-            ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character12_Id);
-            ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character13_Id);
-            ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character14_Id);
-            ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character15_Id);
-            ViewBag.Character2_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character2_Id);
-            ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character3_Id);
-            ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character4_Id);
-            ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character5_Id);
-            ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character6_Id);
-            ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character7_Id);
-            ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character8_Id);
-            ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character9_Id);
+            ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character1.Character_Id);
+            ViewBag.Character2_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character2.Character_Id);
+            ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character3.Character_Id);
+            ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character4.Character_Id);
+            ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character5.Character_Id);
+            ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character6.Character_Id);
+            ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character7.Character_Id);
+            ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character8.Character_Id);
+            ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character9.Character_Id);
+            ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character10.Character_Id);
+            ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character11.Character_Id);
+            ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character12.Character_Id);
+            ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character13.Character_Id);
+            ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character14.Character_Id);
+            ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character15.Character_Id);            
+
             return View(territoryPlatoon);
         }
 
@@ -165,21 +110,7 @@ namespace SWGOH.Web.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character1_Id);
-            ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character10_Id);
-            ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character11_Id);
-            ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character12_Id);
-            ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character13_Id);
-            ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character14_Id);
-            ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character15_Id);
-            ViewBag.Character2_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character2_Id);
-            ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character3_Id);
-            ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character4_Id);
-            ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character5_Id);
-            ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character6_Id);
-            ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character7_Id);
-            ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character8_Id);
-            ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", territoryPlatoon.Character9_Id);
+
             return View(territoryPlatoon);
         }
 

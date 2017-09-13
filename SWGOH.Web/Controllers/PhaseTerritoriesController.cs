@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
+using SWGOH.Web.ViewModels;
+using AutoMapper;
 
 namespace SWGOH.Web.Controllers
 {
@@ -18,7 +20,7 @@ namespace SWGOH.Web.Controllers
         // GET: PhaseTerritories
         public ActionResult Index()
         {
-            var phaseTerritories = db.PhaseTerritories.Include(p => p.TerritoryPlatoon1).Include(p => p.TerritoryPlatoon2).Include(p => p.TerritoryPlatoon3).Include(p => p.TerritoryPlatoon4).Include(p => p.TerritoryPlatoon5).Include(p => p.TerritoryPlatoon6);
+            var phaseTerritories = db.PhaseTerritories;
             return View(phaseTerritories.ToList());
         }
 
@@ -29,12 +31,13 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PhaseTerritory phaseTerritory = db.PhaseTerritories.Find(id);
+            PhaseTerritory phaseTerritory = db.PhaseTerritories.Include(x => x.TerritoryBattlePhase).SingleOrDefault(x => x.Id == id);
             if (phaseTerritory == null)
             {
                 return HttpNotFound();
             }
-            return View(phaseTerritory);
+            PhaseTerritoryModel model = Mapper.Map<PhaseTerritory, PhaseTerritoryModel>(phaseTerritory);
+            return View(model);
         }
 
         // GET: PhaseTerritories/Create
@@ -64,12 +67,6 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.TerritoryPlatoon1_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon1_Id);
-            ViewBag.TerritoryPlatoon2_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon2_Id);
-            ViewBag.TerritoryPlatoon3_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon3_Id);
-            ViewBag.TerritoryPlatoon4_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon4_Id);
-            ViewBag.TerritoryPlatoon5_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon5_Id);
-            ViewBag.TerritoryPlatoon6_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon6_Id);
             return View(phaseTerritory);
         }
 
@@ -85,12 +82,7 @@ namespace SWGOH.Web.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.TerritoryPlatoon1_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon1_Id);
-            ViewBag.TerritoryPlatoon2_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon2_Id);
-            ViewBag.TerritoryPlatoon3_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon3_Id);
-            ViewBag.TerritoryPlatoon4_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon4_Id);
-            ViewBag.TerritoryPlatoon5_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon5_Id);
-            ViewBag.TerritoryPlatoon6_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon6_Id);
+
             return View(phaseTerritory);
         }
 
@@ -107,12 +99,7 @@ namespace SWGOH.Web.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.TerritoryPlatoon1_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon1_Id);
-            ViewBag.TerritoryPlatoon2_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon2_Id);
-            ViewBag.TerritoryPlatoon3_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon3_Id);
-            ViewBag.TerritoryPlatoon4_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon4_Id);
-            ViewBag.TerritoryPlatoon5_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon5_Id);
-            ViewBag.TerritoryPlatoon6_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id", phaseTerritory.TerritoryPlatoon6_Id);
+
             return View(phaseTerritory);
         }
 

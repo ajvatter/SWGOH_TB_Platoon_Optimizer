@@ -49,8 +49,11 @@
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.5.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.5.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="AutoMapper, Version=6.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.5.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.5.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
@@ -194,11 +197,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AutoMapperProfiles\PhaseTerritoryMappingProfile.cs" />
+    <Compile Include="AutoMapperProfiles\TerritoryBattleMappingProfile.cs" />
+    <Compile Include="AutoMapperProfiles\TerritoryBattlePhaseMappingProfile.cs" />
+    <Compile Include="AutoMapperProfiles\TerritoryPlatoonMappingProfile.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CharactersController.cs" />
     <Compile Include="Controllers\GuildsController.cs" />
@@ -206,7 +214,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MemberCharactersController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
-    <Compile Include="Controllers\PhaseTerritories1Controller.cs" />
     <Compile Include="Controllers\PhaseTerritoriesController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
     <Compile Include="Controllers\TerritoryBattlesController.cs" />
@@ -248,6 +255,42 @@
     <Compile Include="Migrations\201709110208291_AddTbRelation.Designer.cs">
       <DependentUpon>201709110208291_AddTbRelation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709112229191_changes.cs" />
+    <Compile Include="Migrations\201709112229191_changes.Designer.cs">
+      <DependentUpon>201709112229191_changes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709112240567_MoreChanges.cs" />
+    <Compile Include="Migrations\201709112240567_MoreChanges.Designer.cs">
+      <DependentUpon>201709112240567_MoreChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709112243593_EvenMoreChanges.cs" />
+    <Compile Include="Migrations\201709112243593_EvenMoreChanges.Designer.cs">
+      <DependentUpon>201709112243593_EvenMoreChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709112332573_Rewrite.cs" />
+    <Compile Include="Migrations\201709112332573_Rewrite.Designer.cs">
+      <DependentUpon>201709112332573_Rewrite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709112352415_RewriteFixes.cs" />
+    <Compile Include="Migrations\201709112352415_RewriteFixes.Designer.cs">
+      <DependentUpon>201709112352415_RewriteFixes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709122322161_AddPltPositionToPltChar.cs" />
+    <Compile Include="Migrations\201709122322161_AddPltPositionToPltChar.Designer.cs">
+      <DependentUpon>201709122322161_AddPltPositionToPltChar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709130218596_MadeIdsNullableOnPltChar.cs" />
+    <Compile Include="Migrations\201709130218596_MadeIdsNullableOnPltChar.Designer.cs">
+      <DependentUpon>201709130218596_MadeIdsNullableOnPltChar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709131105442_test.cs" />
+    <Compile Include="Migrations\201709131105442_test.Designer.cs">
+      <DependentUpon>201709131105442_test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709131114006_test2.cs" />
+    <Compile Include="Migrations\201709131114006_test2.Designer.cs">
+      <DependentUpon>201709131114006_test2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -265,6 +308,11 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CharCount.cs" />
     <Compile Include="ViewModels\MembersWithCharacter.cs" />
+    <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
+    <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
+    <Compile Include="ViewModels\TerritoryBattleModel.cs" />
+    <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
+    <Compile Include="ViewModels\TerritoryPlatoonModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -1080,6 +1128,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709110208291_AddTbRelation.resx">
       <DependentUpon>201709110208291_AddTbRelation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709112229191_changes.resx">
+      <DependentUpon>201709112229191_changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709112240567_MoreChanges.resx">
+      <DependentUpon>201709112240567_MoreChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709112243593_EvenMoreChanges.resx">
+      <DependentUpon>201709112243593_EvenMoreChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709112332573_Rewrite.resx">
+      <DependentUpon>201709112332573_Rewrite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709112352415_RewriteFixes.resx">
+      <DependentUpon>201709112352415_RewriteFixes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709122322161_AddPltPositionToPltChar.resx">
+      <DependentUpon>201709122322161_AddPltPositionToPltChar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709130218596_MadeIdsNullableOnPltChar.resx">
+      <DependentUpon>201709130218596_MadeIdsNullableOnPltChar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709131105442_test.resx">
+      <DependentUpon>201709131105442_test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709131114006_test2.resx">
+      <DependentUpon>201709131114006_test2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

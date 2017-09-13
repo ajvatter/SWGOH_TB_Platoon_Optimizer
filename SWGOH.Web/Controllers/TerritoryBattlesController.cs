@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.Models;
+using SWGOH.Web.ViewModels;
+using AutoMapper;
 
 namespace SWGOH.Web.Controllers
 {
@@ -20,8 +22,9 @@ namespace SWGOH.Web.Controllers
         // GET: TerritoryBattles
         public ActionResult Index(Guid id)
         {
-            var territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).Include(t => t.Guild).Include(t => t.Phase1).Include(t => t.Phase2).Include(t => t.Phase3).Include(t => t.Phase4).Include(t => t.Phase5).Include(t => t.Phase6);
-            return View(territoryBattles.ToList());
+            List<TerritoryBattle> territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).ToList();
+            List<TerritoryBattleModel> model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleModel>>(territoryBattles);
+            return View(model);
         }
 
         // GET: TerritoryBattles/Details/5
@@ -31,12 +34,14 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TerritoryBattle territoryBattle = db.TerritoryBattles.Find(id);
+            TerritoryBattle territoryBattle = db.TerritoryBattles.Include(x => x.TerritoryBattlePhases).SingleOrDefault(y => y.Id == id);
             if (territoryBattle == null)
             {
                 return HttpNotFound();
             }
-            return View(territoryBattle);
+
+            TerritoryBattleModel model = Mapper.Map<TerritoryBattle, TerritoryBattleModel>(territoryBattle);
+            return View(model);
         }
 
         // GET: TerritoryBattles/Create
@@ -63,163 +68,6590 @@ namespace SWGOH.Web.Controllers
         {
             territoryBattle.Id = Guid.NewGuid();
 
-            territoryBattle.Phase1 = new TerritoryBattlePhase()
+            List<TerritoryBattlePhase> territoryBattlePhases = new List<TerritoryBattlePhase>()
             {
-                Id = Guid.NewGuid(),
-                RequiredStars = 2,
-                HasSecondTerritory = false,
-                Territory1 = new PhaseTerritory()
+                new TerritoryBattlePhase()
                 {
                     Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
+                    HasSecondTerritory = false,
+                    RequiredStars = 2,
+                    Phase = 1,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                },
+                new TerritoryBattlePhase()
+                {
+                    Id = Guid.NewGuid(),
+                    HasSecondTerritory = true,
+                    RequiredStars = 3,
+                    Phase = 2,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                },
+                new TerritoryBattlePhase()
+                {
+                    Id = Guid.NewGuid(),
+                    HasSecondTerritory = true,
+                    RequiredStars = 3,
+                    Phase = 3,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                },
+                new TerritoryBattlePhase()
+                {
+                    Id = Guid.NewGuid(),
+                    HasSecondTerritory = true,
+                    RequiredStars = 5,
+                    Phase = 4,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                },
+                new TerritoryBattlePhase()
+                {
+                    Id = Guid.NewGuid(),
+                    HasSecondTerritory = true,
+                    RequiredStars = 6,
+                    Phase = 5,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                },
+                new TerritoryBattlePhase()
+                {
+                    Id = Guid.NewGuid(),
+                    HasSecondTerritory = true,
+                    RequiredStars = 7,
+                    Phase = 6,
+                    TerritoryBattle_Id = territoryBattle.Id,
+                }
+            };
+            List<PhaseTerritory> phaseTerritories = new List<PhaseTerritory>()
+            {
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 1).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 1).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Bottom",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Bottom",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Bottom",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Bottom",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Middle",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()
+                },
+                new PhaseTerritory()
+                {
+                    Id = Guid.NewGuid(),
+                    PhaseLocation = "Bottom",
+                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault().Id,
+                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()
                 },
             };
+            List<TerritoryPlatoon> territoryPlatoons = new List<TerritoryPlatoon>()
+            {
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 1).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 2).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 3).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 4).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 5).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 1,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 2,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 3,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 4,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 5,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+                new TerritoryPlatoon()
+                {
+                    Id = Guid.NewGuid(),
+                    PlatoonNumber = 6,
+                    PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id,
+                    PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Bottom" && x.TerritoryBattlePhase.Phase == 6).FirstOrDefault()
+                },
+            };
+            List<PlatoonCharacter> platoonCharacters = new List<PlatoonCharacter>();
 
-            territoryBattle.Phase2 = new TerritoryBattlePhase()
+            foreach (var platoon in territoryPlatoons)
             {
-                Id = Guid.NewGuid(),
-                RequiredStars = 3,
-                HasSecondTerritory = true,
-                Territory1 = new PhaseTerritory()
+                List<PlatoonCharacter> platoonCharactersAdd = new List<PlatoonCharacter>()
                 {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-                Territory2 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-            };
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 1, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 2, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 3, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 4, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 5, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 6, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 7, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 8, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 9, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 10, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 11, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 12, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 13, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 14, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                    new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 15, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
+                };
+                platoonCharacters.AddRange(platoonCharactersAdd);
+            }
+            //List<PlatoonCharacter> platoonCharacters = new List<PlatoonCharacter>()
+            //{
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 1,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 2,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 3,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 4,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 5,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 6,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 7,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 8,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 9,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 10,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 11,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 12,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 13,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 14,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //    new PlatoonCharacter()
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        PlatoonPosition = 15,
+            //        TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //    },
+            //                 new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                 new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                 new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                 new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                 new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 1).FirstOrDefault().Id
+            //                },
 
-            territoryBattle.Phase3 = new TerritoryBattlePhase()
-            {
-                Id = Guid.NewGuid(),
-                RequiredStars = 4,
-                HasSecondTerritory = true,
-                Territory1 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-                Territory2 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-            };
-
-            territoryBattle.Phase4 = new TerritoryBattlePhase()
-            {
-                Id = Guid.NewGuid(),
-                RequiredStars = 5,
-                HasSecondTerritory = true,
-                Territory1 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-                Territory2 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-            };
-
-            territoryBattle.Phase5 = new TerritoryBattlePhase()
-            {
-                Id = Guid.NewGuid(),
-                RequiredStars = 6,
-                HasSecondTerritory = true,
-                Territory1 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-                Territory2 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-            };
-
-            territoryBattle.Phase6 = new TerritoryBattlePhase()
-            {
-                Id = Guid.NewGuid(),
-                RequiredStars = 7,
-                HasSecondTerritory = true,
-                Territory1 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-                Territory2 = new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    TerritoryPlatoon1 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon2 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon3 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon4 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon5 = new TerritoryPlatoon() { Id = Guid.NewGuid() },
-                    TerritoryPlatoon6 = new TerritoryPlatoon() { Id = Guid.NewGuid() }
-                },
-            };
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 2).FirstOrDefault().Id
+            //                },
+            //};
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 3).FirstOrDefault().Id
+            //                },
+            //                #endregion
+            //                #region Phase 4 Platoons
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 4).FirstOrDefault().Id
+            //                },
+            //                #endregion
+            //                #region Phase 5 Platoons
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 5).FirstOrDefault().Id
+            //                },
+            //                #endregion
+            //                #region Phase 6 Platoons
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 1 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 2 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 3 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 4 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 5 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Middle" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 1,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 2,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 3,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 4,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 5,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 6,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 7,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 8,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 9,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 10,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 11,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 12,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 13,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 14,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //                new PlatoonCharacter()
+            //                {
+            //                    Id = Guid.NewGuid(),
+            //                    PlatoonPosition = 15,
+            //                    TerritoryPlatoon_Id = territoryPlatoons.Where(x => x.PlatoonNumber == 6 && x.PhaseTerritory.PhaseLocation == "Bottom" && x.PhaseTerritory.TerritoryBattlePhase.Phase == 6).FirstOrDefault().Id
+            //                },
+            //#endregion
+            //            };
 
             if (ModelState.IsValid)
             {
-                territoryBattle.Id = Guid.NewGuid();
+                //territoryBattle.Id = Guid.NewGuid();
                 db.TerritoryBattles.Add(territoryBattle);
                 db.SaveChanges();
+                db.BulkInsert(territoryBattlePhases);
+                db.BulkInsert(phaseTerritories);
+                db.BulkInsert(territoryPlatoons);
+                db.BulkInsert(platoonCharacters);
+                //db.TerritoryPlatoons.Add(territoryPlatoons.FirstOrDefault());
+                //db.SaveChanges();
                 return RedirectToAction("Details", new { id = territoryBattle.Id });
             }
 
@@ -240,12 +6672,6 @@ namespace SWGOH.Web.Controllers
                 return HttpNotFound();
             }
             ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", territoryBattle.Guild_Id);
-            ViewBag.Phase1_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase1_Id);
-            ViewBag.Phase2_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase2_Id);
-            ViewBag.Phase3_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase3_Id);
-            ViewBag.Phase4_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase4_Id);
-            ViewBag.Phase5_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase5_Id);
-            ViewBag.Phase6_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase6_Id);
             return View(territoryBattle);
         }
 
@@ -264,12 +6690,7 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.Guild_Id = new SelectList(db.Guilds, "Id", "Name", territoryBattle.Guild_Id);
-            ViewBag.Phase1_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase1_Id);
-            ViewBag.Phase2_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase2_Id);
-            ViewBag.Phase3_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase3_Id);
-            ViewBag.Phase4_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase4_Id);
-            ViewBag.Phase5_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase5_Id);
-            ViewBag.Phase6_Id = new SelectList(db.TerritoryBattlePhases, "Id", "Id", territoryBattle.Phase6_Id);
+
             return View(territoryBattle);
         }
 

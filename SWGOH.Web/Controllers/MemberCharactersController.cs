@@ -9,12 +9,14 @@ using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.ViewModels;
+using SWGOH.Web.Models;
 
 namespace SWGOH.Web.Controllers
 {
     public class MemberCharactersController : Controller
     {
         private SwgohDb db = new SwgohDb();
+        private ApplicationDbContext userDb = new ApplicationDbContext();
 
         // GET: MemberCharacters
         public ActionResult Index(Guid id)
@@ -154,8 +156,9 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult MembersWithCharacter(Guid id)
         {
+            var guildId = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
             var character = db.Characters.Where(x => x.Id == id).FirstOrDefault();
-            var membersCharacters = db.MemberCharacters.Where(x => x.Character_Id == character.Id).OrderBy(x => x.Member.Name);
+            var membersCharacters = db.MemberCharacters.Where(x => x.Character_Id == character.Id && x.Member.Guild_Id == guildId).OrderBy(x => x.Member.Name);
 
             MembersWithCharacter membersWithCharacter = new MembersWithCharacter() { Character = character, MembersCharacters = new List<MemberCharacter>() };
 

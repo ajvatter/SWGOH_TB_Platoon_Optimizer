@@ -1,4 +1,4 @@
-﻿@model SWGOH.Entities.PhaseTerritory
+﻿@model SWGOH.Web.ViewModels.PhaseTerritoryModel
 
 @{
     ViewBag.Title = "Details";
@@ -10,33 +10,33 @@
 <div>
     <div class="col-md-12">
         <h3>Platoon 1</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon1_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon1_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon1.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon1.Id })
     </div>
     <div class="col-md-12">
         <h3>Platoon 2</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon2_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon2_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon2.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon2.Id })
     </div>
     <div class="col-md-12">
         <h3>Platoon 3</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon3_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon3_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon3.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon3.Id })
     </div>
     <div class="col-md-12">
         <h3>Platoon 4</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon4_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon4_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon4.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon4.Id })
     </div>
     <div class="col-md-12">
         <h3>Platoon 5</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon5_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon5_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon5.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon5.Id })
     </div>
     <div class="col-md-12">
         <h3>Platoon 6</h3>
-        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon6_Id }, new { })
-        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon6_Id })
+        @Html.ActionLink("Edit", "Edit", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon6.Id }, new { })
+        @Html.Action("Details", "TerritoryPlatoons", new { id = Model.TerritoryPlatoon6.Id })
     </div>
     <div>
         @Html.DisplayNameFor(model => model.TotalPointsEarned)

@@ -26,9 +26,12 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#members" role="tab">Members</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#territoryBattles" role="tab">Territory Battles</a>
-            </li>
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#territoryBattles" role="tab">Territory Battles</a>
+                </li>
+            }
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="charCounts" role="tabpanel">

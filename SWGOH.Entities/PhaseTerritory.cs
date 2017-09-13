@@ -15,39 +15,48 @@ namespace SWGOH.Entities
 
         public int? TotalPointsEarned { get; set; }
 
-        public Guid? TerritoryPlatoon1_Id { get; set; }
+        public string PhaseLocation{ get; set; }
 
-        [ForeignKey("TerritoryPlatoon1_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon1 { get; set; }
+        public virtual ICollection<TerritoryPlatoon> TerritoryPlatoons { get; set; }
 
-        public Guid? TerritoryPlatoon2_Id { get; set; }
+        public Guid TerritoryBattlePhase_Id { get; set; }
 
-        [ForeignKey("TerritoryPlatoon2_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon2 { get; set; }
+        [ForeignKey("TerritoryBattlePhase_Id")]
+        public virtual TerritoryBattlePhase TerritoryBattlePhase { get; set; }
 
-        public Guid? TerritoryPlatoon3_Id { get; set; }
+        //public Guid? TerritoryPlatoon1_Id { get; set; }
 
-        [ForeignKey("TerritoryPlatoon3_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon3 { get; set; }
+        //[ForeignKey("TerritoryPlatoon1_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon1 { get; set; }
 
-        public Guid? TerritoryPlatoon4_Id { get; set; }
+        //public Guid? TerritoryPlatoon2_Id { get; set; }
 
-        [ForeignKey("TerritoryPlatoon4_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon4 { get; set; }
+        //[ForeignKey("TerritoryPlatoon2_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon2 { get; set; }
 
-        public Guid? TerritoryPlatoon5_Id { get; set; }
+        //public Guid? TerritoryPlatoon3_Id { get; set; }
 
-        [ForeignKey("TerritoryPlatoon5_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon5 { get; set; }
+        //[ForeignKey("TerritoryPlatoon3_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon3 { get; set; }
 
-        public Guid? TerritoryPlatoon6_Id { get; set; }
+        //public Guid? TerritoryPlatoon4_Id { get; set; }
 
-        [ForeignKey("TerritoryPlatoon6_Id")]
-        public virtual TerritoryPlatoon TerritoryPlatoon6 { get; set; }
+        //[ForeignKey("TerritoryPlatoon4_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon4 { get; set; }
 
-        public Guid TerritoryBattle_Id { get; set; }
+        //public Guid? TerritoryPlatoon5_Id { get; set; }
 
-        [ForeignKey("TerritoryBattle_Id")]
-        public virtual TerritoryBattle TerritoryBattle { get; set; }
+        //[ForeignKey("TerritoryPlatoon5_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon5 { get; set; }
+
+        //public Guid? TerritoryPlatoon6_Id { get; set; }
+
+        //[ForeignKey("TerritoryPlatoon6_Id")]
+        //public virtual TerritoryPlatoon TerritoryPlatoon6 { get; set; }
+
+        //public Guid? TerritoryBattle_Id { get; set; }
+
+        //[ForeignKey("TerritoryBattle_Id")]
+        //public virtual TerritoryBattle TerritoryBattle { get; set; }
     }
 }
