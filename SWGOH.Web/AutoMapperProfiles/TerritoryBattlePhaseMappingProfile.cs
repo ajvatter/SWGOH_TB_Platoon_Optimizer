@@ -14,7 +14,7 @@ namespace SWGOH.Web.AutoMapperProfiles
         {
             CreateMap<TerritoryBattlePhase, TerritoryBattlePhaseModel>()
                 .ForMember(dest => dest.Territory1, mo => mo.MapFrom(src => src.PhaseTerritories.Where(x => x.PhaseLocation == "Middle").FirstOrDefault()))
-                .ForMember(dest => dest.Territory2, mo => mo.MapFrom(src => src.PhaseTerritories.Where(x => x.PhaseLocation == "Middle").FirstOrDefault()));               
+                .ForMember(dest => dest.Territory2, mo => mo.MapFrom(src => src.PhaseTerritories.Where(x => x.PhaseLocation == "Bottom").FirstOrDefault()));               
         }
     
     }
