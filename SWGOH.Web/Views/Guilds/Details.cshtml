@@ -26,7 +26,7 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#members" role="tab">Members</a>
             </li>
-            @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Officers"))
             {
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#territoryBattles" role="tab">Territory Battles</a>

@@ -78,23 +78,24 @@ namespace SWGOH.Web.Controllers
             }
             TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
 
-            ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character1.Character_Id);
-            ViewBag.Character2_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character2.Character_Id);
-            ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character3.Character_Id);
-            ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character4.Character_Id);
-            ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character5.Character_Id);
-            ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character6.Character_Id);
-            ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character7.Character_Id);
-            ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character8.Character_Id);
-            ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character9.Character_Id);
-            ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character10.Character_Id);
-            ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character11.Character_Id);
-            ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character12.Character_Id);
-            ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character13.Character_Id);
-            ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character14.Character_Id);
-            ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character15.Character_Id);            
+            model.Items = db.Characters.OrderBy(x => x.DisplayName);
+            //ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character1.Character_Id);
+            //ViewBag.Character2.Character_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character2.Character_Id);
+            //ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character3.Character_Id);
+            //ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character4.Character_Id);
+            //ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character5.Character_Id);
+            //ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character6.Character_Id);
+            //ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character7.Character_Id);
+            //ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character8.Character_Id);
+            //ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character9.Character_Id);
+            //ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character10.Character_Id);
+            //ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character11.Character_Id);
+            //ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character12.Character_Id);
+            //ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character13.Character_Id);
+            //ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character14.Character_Id);
+            //ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character15.Character_Id);            
 
-            return View(territoryPlatoon);
+            return View(model);
         }
 
         // POST: TerritoryPlatoons/Edit/5
@@ -102,16 +103,69 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(TerritoryPlatoon territoryPlatoon)
+        public ActionResult Edit(TerritoryPlatoonModel territoryPlatoonModel)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(territoryPlatoon).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == territoryPlatoonModel.Id);
+
+                List<PlatoonCharacter> pcUpdate = new List<PlatoonCharacter>();
+
+                var character1 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id ==  territoryPlatoonModel.Character1.Id).FirstOrDefault();
+                var character2 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character2.Id).FirstOrDefault();
+                var character3 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character3.Id).FirstOrDefault();
+                var character4 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character4.Id).FirstOrDefault();
+                var character5 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character5.Id).FirstOrDefault();
+                var character6 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character6.Id).FirstOrDefault();
+                var character7 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character7.Id).FirstOrDefault();
+                var character8 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character8.Id).FirstOrDefault();
+                var character9 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character9.Id).FirstOrDefault();
+                var character10 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character10.Id).FirstOrDefault();
+                var character11 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character11.Id).FirstOrDefault();
+                var character12 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character12.Id).FirstOrDefault();
+                var character13 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character13.Id).FirstOrDefault();
+                var character14 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character14.Id).FirstOrDefault();
+                var character15 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character15.Id).FirstOrDefault();
+                character1 = territoryPlatoonModel.Character1;
+                character2 = territoryPlatoonModel.Character2;
+                character3 = territoryPlatoonModel.Character3;
+                character4 = territoryPlatoonModel.Character4;
+                character5 = territoryPlatoonModel.Character5;
+                character6 = territoryPlatoonModel.Character6;
+                character7 = territoryPlatoonModel.Character7;
+                character8 = territoryPlatoonModel.Character8;
+                character9 = territoryPlatoonModel.Character9;
+                character10 = territoryPlatoonModel.Character10;
+                character11 = territoryPlatoonModel.Character11;
+                character12 = territoryPlatoonModel.Character12;
+                character13 = territoryPlatoonModel.Character13;
+                character14 = territoryPlatoonModel.Character14;
+                character15 = territoryPlatoonModel.Character15;
+                pcUpdate.Add(character1);
+                pcUpdate.Add(character2);
+                pcUpdate.Add(character3);
+                pcUpdate.Add(character4);
+                pcUpdate.Add(character5);
+                pcUpdate.Add(character6);
+                pcUpdate.Add(character7);
+                pcUpdate.Add(character8);
+                pcUpdate.Add(character9);
+                pcUpdate.Add(character10);
+                pcUpdate.Add(character11);
+                pcUpdate.Add(character12);
+                pcUpdate.Add(character13);
+                pcUpdate.Add(character14);
+                pcUpdate.Add(character15);
+                db.BulkUpdate(pcUpdate);
+
+                //db.Entry(character1).CurrentValues.SetValues(territoryPlatoonModel.Character1);
+
+                //db.Entry(territoryPlatoon).State = EntityState.Modified;
+                //db.SaveChanges();
+                return RedirectToAction("Details", "TerritoryBattlePhases", new { id = territoryPlatoon.PhaseTerritory.TerritoryBattlePhase.Id });
             }
 
-            return View(territoryPlatoon);
+            return View(territoryPlatoonModel);
         }
 
         // GET: TerritoryPlatoons/Delete/5
