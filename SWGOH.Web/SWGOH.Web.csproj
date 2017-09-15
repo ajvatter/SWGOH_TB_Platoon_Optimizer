@@ -215,6 +215,7 @@
     <Compile Include="Controllers\MemberCharactersController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PhaseTerritoriesController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
     <Compile Include="Controllers\TerritoryBattlesController.cs" />
     <Compile Include="Controllers\TerritoryPlatoonsController.cs" />
@@ -291,6 +292,10 @@
     <Compile Include="Migrations\201709131114006_test2.Designer.cs">
       <DependentUpon>201709131114006_test2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709142340215_AddIsClosedToPlatoon.cs" />
+    <Compile Include="Migrations\201709142340215_AddIsClosedToPlatoon.Designer.cs">
+      <DependentUpon>201709142340215_AddIsClosedToPlatoon.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -310,6 +315,7 @@
     <Compile Include="ViewModels\MembersWithCharacter.cs" />
     <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
+    <Compile Include="ViewModels\PlatoonAssignmentsByCharacter.cs" />
     <Compile Include="ViewModels\TerritoryBattleModel.cs" />
     <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
     <Compile Include="ViewModels\TerritoryPlatoonModel.cs" />
@@ -1091,6 +1097,7 @@
     <Content Include="Views\PhaseTerritories1\Details.cshtml" />
     <Content Include="Views\PhaseTerritories1\Edit.cshtml" />
     <Content Include="Views\PhaseTerritories1\Index.cshtml" />
+    <Content Include="Views\Reports\PlatoonAssignmentsByCharacter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1155,6 +1162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709131114006_test2.resx">
       <DependentUpon>201709131114006_test2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709142340215_AddIsClosedToPlatoon.resx">
+      <DependentUpon>201709142340215_AddIsClosedToPlatoon.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

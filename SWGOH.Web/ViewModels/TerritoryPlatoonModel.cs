@@ -12,6 +12,8 @@ namespace SWGOH.Web.ViewModels
 
         public int PlatoonNumber { get; set; }
 
+        public bool IsClosed { get; set; }
+
         public PlatoonCharacter Character1 { get; set; }
 
         public PlatoonCharacter Character2 { get; set; }

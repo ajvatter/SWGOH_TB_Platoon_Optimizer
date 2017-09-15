@@ -78,22 +78,7 @@ namespace SWGOH.Web.Controllers
             }
             TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
 
-            model.Items = db.Characters.OrderBy(x => x.DisplayName);
-            //ViewBag.Character1_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character1.Character_Id);
-            //ViewBag.Character2.Character_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character2.Character_Id);
-            //ViewBag.Character3_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character3.Character_Id);
-            //ViewBag.Character4_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character4.Character_Id);
-            //ViewBag.Character5_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character5.Character_Id);
-            //ViewBag.Character6_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character6.Character_Id);
-            //ViewBag.Character7_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character7.Character_Id);
-            //ViewBag.Character8_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character8.Character_Id);
-            //ViewBag.Character9_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character9.Character_Id);
-            //ViewBag.Character10_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character10.Character_Id);
-            //ViewBag.Character11_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character11.Character_Id);
-            //ViewBag.Character12_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character12.Character_Id);
-            //ViewBag.Character13_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character13.Character_Id);
-            //ViewBag.Character14_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character14.Character_Id);
-            //ViewBag.Character15_Id = new SelectList(db.Characters.OrderBy(x => x.DisplayName), "Id", "DisplayName", model.Character15.Character_Id);            
+            model.Items = db.Characters.OrderBy(x => x.DisplayName);           
 
             return View(model);
         }
@@ -108,6 +93,10 @@ namespace SWGOH.Web.Controllers
             if (ModelState.IsValid)
             {
                 TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == territoryPlatoonModel.Id);
+                //territoryPlatoon.IsClosed = territoryPlatoonModel.IsClosed;
+
+                //db.Entry(territoryPlatoon).State = EntityState.Modified;
+                //db.SaveChanges();
 
                 List<PlatoonCharacter> pcUpdate = new List<PlatoonCharacter>();
 
@@ -157,11 +146,7 @@ namespace SWGOH.Web.Controllers
                 pcUpdate.Add(character14);
                 pcUpdate.Add(character15);
                 db.BulkUpdate(pcUpdate);
-
-                //db.Entry(character1).CurrentValues.SetValues(territoryPlatoonModel.Character1);
-
-                //db.Entry(territoryPlatoon).State = EntityState.Modified;
-                //db.SaveChanges();
+               
                 return RedirectToAction("Details", "TerritoryBattlePhases", new { id = territoryPlatoon.PhaseTerritory.TerritoryBattlePhase.Id });
             }
 
@@ -192,6 +177,17 @@ namespace SWGOH.Web.Controllers
             db.TerritoryPlatoons.Remove(territoryPlatoon);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult ClosePlatoon(Guid id)
+        {
+            TerritoryPlatoon platoon = db.TerritoryPlatoons.Find(id);
+            platoon.IsClosed = true;
+
+            db.Entry(platoon).State = EntityState.Modified;
+            db.SaveChanges();
+            
+            return RedirectToAction("Details", "TerritoryBattlePhases", new { id = platoon.PhaseTerritory.TerritoryBattlePhase.Id });
         }
 
         protected override void Dispose(bool disposing)

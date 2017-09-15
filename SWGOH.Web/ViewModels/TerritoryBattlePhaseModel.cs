@@ -18,5 +18,7 @@ namespace SWGOH.Web.ViewModels
         public PhaseTerritoryModel Territory1 { get; set; }
 
         public PhaseTerritoryModel Territory2 { get; set; }
+
+        public Guid? TerritoryBattle_Id { get; set; }
     }
 }

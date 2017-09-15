@@ -1,0 +1,42 @@
+﻿@model IEnumerable<SWGOH.Web.ViewModels.PlatoonAssignmentsByCharacter>
+
+@{
+    ViewBag.Title = "RequiredCharactersByCharacter";
+}
+
+<h2>Platoon Assignments By Character</h2>
+
+<table class="table table-bordered table-sm">
+    <tr>
+        <th class="col-md-1">
+            Character
+        </th>
+        <th class="col-md-1">
+            Needed
+        </th>
+        <th class="col-md-1">
+            Have
+        </th>
+        <th class="col-md-2">
+            Assignments
+        </th>
+    </tr>
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>
+                @item.CharacterName
+            </td>
+            <td>
+                @item.NeededCount
+            </td>
+            <td>
+                @item.HaveCount
+            </td>
+            <td>
+                @Html.Raw(item.AssignedMembers)
+            </td>
+        </tr>
+    }
+</table>
+

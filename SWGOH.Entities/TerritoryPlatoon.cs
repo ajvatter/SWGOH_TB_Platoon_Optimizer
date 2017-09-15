@@ -21,6 +21,8 @@ namespace SWGOH.Entities
 
         [ForeignKey("PhaseTerritory_Id")]
         public virtual PhaseTerritory PhaseTerritory { get; set; }
+        
+        public bool IsClosed { get; set; }
 
         //public Guid? Character1_Id { get; set; }
 

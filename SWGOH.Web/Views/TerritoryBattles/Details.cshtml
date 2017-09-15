@@ -4,137 +4,35 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h3>TerritoryBattle @Model.StartDate</h3>
+<div class="row">
+    <div>
+        <hr />
+        <div class="form-group">
+            @Html.ActionLink("Phase 1", "Details", "TerritoryBattlePhases", new { id = Model.Phase1.Id }, new { @class = "btn btn-default" }) |
 
-<div>
-    <h4>TerritoryBattle</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Guild.Name)
-        </dt>
+            @Html.ActionLink("Phase 2", "Edit", "TerritoryBattlePhases", new { id = Model.Phase2.Id }, new { @class = "btn btn-default" }) |
 
-        <dd>
-            @Html.DisplayFor(model => model.Guild.Name)
-        </dd>
+            @Html.ActionLink("Phase 3", "Details", "TerritoryBattlePhases", new { id = Model.Phase3.Id }, new { @class = "btn btn-default" }) |
 
-        <dt>
-            Phase 1:
-        </dt>
+            @Html.ActionLink("Phase 4", "Details", "TerritoryBattlePhases", new { id = Model.Phase4.Id }, new { @class = "btn btn-default" }) |
 
-        <dd>
-            @if (Model.Phase1.Id == null)
-            {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-            }
-            else
-            {
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase1.Id }, new { })
-            }
-        </dd>
+            @Html.ActionLink("Phase 5", "Details", "TerritoryBattlePhases", new { id = Model.Phase5.Id }, new { @class = "btn btn-default" }) |
 
-        <dt>
-            Phase 2:
-        </dt>
+            @Html.ActionLink("Phase 6", "Details", "TerritoryBattlePhases", new { id = Model.Phase6.Id }, new { @class = "btn btn-default" })
+        </div>
 
-        <dd>
-           @if (Model.Phase2.Id == null)
-            {
-            @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-           }
-           else
-           {
-            @Html.ActionLink("View Phase", "Edit", "TerritoryBattlePhases", new { id = Model.Phase2.Id }, new { })
-           }
-        </dd>
-
-        <dt>
-            Phase 3:
-        </dt>
-
-        <dd>
-            @if (Model.Phase3.Id == null)
-            {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-            }
-            else
-            {
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase3.Id }, new { })
-            }
-        </dd>
-
-        <dt>
-            Phase 4:
-        </dt>
-
-        <dd>
-            @if (Model.Phase4.Id == null)
-            {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-            }
-            else
-            {
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase4.Id }, new { })
-            }
-        </dd>
-
-        <dt>
-            Phase 5:
-        </dt>
-
-        <dd>
-            @if (Model.Phase5.Id == null)
-            {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-            }
-            else
-            {
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase5.Id }, new { })
-            }
-        </dd>
-
-        <dt>
-            Phase 6:
-        </dt>
-
-        <dd>
-            @if (Model.Phase6.Id == null)
-            {
-                @Html.ActionLink("Begin Phase", "Create", "TerritoryBattlePhases", new { territoryCount = 1 }, new { })
-            }
-            else
-            {
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase6.Id }, new { })
-            }
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-
-        <dt>
+        @*<div class="form-group">
             @Html.DisplayNameFor(model => model.TotalStars)
-        </dt>
-
-        <dd>
             @Html.DisplayFor(model => model.TotalStars)
-        </dd>
-
-        <dt>
+        </div>
+        <div class="form-group">
             @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-
-        <dd>
             @Html.DisplayFor(model => model.IsActive)
-        </dd>
-
-    </dl>
+        </div>*@
+    </div>
+    <div class="form-group">
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) |
+        @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-default" })
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
