@@ -156,7 +156,7 @@ namespace SWGOH.Web.Controllers
                     charCount.Add(newCharCount);
                 }
 
-                HttpContext.Cache.Insert("CharCount" + id.ToString(), charCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0));
+                HttpContext.Cache.Insert("CharCount" + id.ToString(), charCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
 
             return View(charCount);

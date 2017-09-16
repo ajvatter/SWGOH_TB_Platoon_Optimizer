@@ -27,6 +27,40 @@ namespace SWGOH.Web.Controllers
             return View(db.Guilds.ToList().OrderBy(x => x.Name));
         }
 
+        public ActionResult AddGuild(string guildUrl)
+        {
+            HtmlWeb web = new HtmlWeb();
+            HtmlAgilityPack.HtmlDocument doc = web.Load(guildUrl);
+            string guildName = doc.DocumentNode.SelectNodes("html/body/div[3]/div[2]/div[2]/ul/li[1]/h1")[0].InnerHtml;
+
+            Regex regex = new Regex(@"<br>");
+            string[] guildNames = regex.Split(guildName);
+            guildName = guildNames[1];
+            guildName = guildName.Replace("\n", "");
+
+            Guild newGuild = new Guild();
+            if (db.Guilds.Where(x => x.Name == guildName).FirstOrDefault() == null)
+            {
+                 newGuild = new Guild()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = guildName,
+                    LastScrape = DateTime.Now.AddHours(-2),
+                    UrlExt = guildUrl
+                };
+                db.Guilds.Add(newGuild);
+                db.SaveChanges();
+            }
+            else
+            {
+                Guild guild = db.Guilds.Where(x => x.Name == guildName).FirstOrDefault();
+                UpdateRoster(guild.Id, guild);
+                return Json(new { message = "Guild Already Exists", value = guild.Id });
+            }
+            UpdateRoster(newGuild.Id, newGuild);
+            return Json(new { message = "Guild Added", value = newGuild.Name, text = newGuild.Id });
+        }
+
         // GET: Guilds/Details/5
         public ActionResult Details(Guid? id)
         {
@@ -160,6 +194,7 @@ namespace SWGOH.Web.Controllers
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
                 return RedirectToAction("Details", new { id = id });
             }
+
             if (User.IsInRole("Administrators"))
             {
                 guild.LastScrape = DateTime.Now;
@@ -168,7 +203,13 @@ namespace SWGOH.Web.Controllers
             }
 
             HttpContext.Cache.Remove("CharCount" + id.ToString());
+            UpdateRoster(id, guild);
 
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        private void UpdateRoster(Guid id, Guild guild)
+        {
             IEnumerable<Character> characters = db.Characters.ToList();
             IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);
 
@@ -352,8 +393,6 @@ namespace SWGOH.Web.Controllers
             }
             db.BulkInsert(newMembers);
             db.BulkInsert(memberCharactersAdd);
-
-            return RedirectToAction("Details", new { id = id });
         }
     }
 }

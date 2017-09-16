@@ -19,7 +19,7 @@
         <th>
             Is Active
         </th>
-        @*<th>
+        <th>
             Phase 1
         </th>
         <th>
@@ -36,11 +36,11 @@
         </th>
         <th>
             Phase 6
-        </th>*@
-        <th>
+        </th>
+        @*<th>
             Stars Earned
         </th>
-        <th></th>
+        <th></th>*@
     </tr>
 
     @foreach (var item in Model)
@@ -49,43 +49,28 @@
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
-            @*<td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { })
+            <td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1.Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2_Id }, new { })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2.Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3_Id }, new { })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3.Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4_Id }, new { })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4.Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase5_Id }, new { })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase5.Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { })
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalStars)
-            </td>
-            <td>
-                @if (User.IsInRole("Officers"))
-                {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <span> | </span>
-                }
-
-                @Html.ActionLink("Details", "Details", new { id = item.Id })
-                @if (User.IsInRole("Administrators"))
-                {
-                   <span> | </span> @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                }
-
-            </td>
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6.Id }, new { @class = "btn btn-default" })
+            </td>            
         </tr>
     }
 

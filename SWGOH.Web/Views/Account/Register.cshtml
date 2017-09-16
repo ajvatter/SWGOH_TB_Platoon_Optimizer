@@ -27,9 +27,17 @@
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Guilds, new { @class = "col-md-2 control-label" })
-        <div class=" col-md-10">
+        <div class="col-md-10">
             @Html.DropDownListFor(x => x.Guild_Id, new SelectList(Model.Guilds, "ID", "Name"), "-- Select Guild --", new { @class = "form-control" })
         </div>
+        <div><p>Can't find your guild? Add it <a onclick="showAddGuild()">here</a></p></div>
+    </div>
+    <div id="addGuild" style="display: none">
+        <div class="form-group">
+            <label class="col-md-2 control-label">Guild Url</label>
+            <input class="form-control col-md-10" id="guildUrl" type="text" />
+        </div>
+        <button class="btn btn-default" type="button" onclick="addGuild()">Add Guild</button>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
@@ -53,3 +61,31 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+    function addGuild() {
+
+        var guildUrl = document.getElementById('guildUrl').value;
+        var link = '@Url.Action("AddGuild", "Guilds", new { })';
+
+        $.ajax({
+            type: "POST",
+            url: link,
+            data: { guildUrl: guildUrl },
+            success: function (data) {
+                if (data.message === 'Guild Added') {
+                    $('#Guild_Id').append($('<option>', {
+                        value: data.value,
+                        text: data.text
+                    }));                    
+                }
+                document.getElementById('Guild_Id').value = data.value;
+                document.getElementById('addGuild').style.display = 'none';
+                alert(data.message);
+            }
+        });        
+    }
+
+    function showAddGuild() {
+        document.getElementById('addGuild').style.display = 'block';
+    }
+</script>
