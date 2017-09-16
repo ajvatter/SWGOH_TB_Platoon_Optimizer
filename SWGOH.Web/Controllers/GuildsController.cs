@@ -165,7 +165,9 @@ namespace SWGOH.Web.Controllers
                 guild.LastScrape = DateTime.Now;
                 db.Entry(guild).State = EntityState.Modified;
                 db.SaveChanges();
-            }            
+            }
+
+            HttpContext.Cache.Remove("CharCount" + id.ToString());
 
             IEnumerable<Character> characters = db.Characters.ToList();
             IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);

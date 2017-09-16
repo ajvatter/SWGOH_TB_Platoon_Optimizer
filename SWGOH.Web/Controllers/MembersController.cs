@@ -132,6 +132,9 @@ namespace SWGOH.Web.Controllers
             Member member = db.Members.Find(id);
             db.Members.Remove(member);
             db.SaveChanges();
+
+            HttpContext.Cache.Remove("CharCount" + member.Guild_Id.ToString());
+
             return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
         }
 

@@ -10,6 +10,7 @@ using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.ViewModels;
 using SWGOH.Web.Models;
+using System.Web.Caching;
 
 namespace SWGOH.Web.Controllers
 {
@@ -134,21 +135,28 @@ namespace SWGOH.Web.Controllers
         {
             var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
-            List<CharCount> charCount = new List<CharCount>();
+            //List<CharCount> charCount = new List<CharCount>();
 
-            foreach (var character in characters)
+            List<CharCount> charCount = (List<CharCount>)HttpContext.Cache.Get("CharCount" + id.ToString());
+            if (charCount == null)
             {
-                CharCount newCharCount = new CharCount();
-                newCharCount.Id = character.Id;
-                newCharCount.Name = character.DisplayName;
-                newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
-                newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
-                newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();
-                newCharCount.FourStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 4).Count();
-                newCharCount.FiveStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 5).Count();
-                newCharCount.SixStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 6).Count();
-                newCharCount.SevenStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 7).Count();
-                charCount.Add(newCharCount);
+                charCount = new List<CharCount>();
+                foreach (var character in characters)
+                {
+                    CharCount newCharCount = new CharCount();
+                    newCharCount.Id = character.Id;
+                    newCharCount.Name = character.DisplayName;
+                    newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
+                    newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
+                    newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();
+                    newCharCount.FourStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 4).Count();
+                    newCharCount.FiveStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 5).Count();
+                    newCharCount.SixStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 6).Count();
+                    newCharCount.SevenStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 7).Count();
+                    charCount.Add(newCharCount);
+                }
+
+                HttpContext.Cache.Insert("CharCount" + id.ToString(), charCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0));
             }
 
             return View(charCount);
