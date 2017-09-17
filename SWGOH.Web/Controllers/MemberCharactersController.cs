@@ -43,6 +43,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.Character_Id = new SelectList(db.Characters, "Id", "Name");
@@ -55,6 +56,7 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "Id,Level,Gear,Stars,Power,Character_Id,Member_Id")] MemberCharacter memberCharacter)
         {
             if (ModelState.IsValid)
@@ -71,6 +73,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Edit/5
+        [Authorize]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -91,6 +94,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Level,Gear,Stars,Power,Character_Id,Member_Id")] MemberCharacter memberCharacter)
         {
@@ -106,6 +110,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Delete/5
+        [Authorize]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -123,6 +128,7 @@ namespace SWGOH.Web.Controllers
         // POST: MemberCharacters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(Guid id)
         {
             MemberCharacter memberCharacter = db.MemberCharacters.Find(id);
@@ -131,6 +137,7 @@ namespace SWGOH.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public ActionResult CharCount(Guid id)
         {
             var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
@@ -162,6 +169,7 @@ namespace SWGOH.Web.Controllers
             return View(charCount);
         }
 
+        [Authorize]
         public ActionResult MembersWithCharacter(Guid id)
         {
             var guildId = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;

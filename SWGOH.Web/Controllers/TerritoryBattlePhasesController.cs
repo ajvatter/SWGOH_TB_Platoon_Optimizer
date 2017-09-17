@@ -25,6 +25,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattlePhases/Details/5
+        [Authorize]
         public ActionResult Details(Guid? id)
         {
             if (id == null)
@@ -41,6 +42,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattlePhases/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.Territory1_Id = new SelectList(db.PhaseTerritories, "Id", "Id");
@@ -52,6 +54,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,RequiredStars,Territory1_Id,HasSecondTerritory,Territory2_Id")] TerritoryBattlePhase territoryBattlePhase)
         {
@@ -67,6 +70,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattlePhases/Edit/5
+        [Authorize]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -86,6 +90,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,RequiredStars,Territory1_Id,HasSecondTerritory,Territory2_Id")] TerritoryBattlePhase territoryBattlePhase)
         {
@@ -100,6 +105,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattlePhases/Delete/5
+        [Authorize]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -115,6 +121,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // POST: TerritoryBattlePhases/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)

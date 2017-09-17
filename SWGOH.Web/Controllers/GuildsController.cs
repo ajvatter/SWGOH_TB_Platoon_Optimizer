@@ -41,7 +41,7 @@ namespace SWGOH.Web.Controllers
             Guild newGuild = new Guild();
             if (db.Guilds.Where(x => x.Name == guildName).FirstOrDefault() == null)
             {
-                 newGuild = new Guild()
+                newGuild = new Guild()
                 {
                     Id = Guid.NewGuid(),
                     Name = guildName,
@@ -58,10 +58,11 @@ namespace SWGOH.Web.Controllers
                 return Json(new { message = "Guild Already Exists", value = guild.Id });
             }
             UpdateRoster(newGuild.Id, newGuild);
-            return Json(new { message = "Guild Added", value = newGuild.Name, text = newGuild.Id });
+            return Json(new { message = "Guild Added", value = newGuild.Id, text = newGuild.Name });
         }
 
         // GET: Guilds/Details/5
+        [Authorize]
         public ActionResult Details(Guid? id)
         {
             if (id == null)
@@ -85,6 +86,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Guilds/Create
+        [Authorize(Roles = "Administrators")]
         public ActionResult Create()
         {
             return View();
@@ -96,6 +98,7 @@ namespace SWGOH.Web.Controllers
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult Create(Guild guild)
         {
             if (ModelState.IsValid)
@@ -111,6 +114,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Guilds/Edit/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -131,6 +135,7 @@ namespace SWGOH.Web.Controllers
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult Edit(Guild guild)
         {
             if (ModelState.IsValid)
@@ -143,6 +148,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Guilds/Delete/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -160,6 +166,7 @@ namespace SWGOH.Web.Controllers
         // POST: Guilds/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             Guild guild = db.Guilds.Find(id);
@@ -285,10 +292,18 @@ namespace SWGOH.Web.Controllers
 
                 List<MemberCharacter> memberCharacters = db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
 
+                string charHtml;
+
                 HtmlWeb webMember = new HtmlWeb();
                 HtmlAgilityPack.HtmlDocument docMember = web.Load(href);
-                string charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]")[0].InnerHtml;
-
+                try
+                {
+                    charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]")[0].InnerHtml;
+                }
+                catch
+                {
+                    continue;
+                }
                 string[] character = regexChar.Split(charHtml);
                 List<string> listCharacters = character.ToList();
 

@@ -1,15 +1,12 @@
 ﻿@model IEnumerable<SWGOH.Entities.Member>
 
-@{ 
+@{
     Layout = null;
 }
 <table class="table">
     <tr>
         <th>
             NAME
-        </th>
-        <th>
-            SWGOH.GG URL
         </th>
         <th>ACTIONS</th>
     </tr>
@@ -18,18 +15,15 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DisplayName)
+                <a href="@item.UrlExt">@Html.DisplayFor(modelItem => item.DisplayName)</a>
             </td>
             <td>
-                <a href="@item.UrlExt">@Html.DisplayFor(modelItem => item.UrlExt)</a>
-            </td>
-            <td>                
-                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                @Html.ActionLink("Characters", "Details", new { id = item.Id })
                 @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
                 {
                     <span>| </span>@Html.ActionLink("Edit", "Edit", new { id = item.Id })                    <span>|</span>
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                }                
+                }
             </td>
         </tr>
     }

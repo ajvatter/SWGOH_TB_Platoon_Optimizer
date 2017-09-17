@@ -50,6 +50,9 @@ namespace SWGOH.Web.Controllers
                     }).ToList();
             }
 
+            ViewBag.PhaseNumber = phase.Phase;
+            ViewBag.Id = phase.Id;
+
             return View(model);
         }
     }

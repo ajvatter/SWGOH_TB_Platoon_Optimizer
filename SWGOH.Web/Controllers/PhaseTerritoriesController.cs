@@ -25,6 +25,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: PhaseTerritories/Details/5
+        [Authorize]
         public ActionResult Details(Guid? id)
         {
             if (id == null)
@@ -41,6 +42,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: PhaseTerritories/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.TerritoryPlatoon1_Id = new SelectList(db.TerritoryPlatoons, "Id", "Id");
@@ -56,6 +58,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PhaseTerritory phaseTerritory)
         {
@@ -71,6 +74,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: PhaseTerritories/Edit/5
+        [Authorize]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -90,6 +94,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,TotalPointsEarned,TerritoryPlatoon1_Id,TerritoryPlatoon2_Id,TerritoryPlatoon3_Id,TerritoryPlatoon4_Id,TerritoryPlatoon5_Id,TerritoryPlatoon6_Id")] PhaseTerritory phaseTerritory)
         {
@@ -104,6 +109,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: PhaseTerritories/Delete/5
+        [Authorize]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -121,6 +127,7 @@ namespace SWGOH.Web.Controllers
         // POST: PhaseTerritories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(Guid id)
         {
             PhaseTerritory phaseTerritory = db.PhaseTerritories.Find(id);

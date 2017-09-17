@@ -16,6 +16,7 @@ namespace SWGOH.Web.Controllers
         private SwgohDb db = new SwgohDb();
 
         // GET: Characters
+        [Authorize(Roles = "Administrators")]
         public ActionResult Index()
         {
             return View(db.Characters.ToList().OrderBy(x => x.Name));
@@ -47,6 +48,7 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult Create([Bind(Include = "Id,Name,UrlExt")] Character character)
         {
             if (ModelState.IsValid)
@@ -61,6 +63,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Characters/Edit/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -81,6 +84,7 @@ namespace SWGOH.Web.Controllers
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult Edit(Character character)
         {
             if (ModelState.IsValid)
@@ -93,6 +97,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Characters/Delete/5
+        [Authorize(Roles = "Administrators")]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -110,6 +115,7 @@ namespace SWGOH.Web.Controllers
         // POST: Characters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             Character character = db.Characters.Find(id);

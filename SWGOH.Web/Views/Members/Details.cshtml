@@ -4,51 +4,13 @@
     ViewBag.Title = "Details";
 }
 
-@{
-    Layout = null;
-}
-
 <div>
-    <h4>Member</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Guild.Name)
-        </dt>
+    <h2><a href="@Model.UrlExt">@Model.DisplayName</a></h2>
+    <p>
+        @Html.ActionLink("My Guild", "Details", "Guilds")
+    </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.Guild.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DisplayName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DisplayName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UrlExt)
-        </dt>
-
-        <dd>
-            <a href="@Model.UrlExt">@Html.DisplayFor(model => model.UrlExt)</a>
-        </dd>
-    </dl>
     <div>
         @Html.Action("Index", "MemberCharacters", new { id = Model.Id })
     </div>
 </div>
-<p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Back to List", "Index")
-</p>
