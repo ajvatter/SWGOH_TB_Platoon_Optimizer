@@ -108,7 +108,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: Members/Delete/5
-        [Authorize(Roles = "Administrators")]
+        [Authorize(Roles = "Officers")]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -126,12 +126,15 @@ namespace SWGOH.Web.Controllers
         // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrators")]
+        [Authorize(Roles = "Officers")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             Member member = db.Members.Find(id);
             db.Members.Remove(member);
             db.SaveChanges();
+
+            HttpContext.Cache.Remove("CharCount" + member.Guild_Id.ToString());
+
             return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
         }
 

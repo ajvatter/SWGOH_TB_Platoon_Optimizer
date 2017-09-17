@@ -8,14 +8,7 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Password Requirements</h4>
-    <ul>
-        <li>1 Uppercase Letter</li>
-        <li>1 Lowercase Letter</li>
-        <li>1 Number</li>
-        <li>1 Special Character (!@@#$%^&*)</li>
-        <li>At least 6 Characters</li>
-    </ul>
+
     <hr />
     <h4 class="text-danger">@ViewBag.Error</h4>
     @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -27,29 +20,84 @@
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Guilds, new { @class = "col-md-2 control-label" })
-        <div class=" col-md-10">
+        <div class="col-md-10">
             @Html.DropDownListFor(x => x.Guild_Id, new SelectList(Model.Guilds, "ID", "Name"), "-- Select Guild --", new { @class = "form-control" })
+            <div><p>Can't find your guild? Add it <a onclick="showAddGuild()">here</a></p></div>
+        </div>
+    </div>
+    <div id="addGuild" style="display: none">
+        <div class="form-group">
+            <label class="col-md-2 control-label">Guild Url</label>
+            <div class="col-md-10">
+                <input class="form-control" id="guildUrl" type="text" />
+                <p>*Copy the url from your guilds page in SWGOH.gg exactly as it appears in your browser.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button class="btn btn-default" type="button" onclick="addGuild()">Add Guild</button>
+                <button class="btn btn-default" type="button" onclick="cancelAdd()">Cancel</button>
+            </div>
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            <h6>Password Requirements</h6>
+            <p>1 Uppercase Letter<br/>
+            1 Lowercase Letter<br/>
+            1 Number<br/>
+            1 Special Character (!@@#$%^&*)<br/>
+            At least 6 Characters</p>
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Register" />
+            </div>
         </div>
-    </div>
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+    function addGuild() {
+
+        var guildUrl = document.getElementById('guildUrl').value;
+        var link = '@Url.Action("AddGuild", "Guilds", new { })';
+
+        $.ajax({
+            type: "POST",
+            url: link,
+            data: { guildUrl: guildUrl },
+            success: function (data) {
+                if (data.message === 'Guild Added') {
+                    $('#Guild_Id').append($('<option>', {
+                        value: data.value,
+                        text: data.text
+                    }));
+                }
+                document.getElementById('Guild_Id').value = data.value;
+                document.getElementById('addGuild').style.display = 'none';
+                alert(data.message);
+            }
+        });
+    }
+
+    function showAddGuild() {
+        document.getElementById('addGuild').style.display = 'block';
+    }
+
+    function cancelAdd() {
+        document.getElementById('addGuild').style.display = 'none';
+    }
+</script>

@@ -146,7 +146,7 @@ namespace SWGOH.Web.Controllers
 
             RegisterViewModel vm = new RegisterViewModel();
 
-            vm.Guilds = db.Guilds.ToList();
+            vm.Guilds = db.Guilds.OrderBy(x => x.Name).ToList();
             return View(vm);
         }
 

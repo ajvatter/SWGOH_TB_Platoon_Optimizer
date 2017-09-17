@@ -4,7 +4,12 @@
     ViewBag.Title = "RequiredCharactersByCharacter";
 }
 
-<h2>Platoon Assignments By Character</h2>
+<h2>Platoon Assignments By Character - Phase @ViewBag.PhaseNumber</h2>
+
+@if (User.Identity.IsAuthenticated)
+{
+    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { })
+}
 
 <table class="table table-bordered table-sm">
     <tr>
@@ -21,7 +26,7 @@
             Assignments
         </th>
     </tr>
-    @foreach(var item in Model)
+    @foreach (var item in Model)
     {
         <tr>
             <td>

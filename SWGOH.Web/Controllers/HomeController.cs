@@ -10,9 +10,7 @@ namespace SWGOH.Web.Controllers
     public class HomeController : Controller
     {
         public ActionResult Index()
-        {
-            var dbConn = new SwgohDb();
-            ViewBag.Connection =  dbConn.Database.Connection.ConnectionString;
+        {            
             return View();
         }
 

@@ -10,6 +10,7 @@ using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.ViewModels;
 using SWGOH.Web.Models;
+using System.Web.Caching;
 
 namespace SWGOH.Web.Controllers
 {
@@ -42,6 +43,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.Character_Id = new SelectList(db.Characters, "Id", "Name");
@@ -54,6 +56,7 @@ namespace SWGOH.Web.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "Id,Level,Gear,Stars,Power,Character_Id,Member_Id")] MemberCharacter memberCharacter)
         {
             if (ModelState.IsValid)
@@ -70,6 +73,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Edit/5
+        [Authorize]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -90,6 +94,7 @@ namespace SWGOH.Web.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Level,Gear,Stars,Power,Character_Id,Member_Id")] MemberCharacter memberCharacter)
         {
@@ -105,6 +110,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: MemberCharacters/Delete/5
+        [Authorize]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -122,6 +128,7 @@ namespace SWGOH.Web.Controllers
         // POST: MemberCharacters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(Guid id)
         {
             MemberCharacter memberCharacter = db.MemberCharacters.Find(id);
@@ -130,30 +137,39 @@ namespace SWGOH.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public ActionResult CharCount(Guid id)
         {
             var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
-            List<CharCount> charCount = new List<CharCount>();
+            //List<CharCount> charCount = new List<CharCount>();
 
-            foreach (var character in characters)
+            List<CharCount> charCount = (List<CharCount>)HttpContext.Cache.Get("CharCount" + id.ToString());
+            if (charCount == null)
             {
-                CharCount newCharCount = new CharCount();
-                newCharCount.Id = character.Id;
-                newCharCount.Name = character.DisplayName;
-                newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
-                newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
-                newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();
-                newCharCount.FourStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 4).Count();
-                newCharCount.FiveStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 5).Count();
-                newCharCount.SixStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 6).Count();
-                newCharCount.SevenStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 7).Count();
-                charCount.Add(newCharCount);
+                charCount = new List<CharCount>();
+                foreach (var character in characters)
+                {
+                    CharCount newCharCount = new CharCount();
+                    newCharCount.Id = character.Id;
+                    newCharCount.Name = character.DisplayName;
+                    newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
+                    newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
+                    newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();
+                    newCharCount.FourStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 4).Count();
+                    newCharCount.FiveStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 5).Count();
+                    newCharCount.SixStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 6).Count();
+                    newCharCount.SevenStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 7).Count();
+                    charCount.Add(newCharCount);
+                }
+
+                HttpContext.Cache.Insert("CharCount" + id.ToString(), charCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
 
             return View(charCount);
         }
 
+        [Authorize]
         public ActionResult MembersWithCharacter(Guid id)
         {
             var guildId = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
