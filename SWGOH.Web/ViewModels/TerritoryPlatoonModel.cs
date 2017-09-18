@@ -12,6 +12,10 @@ namespace SWGOH.Web.ViewModels
 
         public int PlatoonNumber { get; set; }
 
+        public TerritoryBattlePhase Phase { get; set; }
+
+        public PhaseTerritory Territory { get; set; }
+
         public bool IsClosed { get; set; }
 
         public PlatoonCharacter Character1 { get; set; }

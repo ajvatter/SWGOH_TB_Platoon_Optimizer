@@ -1,5 +1,6 @@
 ﻿using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
+using SWGOH.Web.Models;
 using System;
 using System.Data;
 using System.Data.Entity;
@@ -12,6 +13,7 @@ namespace SWGOH.Web.Controllers
     public class MembersController : Controller
     {
         private SwgohDb db = new SwgohDb();
+        private ApplicationDbContext userDb = new ApplicationDbContext();
 
         // GET: Members
         //public ActionResult Index()
@@ -21,8 +23,19 @@ namespace SWGOH.Web.Controllers
         //}
 
         [Authorize]
-        public ActionResult Index(Guid id)
+        public ActionResult Index(Guid? id)
         {
+            if (id == null)
+            {
+                if (User.Identity.Name != null && User.Identity.Name != "")
+                {
+                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
             var members = db.Members.Where(m => m.Guild.Id == id).OrderBy(x => x.Name);
             return View(members.ToList());
         }

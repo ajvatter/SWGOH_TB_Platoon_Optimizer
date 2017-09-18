@@ -13,6 +13,8 @@ namespace SWGOH.Web.AutoMapperProfiles
         public TerritoryPlatoonMappingProfile()
         {
             CreateMap<TerritoryPlatoon, TerritoryPlatoonModel>()
+                .ForMember(dest => dest.Phase, mo => mo.MapFrom(src => src.PhaseTerritory.TerritoryBattlePhase))
+                .ForMember(dest => dest.Territory, mo => mo.MapFrom(src => src.PhaseTerritory))
                 .ForMember(dest => dest.Character1, mo => mo.MapFrom(src => src.PlatoonCharacters.Where(x => x.PlatoonPosition == 1).FirstOrDefault()))
                 .ForMember(dest => dest.Character2, mo => mo.MapFrom(src => src.PlatoonCharacters.Where(x => x.PlatoonPosition == 2).FirstOrDefault()))
                 .ForMember(dest => dest.Character3, mo => mo.MapFrom(src => src.PlatoonCharacters.Where(x => x.PlatoonPosition == 3).FirstOrDefault()))

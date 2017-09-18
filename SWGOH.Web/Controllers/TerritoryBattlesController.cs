@@ -21,9 +21,21 @@ namespace SWGOH.Web.Controllers
 
         // GET: TerritoryBattles
         [Authorize]
-        public ActionResult Index(Guid id)
+        public ActionResult Index(Guid? id)
         {
-            List<TerritoryBattle> territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).ToList();
+            if (id == null)
+            {
+                if (User.Identity.Name != null && User.Identity.Name != "")
+                {
+                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            
+            List<TerritoryBattle> territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).OrderByDescending(x => x.StartDate).ToList();
             List<TerritoryBattleModel> model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleModel>>(territoryBattles);
             return View(model);
         }
@@ -707,7 +719,7 @@ namespace SWGOH.Web.Controllers
                 db.BulkInsert(platoonCharacters);
                 //db.TerritoryPlatoons.Add(territoryPlatoons.FirstOrDefault());
                 //db.SaveChanges();
-                return RedirectToAction("Details", "Guilds", new { });
+                return RedirectToAction("Index", "TerritoryBattles", new { });
             }
 
             return View(territoryBattle);

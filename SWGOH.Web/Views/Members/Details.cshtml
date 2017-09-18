@@ -6,9 +6,9 @@
 
 <div>
     <h2><a href="@Model.UrlExt">@Model.DisplayName</a></h2>
-    <p>
+    @*<p>
         @Html.ActionLink("My Guild", "Details", "Guilds")
-    </p>
+    </p>*@
 
     <div>
         @Html.Action("Index", "MemberCharacters", new { id = Model.Id })

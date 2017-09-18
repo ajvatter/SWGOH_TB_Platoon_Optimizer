@@ -16,7 +16,7 @@ namespace SWGOH.Web
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Guilds", action = "Details", id = UrlParameter.Optional }
+                defaults: new { controller = "Members", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

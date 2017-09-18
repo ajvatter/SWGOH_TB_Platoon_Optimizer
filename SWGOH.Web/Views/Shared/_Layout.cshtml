@@ -1,6 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106621198-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments) };
+        gtag('js', new Date());
+
+        gtag('config', 'UA-106621198-1');
+    </script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - AWC Platoon Optimizer</title>
@@ -15,46 +25,112 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
     <script src="https://use.fontawesome.com/8bd7970907.js"></script>
 
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div>
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
-                    @*<span class="icon-bar"></span>
-                        <span class="icon-bar"></span>*@
                 </button>
-                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand  navbar-left" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if (Request.IsAuthenticated)
-                    {
+                @*<ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        @if (Request.IsAuthenticated)
+                        {
 
-                        <li>@Html.ActionLink("My Guild", "Details", "Guilds")</li>
-                    }
-                    @*<li>@Html.ActionLink("Characters", "Index", "Characters")</li>
+                            <li>@Html.ActionLink("My Guild", "Details", "Guilds")</li>
+                        }
+                        <li>@Html.ActionLink("Characters", "Index", "Characters")</li>
 
-                        <li>@Html.ActionLink("Guilds", "Index", "Guilds")</li>*@
-                </ul>
+                            <li>@Html.ActionLink("Guilds", "Index", "Guilds")</li>
+                    </ul>*@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - AWC Platoon Optimizer</p>
-        </footer>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+       @: <nav class="navbar navbar-inverse sidebar " role="navigation">
+            @:<div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    @Html.Action("GuildInfo", "Guilds", new { })
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                @:<div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                    @:<ul class="nav navbar-nav">
+                        @:<li id="membersNav"><a href="@Url.Action("Index", "Members")">Members<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>                        
+                        <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+                        <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tower"></span></a></li>
+
+                        if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                                <ul class="dropdown-menu forAnimate" role="menu">
+                                    <li><a href="@Url.Action("Index", "Characters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                                    <li><a href="@Url.Action("Index", "Guilds")">Guilds<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                                </ul>
+                            </li>
+                        }
+                    @:</ul>
+                @:</div>
+            @:</div>
+        @:</nav>
+    }
+    <div class="main">
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - AWC Platoon Optimizer</p>
+            </footer>
+        </div>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
+   
 </body>
 </html>
+<script type="text/javascript">
+        function htmlbodyHeightUpdate() {
+            var height3 = $(window).height()
+            var height1 = $('.nav').height() + 50
+            height2 = $('.main').height()
+            if (height2 > height3) {
+                $('html').height(Math.max(height1, height3, height2) + 10);
+                $('body').height(Math.max(height1, height3, height2) + 10);
+            }
+            else {
+                $('html').height(Math.max(height1, height3, height2));
+                $('body').height(Math.max(height1, height3, height2));
+            }
+
+        }
+        $(document).ready(function () {
+            htmlbodyHeightUpdate()
+            $(window).resize(function () {
+                htmlbodyHeightUpdate()
+            });
+            $(window).scroll(function () {
+                height2 = $('.main').height()
+                htmlbodyHeightUpdate()
+            });
+        });
+</script>
