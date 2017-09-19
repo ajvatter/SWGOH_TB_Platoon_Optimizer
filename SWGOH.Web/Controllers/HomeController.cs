@@ -1,8 +1,4 @@
 ﻿using SWGOH.Web.DataContexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SWGOH.Web.Controllers
@@ -10,7 +6,7 @@ namespace SWGOH.Web.Controllers
     public class HomeController : Controller
     {
         public ActionResult Index()
-        {            
+        {
             return View();
         }
 
@@ -27,6 +23,11 @@ namespace SWGOH.Web.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            return View();
+        }
+
+        public ActionResult PrivacyPolicy()
+        {
             return View();
         }
     }

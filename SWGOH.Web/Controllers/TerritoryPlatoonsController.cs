@@ -78,7 +78,7 @@ namespace SWGOH.Web.Controllers
             }
             TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
 
-            model.Items = db.Characters.OrderBy(x => x.DisplayName);           
+            model.Items = db.Characters.Where(x => x.Alignment == Alignment.LightSide).OrderBy(x => x.DisplayName);           
 
             return View(model);
         }

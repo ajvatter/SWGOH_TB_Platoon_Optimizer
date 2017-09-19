@@ -46,8 +46,20 @@ namespace SWGOH.Web.Controllers
                         CharacterName = dataRow.Field<string>("DisplayName"),
                         NeededCount = dataRow.Field<int>("NeedCount"),
                         HaveCount = dataRow.Field<int>("HaveCount"),
-                        AssignedMembers = dataRow.Field<string>("AssignedMembers").Replace(",", "<br/>")
+                        AssignedMembers = dataRow.Field<string>("AssignedMembers"),
+                        AssignedPlatoons = dataRow.Field<string>("Platoons")
                     }).ToList();
+                foreach (var assign in model)
+                {
+                    if (assign.AssignedMembers != null && assign.AssignedMembers != "")
+                    {
+                        assign.AssignedMembers = assign.AssignedMembers.Replace(",", "<br/>");
+                    }
+                    if (assign.AssignedPlatoons != null && assign.AssignedPlatoons != "")
+                    {
+                        assign.AssignedPlatoons = assign.AssignedPlatoons.Replace(",", "<br/>");
+                    }
+                }
             }
 
             ViewBag.PhaseNumber = phase.Phase;

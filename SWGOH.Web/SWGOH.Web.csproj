@@ -1101,6 +1101,7 @@
     <Content Include="Views\PhaseTerritories1\Index.cshtml" />
     <Content Include="Views\Reports\PlatoonAssignmentsByCharacter.cshtml" />
     <Content Include="Views\Guilds\_GuildInfo.cshtml" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
