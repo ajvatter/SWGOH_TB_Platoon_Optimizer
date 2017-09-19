@@ -4,21 +4,17 @@
     ViewBag.Title = "Index";
 }
 
-@{
-    Layout = null;
-}
-
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-default" })
 </p>
 <table class="table">
     <tr>
         <th>
             Start Date
         </th>
-        <th>
-            Is Active
-        </th>
+        @*<th>
+                Is Active
+            </th>*@
         <th>
             Phase 1
         </th>
@@ -38,9 +34,9 @@
             Phase 6
         </th>
         @*<th>
-            Stars Earned
-        </th>
-        <th></th>*@
+                Stars Earned
+            </th>
+            <th></th>*@
     </tr>
 
     @foreach (var item in Model)
@@ -50,9 +46,9 @@
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>*@
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1.Id }, new { @class = "btn btn-default" })
             </td>
@@ -70,8 +66,14 @@
             </td>
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6.Id }, new { @class = "btn btn-default" })
-            </td>            
+            </td>
         </tr>
     }
 
 </table>
+
+<script type="text/javascript">
+    $( document ).ready(function () {
+        document.getElementById('territoryBattlesNav').classList.add('active');
+    });
+</script>

@@ -138,8 +138,20 @@ namespace SWGOH.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult CharCount(Guid id)
+        public ActionResult CharCount(Guid? id)
         {
+            if (id == null)
+            {
+                if (User.Identity.Name != null && User.Identity.Name != "")
+                {
+                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
             var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
             //List<CharCount> charCount = new List<CharCount>();
@@ -153,6 +165,7 @@ namespace SWGOH.Web.Controllers
                     CharCount newCharCount = new CharCount();
                     newCharCount.Id = character.Id;
                     newCharCount.Name = character.DisplayName;
+                    newCharCount.Alignment = character.Alignment;
                     newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
                     newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
                     newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();

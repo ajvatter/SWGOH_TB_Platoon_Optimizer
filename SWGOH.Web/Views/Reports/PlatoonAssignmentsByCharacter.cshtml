@@ -8,9 +8,10 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { })
+    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { @class = "btn btn-default"})
 }
-
+<br />
+<br />
 <table class="table table-bordered table-sm">
     <tr>
         <th class="col-md-1">
@@ -23,7 +24,10 @@
             Have
         </th>
         <th class="col-md-2">
-            Assignments
+            Assigned Members
+        </th>
+        <th class="col-md-2">
+            Assigned Platoons
         </th>
     </tr>
     @foreach (var item in Model)
@@ -40,6 +44,9 @@
             </td>
             <td>
                 @Html.Raw(item.AssignedMembers)
+            </td>
+            <td>
+                @Html.Raw(item.AssignedPlatoons)
             </td>
         </tr>
     }

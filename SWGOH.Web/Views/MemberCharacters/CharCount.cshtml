@@ -1,65 +1,142 @@
 ﻿@model IEnumerable<SWGOH.Web.ViewModels.CharCount>
 
-@{
-    Layout = null;
-}
+<div>
+    <h5>* Characters higlighted in red signify that your guild has less than ten at seven stars.</h5>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item active">
+            <a class="nav-link active" data-toggle="tab" href="#lightside" role="tab">Lightside</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#darkside" role="tab">Darkside</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="lightside" role="tabpanel">
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        1 Star
+                    </th>
+                    <th>
+                        2 Star
+                    </th>
+                    <th>
+                        3 Star
+                    </th>
+                    <th>
+                        4 Star
+                    </th>
+                    <th>
+                        5 Star
+                    </th>
+                    <th>
+                        6 Star
+                    </th>
+                    <th>
+                        7 Star
+                    </th>
+                </tr>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            1 Star
-        </th>
-        <th>
-            2 Star
-        </th>
-        <th>
-            3 Star
-        </th>
-        <th>
-            4 Star
-        </th>
-        <th>
-            5 Star
-        </th>
-        <th>
-            6 Star
-        </th>
-        <th>
-            7 Star
-        </th>
-    </tr>
+                @foreach (var item in Model.Where(x => x.Alignment == SWGOH.Entities.Alignment.LightSide))
+                {
+                    <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
+                        <td>
+                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OneStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TwoStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ThreeStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FourStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FiveStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SixStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SevenStarCount)
+                        </td>
+                    </tr>
+                }
 
-    @foreach (var item in Model)
-    {
-        <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")" >
-            <td>
-                @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OneStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TwoStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThreeStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FourStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FiveStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SixStarCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SevenStarCount)
-            </td>
-        </tr>
-    }
+            </table>
+        </div>
+        <div class="tab-pane" id="darkside" role="tabpanel">
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        1 Star
+                    </th>
+                    <th>
+                        2 Star
+                    </th>
+                    <th>
+                        3 Star
+                    </th>
+                    <th>
+                        4 Star
+                    </th>
+                    <th>
+                        5 Star
+                    </th>
+                    <th>
+                        6 Star
+                    </th>
+                    <th>
+                        7 Star
+                    </th>
+                </tr>
 
-</table>
+                @foreach (var item in Model.Where(x => x.Alignment == SWGOH.Entities.Alignment.DarkSide))
+                {
+                    <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
+                        <td>
+                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OneStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TwoStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ThreeStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FourStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FiveStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SixStarCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SevenStarCount)
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $( document ).ready(function () {
+        document.getElementById('membersCharactersNav').classList.add('active');
+    });
+</script>

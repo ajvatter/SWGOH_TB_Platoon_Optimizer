@@ -1,0 +1,18 @@
+﻿@model SWGOH.Web.ViewModels.GuildInfoModel
+
+<div class="col-md-offset-1 col-md-10">
+    <h4>@Model.Name</h4>
+    <h6>Registered Members: @Model.MemberCount</h6>
+    <h6>Last Sync: @Model.LastScrape.ToString("MM/dd/yy hh:mm tt")</h6>
+    <p>*You can refresh your guild roster once an hour.</p>
+    @*<h4>Galactic Power: @Model.GlacticPower</h4>*@
+    @if (DateTime.Now < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
+    {
+        <button class="btn btn-primary disabled">Get Roster</button>        
+    }
+    else
+    {
+        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary" })        
+    }
+    <br /><br />    
+</div>

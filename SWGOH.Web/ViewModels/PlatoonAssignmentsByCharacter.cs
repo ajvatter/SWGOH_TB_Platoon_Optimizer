@@ -11,5 +11,6 @@ namespace SWGOH.Web.ViewModels
         public int NeededCount { get; set; }
         public int HaveCount { get; set; }
         public string AssignedMembers { get; set; }
+        public string AssignedPlatoons { get; set; }
     }
 }

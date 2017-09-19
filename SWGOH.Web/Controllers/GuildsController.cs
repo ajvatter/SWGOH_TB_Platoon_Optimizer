@@ -2,6 +2,7 @@
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.Models;
+using SWGOH.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -83,6 +84,24 @@ namespace SWGOH.Web.Controllers
             }
             guild.Members = db.Members.Where(x => x.Guild.Id == guild.Id).ToList();
             return View(guild);
+        }
+
+        [Authorize]
+        public PartialViewResult GuildInfo()
+        {
+
+            var id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+
+            Guild guild = db.Guilds.Find(id);
+
+            GuildInfoModel model = new GuildInfoModel()
+            {
+                Guild_Id = guild.Id,
+                Name = guild.Name,
+                LastScrape = guild.LastScrape,
+                MemberCount = db.Members.Where(x => x.Guild.Id == guild.Id).Count()
+            };
+            return PartialView("_GuildInfo", model);
         }
 
         // GET: Guilds/Create

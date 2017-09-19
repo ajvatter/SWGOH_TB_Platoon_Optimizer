@@ -312,6 +312,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CharCount.cs" />
+    <Compile Include="ViewModels\GuildInfoModel.cs" />
     <Compile Include="ViewModels\MembersWithCharacter.cs" />
     <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
@@ -944,6 +945,7 @@
     <Content Include="Scripts\kendo\2014.1.318\kendo.web.min.js" />
     <Content Include="Scripts\kendo\2014.1.318\kendo.window.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\override.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -1098,6 +1100,8 @@
     <Content Include="Views\PhaseTerritories1\Edit.cshtml" />
     <Content Include="Views\PhaseTerritories1\Index.cshtml" />
     <Content Include="Views\Reports\PlatoonAssignmentsByCharacter.cshtml" />
+    <Content Include="Views\Guilds\_GuildInfo.cshtml" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

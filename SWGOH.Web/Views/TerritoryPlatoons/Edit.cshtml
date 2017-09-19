@@ -4,15 +4,16 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<h2>Phase @Model.Phase.Phase - @Model.Territory.PhaseLocation Territory - Platoon @Model.PlatoonNumber Assignments</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase.Id }, new { @class = "btn btn-default" })
 
     <div class="form-horizontal">
-        <h4>TerritoryPlatoon</h4>
+        
         <hr />
 
         @Html.HiddenFor(x => x.IsClosed)
