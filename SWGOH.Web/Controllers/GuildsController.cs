@@ -231,7 +231,7 @@ namespace SWGOH.Web.Controllers
             HttpContext.Cache.Remove("CharCount" + id.ToString());
             UpdateRoster(id, guild);
 
-            return RedirectToAction("Details", new { id = id });
+            return RedirectToAction("Index", "Members", new { id = id });
         }
 
         private void UpdateRoster(Guid id, Guild guild)
