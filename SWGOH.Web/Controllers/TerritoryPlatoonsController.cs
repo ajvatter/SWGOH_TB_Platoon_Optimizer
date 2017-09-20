@@ -190,6 +190,74 @@ namespace SWGOH.Web.Controllers
             return RedirectToAction("Details", "TerritoryBattlePhases", new { id = platoon.PhaseTerritory.TerritoryBattlePhase.Id });
         }
 
+        public ActionResult CopyPlatoon(Guid id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == id);
+            if (territoryPlatoon == null)
+            {
+                return HttpNotFound();
+            }
+
+            var platoons = db.TerritoryPlatoons.Where(x => x.PhaseTerritory.TerritoryBattlePhase.TerritoryBattle_Id == territoryPlatoon.PhaseTerritory.TerritoryBattlePhase.TerritoryBattle_Id
+                                                                        && x.PhaseTerritory.TerritoryBattlePhase.Phase <= territoryPlatoon.PhaseTerritory.TerritoryBattlePhase.Phase)
+                                                                        .Select(s => new
+                                                                        {
+                                                                            Text = "Phase " + s.PhaseTerritory.TerritoryBattlePhase.Phase + " - " + s.PhaseTerritory.PhaseLocation + " - Platoon " + s.PlatoonNumber,
+                                                                            Value = s.Id
+                                                                        }).OrderBy(x => x.Text).AsEnumerable();
+
+            SelectList selectList = new SelectList(platoons, "Value", "Text");
+
+            PlatoonCopyModel model = new PlatoonCopyModel()
+            {
+                PlatoonOptions = selectList,
+                CopyToPlatoonId = id
+            };            
+
+            return PartialView("_CopyPlatoon", model);
+        }
+
+        // POST: TerritoryPlatoons/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CopyPlatoon(PlatoonCopyModel platoonCopyModel)
+        {
+            if (ModelState.IsValid)
+            {
+                TerritoryPlatoon territoryPlatoonFrom = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == platoonCopyModel.SelectedPlatoonId);
+                TerritoryPlatoon territoryPlatoonTo = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == platoonCopyModel.CopyToPlatoonId);
+
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 1).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 1).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 2).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 2).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 3).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 3).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 4).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 4).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 5).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 5).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 6).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 6).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 7).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 7).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 8).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 8).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 9).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 9).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 10).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 10).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 11).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 11).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 12).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 12).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 13).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 13).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 14).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 14).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 15).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 15).FirstOrDefault().Character_Id;
+
+                db.Entry(territoryPlatoonTo).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Edit", "TerritoryPlatoons", new { id = territoryPlatoonTo.Id });
+            }
+
+            return RedirectToAction("");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
