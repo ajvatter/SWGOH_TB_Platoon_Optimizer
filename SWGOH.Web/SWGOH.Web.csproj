@@ -214,8 +214,10 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MemberCharactersController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\MemberShipsController.cs" />
     <Compile Include="Controllers\PhaseTerritoriesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\ShipsController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
     <Compile Include="Controllers\TerritoryBattlesController.cs" />
     <Compile Include="Controllers\TerritoryPlatoonsController.cs" />
@@ -296,6 +298,10 @@
     <Compile Include="Migrations\201709142340215_AddIsClosedToPlatoon.Designer.cs">
       <DependentUpon>201709142340215_AddIsClosedToPlatoon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709200123019_ShipEntities.cs" />
+    <Compile Include="Migrations\201709200123019_ShipEntities.Designer.cs">
+      <DependentUpon>201709200123019_ShipEntities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -313,11 +319,13 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CharCount.cs" />
     <Compile Include="ViewModels\GuildInfoModel.cs" />
+    <Compile Include="ViewModels\MembersWithShip.cs" />
     <Compile Include="ViewModels\MembersWithCharacter.cs" />
     <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
     <Compile Include="ViewModels\PlatoonAssignmentsByCharacter.cs" />
     <Compile Include="ViewModels\PlatoonCopyModel.cs" />
+    <Compile Include="ViewModels\ShipCountModel.cs" />
     <Compile Include="ViewModels\TerritoryBattleModel.cs" />
     <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
     <Compile Include="ViewModels\TerritoryPlatoonModel.cs" />
@@ -1104,6 +1112,16 @@
     <Content Include="Views\Guilds\_GuildInfo.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
     <Content Include="Views\TerritoryPlatoons\_CopyPlatoon.cshtml" />
+    <Content Include="Views\Ships\Create.cshtml" />
+    <Content Include="Views\Ships\Delete.cshtml" />
+    <Content Include="Views\Ships\Details.cshtml" />
+    <Content Include="Views\Ships\Edit.cshtml" />
+    <Content Include="Views\Ships\Index.cshtml" />
+    <Content Include="Views\MemberShips\Create.cshtml" />
+    <Content Include="Views\MemberShips\Delete.cshtml" />
+    <Content Include="Views\MemberShips\Details.cshtml" />
+    <Content Include="Views\MemberShips\Edit.cshtml" />
+    <Content Include="Views\MemberShips\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1171,6 +1189,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709142340215_AddIsClosedToPlatoon.resx">
       <DependentUpon>201709142340215_AddIsClosedToPlatoon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709200123019_ShipEntities.resx">
+      <DependentUpon>201709200123019_ShipEntities.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

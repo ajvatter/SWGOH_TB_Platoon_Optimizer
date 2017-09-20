@@ -45,9 +45,11 @@
     <Compile Include="Guild.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="MemberCharacter.cs" />
+    <Compile Include="MemberShip.cs" />
     <Compile Include="PhaseTerritory.cs" />
     <Compile Include="PlatoonCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ship.cs" />
     <Compile Include="TerritoryBattle.cs" />
     <Compile Include="TerritoryBattlePhase.cs" />
     <Compile Include="TerritoryPlatoon.cs" />

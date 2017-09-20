@@ -198,6 +198,7 @@ namespace SWGOH.Web.Controllers
 
             return View(membersWithCharacter);
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

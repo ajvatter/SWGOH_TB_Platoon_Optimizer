@@ -23,5 +23,7 @@ namespace SWGOH.Web.DataContexts
         public DbSet<PhaseTerritory> PhaseTerritories { get; set; }
         public DbSet<TerritoryPlatoon> TerritoryPlatoons { get; set; }
         public DbSet<PlatoonCharacter> PlatoonCharacters { get; set; }
+        public DbSet<Ship> Ships { get; set; }
+        public DbSet<MemberShip> MemberShips { get; set; }
     }
 }
