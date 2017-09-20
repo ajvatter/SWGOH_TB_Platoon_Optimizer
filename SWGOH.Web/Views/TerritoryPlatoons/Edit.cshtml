@@ -6,7 +6,8 @@
 
 <h2>Phase @Model.Phase.Phase - @Model.Territory.PhaseLocation Territory - Platoon @Model.PlatoonNumber Assignments</h2>
 
-
+@Html.Action("CopyPlatoon", "TerritoryPlatoons", new { id = Model.Id })
+<br />
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

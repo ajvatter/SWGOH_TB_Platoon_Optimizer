@@ -317,6 +317,7 @@
     <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
     <Compile Include="ViewModels\PlatoonAssignmentsByCharacter.cs" />
+    <Compile Include="ViewModels\PlatoonCopyModel.cs" />
     <Compile Include="ViewModels\TerritoryBattleModel.cs" />
     <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
     <Compile Include="ViewModels\TerritoryPlatoonModel.cs" />
@@ -1102,6 +1103,7 @@
     <Content Include="Views\Reports\PlatoonAssignmentsByCharacter.cshtml" />
     <Content Include="Views\Guilds\_GuildInfo.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
+    <Content Include="Views\TerritoryPlatoons\_CopyPlatoon.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

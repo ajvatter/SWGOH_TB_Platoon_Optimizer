@@ -1,0 +1,19 @@
+﻿@model SWGOH.Web.ViewModels.PlatoonCopyModel
+
+@{
+    SelectList list = ViewBag.PlatoonSelectList;
+}
+
+@using (Html.BeginForm("CopyPlatoon","TerritoryPlatoons"))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.CopyToPlatoonId)
+    <div class="form form-inline">
+        <div class="form-group">
+            @Html.DropDownListFor(x => x.SelectedPlatoonId, Model.PlatoonOptions, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Copy Platoon From" class="btn btn-default" />
+        </div>
+    </div>
+}
