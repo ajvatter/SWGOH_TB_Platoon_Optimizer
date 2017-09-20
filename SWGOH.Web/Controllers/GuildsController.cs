@@ -285,7 +285,8 @@ namespace SWGOH.Web.Controllers
             {
                 Member guildMember = new Member();
                 string[] memberSplit = member.Split('"');
-                string href = "https://swgoh.gg" + memberSplit[1] + "collection/";
+                string charHref = "https://swgoh.gg" + memberSplit[1] + "collection/";
+                string shipHref = "https://swgoh.gg" + memberSplit[1] + "ships/";
                 string name = memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
 
                 //if (members.Any(x => x.UrlExt == href))
@@ -295,16 +296,16 @@ namespace SWGOH.Web.Controllers
                 //    continue;
                 //}
 
-                if (members.Any(x => x.UrlExt.Equals(href)))
+                if (members.Any(x => x.UrlExt.Equals(charHref)))
                 {
-                    guildMember = members.Where(x => x.UrlExt.Equals(href)).FirstOrDefault();
+                    guildMember = members.Where(x => x.UrlExt.Equals(charHref)).FirstOrDefault();
                 }
                 else
                 {
                     guildMember.Id = Guid.NewGuid();
                     guildMember.Name = name;
                     guildMember.DisplayName = HttpUtility.HtmlDecode(name);
-                    guildMember.UrlExt = href;
+                    guildMember.UrlExt = charHref;
                     guildMember.Guild_Id = guild.Id;
                     newMembers.Add(guildMember);
                 }
@@ -314,7 +315,7 @@ namespace SWGOH.Web.Controllers
                 string charHtml;
 
                 HtmlWeb webMember = new HtmlWeb();
-                HtmlAgilityPack.HtmlDocument docMember = web.Load(href);
+                HtmlAgilityPack.HtmlDocument docMember = web.Load(charHref);
                 try
                 {
                     charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]")[0].InnerHtml;
@@ -424,6 +425,51 @@ namespace SWGOH.Web.Controllers
                     }
                 }
                 db.BulkUpdate(memberCharacters);
+
+                List<MemberShip> memberShips = db.MemberShips.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
+
+                string shipHtml;
+
+                HtmlWeb webShip = new HtmlWeb();
+                HtmlAgilityPack.HtmlDocument docShip = web.Load(shipHref);
+                try
+                {
+                    shipHtml = docShip.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div")[0].InnerHtml;
+                }
+                catch
+                {
+                    continue;
+                }
+                string[] ship = regexChar.Split(shipHtml);
+                List<string> listShips = ship.ToList();
+
+                listShips.RemoveAll(x => x.Equals(""));
+                listShips.RemoveAll(x => x.Equals("<div class=\"row\">"));
+                listShips.RemoveAll(x => x.Equals("</a>"));
+                listShips.RemoveAll(x => x.Equals("</div>"));
+                listShips.RemoveAll(x => x.Equals("</span>"));
+                listShips.RemoveAll(x => x.Equals("<span class=\"collection-char-gp-label-value\">"));
+                listShips.RemoveAll(x => x.Equals("    \">"));
+                listShips.RemoveAll(x => x.Equals("    "));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-ship-primary\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-ship-main\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-ship collection-ship-light-side\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-ship collection-ship-dark-side\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"col-sm-6 col-md-6 col-lg-4\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"ship-portrait-full-frame\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"ship-portrait-full-frame-overlay\"></div>"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"ship-portrait-full-frame-image\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-ship-secondary\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-char-gp-progress\">"));
+                listShips.RemoveAll(x => x.Equals("<div class=\"collection-char-gp-label\">"));
+                listShips.RemoveAll(x => x.Equals("<span class=\"collection-char-gp-label-percent\">%</span>"));
+                listShips.RemoveAll(x => x.StartsWith("<div class=\"collection-ship-crew"));
+                listShips.RemoveAll(x => x.StartsWith("<div class=\"star star"));
+                listShips.RemoveAll(x => x.StartsWith("<div class=\"char-portrait"));
+
+                MemberShip newMemberShip = new MemberShip();
+                newMemberShip.Member_Id = guildMember.Id;
+                newMemberShip.Id = Guid.NewGuid();
             }
             db.BulkInsert(newMembers);
             db.BulkInsert(memberCharactersAdd);
