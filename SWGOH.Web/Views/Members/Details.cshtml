@@ -6,11 +6,25 @@
 
 <div>
     <h2><a href="@Model.UrlExt">@Model.DisplayName</a></h2>
-    @*<p>
-        @Html.ActionLink("My Guild", "Details", "Guilds")
-    </p>*@
 
-    <div>
-        @Html.Action("Index", "MemberCharacters", new { id = Model.Id })
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item active">
+            <a class="nav-link active" data-toggle="tab" href="#characters" role="tab">Characters</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#ships" role="tab">Ships</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="characters" role="tabpanel">
+            <div>
+                @Html.Action("Index", "MemberCharacters", new { id = Model.Id })
+            </div>
+        </div>
+        <div class="tab-pane" id="ships" role="tabpanel">
+            <div>
+                @Html.Action("Index", "MemberShips", new { id = Model.Id })
+            </div>
+        </div>
     </div>
 </div>

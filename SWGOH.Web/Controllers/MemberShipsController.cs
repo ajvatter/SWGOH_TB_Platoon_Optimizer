@@ -20,9 +20,9 @@ namespace SWGOH.Web.Controllers
         private ApplicationDbContext userDb = new ApplicationDbContext();
 
         // GET: MemberShips
-        public ActionResult Index()
+        public ActionResult Index(Guid id)
         {
-            var memberShips = db.MemberShips.Include(m => m.Member).Include(m => m.Ship);
+            var memberShips = db.MemberShips.Where(x => x.Member_Id == id).OrderBy(x => x.Ship.Name);
             return View(memberShips.ToList());
         }
 
@@ -149,7 +149,7 @@ namespace SWGOH.Web.Controllers
             var ships = db.Ships.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
             //List<CharCount> charCount = new List<CharCount>();
 
-            List<ShipCountModel> shipCount = (List<ShipCountModel>)HttpContext.Cache.Get("CharCount" + id.ToString());
+            List<ShipCountModel> shipCount = (List<ShipCountModel>)HttpContext.Cache.Get("ShipCount" + id.ToString());
             if (shipCount == null)
             {
                 shipCount = new List<ShipCountModel>();
@@ -169,7 +169,7 @@ namespace SWGOH.Web.Controllers
                     shipCount.Add(newShipCount);
                 }
 
-                HttpContext.Cache.Insert("CharCount" + id.ToString(), shipCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                HttpContext.Cache.Insert("ShipCount" + id.ToString(), shipCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
 
             return View(shipCount);

@@ -16,6 +16,8 @@ namespace SWGOH.Entities
         [StringLength(255)]
         public string UrlExt { get; set; }
         public Guid Guild_Id { get; set; }
+        public int ShipPower { get; set; }
+        public int CharacterPower { get; set; }
 
         [ForeignKey("Guild_Id")]
         public virtual Guild Guild { get; set; }

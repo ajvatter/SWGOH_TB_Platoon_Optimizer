@@ -237,6 +237,7 @@ namespace SWGOH.Web.Controllers
         private void UpdateRoster(Guid id, Guild guild)
         {
             IEnumerable<Character> characters = db.Characters.ToList();
+            IEnumerable<Ship> ships = db.Ships.ToList();
             IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);
 
             HtmlWeb web = new HtmlWeb();
@@ -256,6 +257,7 @@ namespace SWGOH.Web.Controllers
 
             List<Member> newMembers = new List<Member>();
             List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
+            List<MemberShip> memberShipsAdd = new List<MemberShip>();
 
             List<Member> memberDelete = new List<Member>();
 
@@ -409,6 +411,7 @@ namespace SWGOH.Web.Controllers
                                 memberCharacterUpdate.Level = newMemberCharacter.Level;
                                 memberCharacterUpdate.Power = newMemberCharacter.Power;
                                 memberCharacterUpdate.Stars = newMemberCharacter.Stars;
+                                memberCharacterUpdate.Gear = newMemberCharacter.Gear;
 
                                 memberCharacters.Remove(memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault());
                                 memberCharacters.Add(memberCharacterUpdate);
@@ -470,9 +473,61 @@ namespace SWGOH.Web.Controllers
                 MemberShip newMemberShip = new MemberShip();
                 newMemberShip.Member_Id = guildMember.Id;
                 newMemberShip.Id = Guid.NewGuid();
+
+                foreach (var item in listShips)
+                {
+                    if (item.Contains("<div class=\"ship-portrait-full-frame-level"))
+                    {
+                        newMemberShip.Level = Convert.ToInt16(item.Trim().Substring(44, 2).Replace("<", ""));
+                    }
+                    else if (item.Contains("\"Power "))
+                    {
+                        newMemberShip.Power = item.Trim().Substring(83).Replace("\">", "");
+                    }
+                    else if (item.Contains("ship-portrait-full-star") && !item.Contains("ship-portrait-full-star-inactive") && !item.Contains("stars"))
+                    {
+                        if (newMemberShip.Stars == null) newMemberShip.Stars = 1;
+                        else newMemberShip.Stars = newMemberShip.Stars + 1;
+                    }
+                    else if (item.Contains("<div class=\"collection-ship-name\">"))
+                    {
+                        string shipName = Regex.Replace(item, "<.*?>", String.Empty);
+                        IEnumerable<Ship> shipNames = ships.Where(x => x.Name.Equals(shipName.Trim())).ToList();
+
+                        if (shipNames.Count() == 1)
+                        {
+                            newMemberShip.Ship_Id = shipNames.FirstOrDefault().Id;
+                        }                        
+
+                        if (newMemberShip.Stars != null)
+                        {
+                            if (memberShips.Any(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)))
+                            {
+                                MemberShip memberShipUpdate = memberShips.Where(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)).FirstOrDefault();
+
+                                memberShipUpdate.Level = newMemberShip.Level;
+                                memberShipUpdate.Power = newMemberShip.Power;
+                                memberShipUpdate.Stars = newMemberShip.Stars;
+
+                                memberShips.Remove(memberShips.Where(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)).FirstOrDefault());
+                                memberShips.Add(memberShipUpdate);
+                            }
+                            else
+                            {
+                                memberShipsAdd.Add(newMemberShip);
+
+                            }
+                        }
+                        newMemberShip = new MemberShip();
+                        newMemberShip.Member_Id = guildMember.Id;
+                        newMemberShip.Id = Guid.NewGuid();
+                    }
+                }
+                db.BulkUpdate(memberShips);
             }
             db.BulkInsert(newMembers);
             db.BulkInsert(memberCharactersAdd);
+            db.BulkInsert(memberShipsAdd);
         }
     }
 }

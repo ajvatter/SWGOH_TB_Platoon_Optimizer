@@ -1122,6 +1122,8 @@
     <Content Include="Views\MemberShips\Details.cshtml" />
     <Content Include="Views\MemberShips\Edit.cshtml" />
     <Content Include="Views\MemberShips\Index.cshtml" />
+    <Content Include="Views\MemberShips\ShipCount.cshtml" />
+    <Content Include="Views\MemberShips\MembersWithShip.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
