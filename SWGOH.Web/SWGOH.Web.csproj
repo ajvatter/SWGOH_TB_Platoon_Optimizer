@@ -302,6 +302,10 @@
     <Compile Include="Migrations\201709200123019_ShipEntities.Designer.cs">
       <DependentUpon>201709200123019_ShipEntities.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709210031196_GalacticPowerAddition.cs" />
+    <Compile Include="Migrations\201709210031196_GalacticPowerAddition.Designer.cs">
+      <DependentUpon>201709210031196_GalacticPowerAddition.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -1194,6 +1198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709200123019_ShipEntities.resx">
       <DependentUpon>201709200123019_ShipEntities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709210031196_GalacticPowerAddition.resx">
+      <DependentUpon>201709210031196_GalacticPowerAddition.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

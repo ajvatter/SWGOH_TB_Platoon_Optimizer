@@ -99,7 +99,10 @@ namespace SWGOH.Web.Controllers
                 Guild_Id = guild.Id,
                 Name = guild.Name,
                 LastScrape = guild.LastScrape,
-                MemberCount = db.Members.Where(x => x.Guild.Id == guild.Id).Count()
+                MemberCount = db.Members.Where(x => x.Guild.Id == guild.Id).Count(),
+                GlacticPower = guild.ShipPower + guild.CharacterPower,
+                CharacterPower = guild.CharacterPower,
+                ShipPower = guild.ShipPower
             };
             return PartialView("_GuildInfo", model);
         }
@@ -241,9 +244,9 @@ namespace SWGOH.Web.Controllers
             IEnumerable<Member> members = db.Members.Where(x => x.Guild_Id == id);
 
             HtmlWeb web = new HtmlWeb();
-            HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt);
+            HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt + "/?stats=gp");
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[2]/div/table")[0].InnerHtml;
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[2]/div/table/tbody")[0].InnerHtml;
 
 
             Regex regexChar = new Regex(@"\n");
@@ -252,10 +255,10 @@ namespace SWGOH.Web.Controllers
 
             List<string> listMembers = substrings.ToList();
 
-            listMembers.Remove("\n<thead>\n");
-            listMembers.Remove("\n<th>Name</th>\n<th class=\"text-center\" data-type=\"number\" data-sorted=\"true\" data-direction=\"DESC\">GP</th>\n<th class=\"text-center\" data-type=\"number\">CS</th>\n<th class=\"text-center\" data-type=\"number\">Arena Rank</th>\n<th class=\"text-center\" data-type=\"number\">Arena Average</th>\n</tr>\n</thead>\n<tbody>\n");
+            listMembers.Remove("\n");            
 
             List<Member> newMembers = new List<Member>();
+            List<Member> updateMembers = new List<Member>();
             List<MemberCharacter> memberCharactersAdd = new List<MemberCharacter>();
             List<MemberShip> memberShipsAdd = new List<MemberShip>();
 
@@ -265,11 +268,9 @@ namespace SWGOH.Web.Controllers
 
             foreach (var member in listMembers)
             {
-                Member guildMember = new Member();
                 string[] memberSplit = member.Split('"');
                 memberExt.Add("https://swgoh.gg" + memberSplit[1] + "collection/");
             }
-
 
             foreach (var member in members)
             {
@@ -298,9 +299,16 @@ namespace SWGOH.Web.Controllers
                 //    continue;
                 //}
 
+                string toConvert = memberSplit[6].Replace(">", "");
+                toConvert = toConvert.Replace("</td\n<td class=", "");
+                guildMember.CharacterPower = Convert.ToInt32(toConvert);
+                toConvert = memberSplit[8].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "");
+                guildMember.ShipPower = Convert.ToInt32(toConvert);
+
                 if (members.Any(x => x.UrlExt.Equals(charHref)))
                 {
                     guildMember = members.Where(x => x.UrlExt.Equals(charHref)).FirstOrDefault();
+                    updateMembers.Add(guildMember);
                 }
                 else
                 {
@@ -310,7 +318,7 @@ namespace SWGOH.Web.Controllers
                     guildMember.UrlExt = charHref;
                     guildMember.Guild_Id = guild.Id;
                     newMembers.Add(guildMember);
-                }
+                }               
 
                 List<MemberCharacter> memberCharacters = db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
 
@@ -526,8 +534,15 @@ namespace SWGOH.Web.Controllers
                 db.BulkUpdate(memberShips);
             }
             db.BulkInsert(newMembers);
+            db.BulkUpdate(updateMembers);
             db.BulkInsert(memberCharactersAdd);
             db.BulkInsert(memberShipsAdd);
+
+            guild.CharacterPower = db.Members.Where(x => x.Guild_Id == id).Sum(x => x.CharacterPower);
+            guild.ShipPower = db.Members.Where(x => x.Guild_Id == id).Sum(x => x.ShipPower);
+
+            db.Entry(guild).State = EntityState.Modified;
+            db.SaveChanges();
         }
     }
 }
