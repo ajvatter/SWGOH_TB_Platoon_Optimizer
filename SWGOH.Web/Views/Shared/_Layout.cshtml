@@ -72,6 +72,7 @@
                     {
                         <li id="membersNav"><a href="@Url.Action("Index", "Members")">Members<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
                         <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+                        <li id="membersShipsNav"><a href="@Url.Action("ShipCount", "MemberShips")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-plane"></span></a></li>
                         <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tower"></span></a></li>
                     }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
@@ -80,6 +81,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                         <ul class="dropdown-menu forAnimate" role="menu">
                             <li><a href="@Url.Action("Index", "Characters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                            <li><a href="@Url.Action("Index", "Ships")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
                             <li><a href="@Url.Action("Index", "Guilds")">Guilds<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
                         </ul>
                     </li>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SWGOH.Entities
 {
-    public class Member
+    public class Ship
     {
         [Required]
         public Guid Id { get; set; }
@@ -15,13 +17,8 @@ namespace SWGOH.Entities
         public string DisplayName { get; set; }
         [StringLength(255)]
         public string UrlExt { get; set; }
-        public Guid Guild_Id { get; set; }
-        public int ShipPower { get; set; }
-        public int CharacterPower { get; set; }
+        public Alignment Alignment { get; set; }
 
-        [ForeignKey("Guild_Id")]
-        public virtual Guild Guild { get; set; }
-
-        public virtual ICollection<MemberCharacter> MemberCharacters { get; set; }
+        public virtual ICollection<MemberShip> MemberShips { get; set; }
     }
 }
