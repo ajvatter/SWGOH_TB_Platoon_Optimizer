@@ -141,8 +141,12 @@ namespace SWGOH.Web.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Officers")]
         public ActionResult DeleteConfirmed(Guid id)
-        {
+        {            
             Member member = db.Members.Find(id);
+            Guild guild = db.Guilds.Find(member.Guild_Id);
+            guild.CharacterPower = guild.CharacterPower - member.CharacterPower;
+            guild.ShipPower = guild.ShipPower - member.ShipPower;
+            db.Entry(guild).State = EntityState.Modified;
             db.Members.Remove(member);
             db.SaveChanges();
 
