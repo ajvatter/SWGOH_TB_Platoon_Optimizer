@@ -39,18 +39,41 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
-                @* @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand  navbar-left" })*@
             </div>
             <div class="navbar-collapse collapse">
-                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand  navbar-right" })
-                @*                //@Html.Partial("_LoginPartial")*@
+                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand  navbar-right hidden-xs" })
+                <ul class="nav navbar-nav hidden-sm hidden-md hidden-lg" style="float:none">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li id="membersNav"><a href="@Url.Action("Index", "Home")">AWC Platoon Optimizer<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
+                        <li id="membersNav"><a href="@Url.Action("Index", "Members")">Members<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
+                        <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+                        <li id="membersShipsNav"><a href="@Url.Action("ShipCount", "MemberShips")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-plane"></span></a></li>
+                        <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tower"></span></a></li>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="@Url.Action("Index", "Characters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                                <li><a href="@Url.Action("Index", "Ships")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                                <li><a href="@Url.Action("Index", "Guilds")">Guilds<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                            </ul>
+                        </li>
+                    }
+                    @Html.Partial("_LoginPartial")
+                    <li><a href="@Url.Action("Contact", "Home")">Contact<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                </ul>
             </div>
         </div>
     </div>
 
 
-    <nav class="navbar navbar-inverse sidebar navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse sidebar navbar-fixed-top hidden-xs" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -60,6 +83,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+
                 @if (User.Identity.IsAuthenticated)
                 {
                     @Html.Action("GuildInfo", "Guilds", new { })
@@ -87,6 +111,7 @@
                     </li>
                     }
                     @Html.Partial("_LoginPartial")
+                    <li><a href="@Url.Action("Contact", "Home")">Contact<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
                 </ul>
             </div>
         </div>

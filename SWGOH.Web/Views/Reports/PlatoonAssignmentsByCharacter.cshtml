@@ -4,51 +4,68 @@
     ViewBag.Title = "RequiredCharactersByCharacter";
 }
 
-<h2>Platoon Assignments By Character - Phase @ViewBag.PhaseNumber</h2>
+<h2>Platoon Assignments - Phase @ViewBag.PhaseNumber</h2>
 
 @if (User.Identity.IsAuthenticated)
 {
-    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { @class = "btn btn-default"})
+    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { @class = "btn btn-default" })
 }
 <br />
 <br />
-<table class="table table-bordered table-sm">
-    <tr>
-        <th class="col-md-1">
-            Character
-        </th>
-        <th class="col-md-1">
-            Needed
-        </th>
-        <th class="col-md-1">
-            Have
-        </th>
-        <th class="col-md-2">
-            Assigned Members
-        </th>
-        <th class="col-md-2">
-            Assigned Platoons
-        </th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @item.CharacterName
-            </td>
-            <td>
-                @item.NeededCount
-            </td>
-            <td>
-                @item.HaveCount
-            </td>
-            <td>
-                @Html.Raw(item.AssignedMembers)
-            </td>
-            <td>
-                @Html.Raw(item.AssignedPlatoons)
-            </td>
-        </tr>
-    }
-</table>
 
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item active">
+            <a class="nav-link active" data-toggle="tab" href="#byCharacter" role="tab">By Character</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#byMember" role="tab">By Member</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="byCharacter" role="tabpanel">
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th class="col-md-1">
+                        Character
+                    </th>
+                    <th class="col-md-1">
+                        Needed
+                    </th>
+                    <th class="col-md-1">
+                        Have
+                    </th>
+                    <th class="col-md-2">
+                        Assigned Members
+                    </th>
+                    <th class="col-md-2">
+                        Assigned Platoons
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.CharacterName
+                        </td>
+                        <td>
+                            @item.NeededCount
+                        </td>
+                        <td>
+                            @item.HaveCount
+                        </td>
+                        <td>
+                            @Html.Raw(item.AssignedMembers)
+                        </td>
+                        <td>
+                            @Html.Raw(item.AssignedPlatoons)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="tab-pane " id="byMember" role="tabpanel">
+            @Html.Action("PlatoonAssignmentsByMember", "Reports", new { id = ViewBag.Id })
+        </div>
+    </div>
+</div>

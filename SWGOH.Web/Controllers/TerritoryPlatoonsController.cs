@@ -146,7 +146,9 @@ namespace SWGOH.Web.Controllers
                 pcUpdate.Add(character14);
                 pcUpdate.Add(character15);
                 db.BulkUpdate(pcUpdate);
-               
+
+                HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+
                 return RedirectToAction("Details", "TerritoryBattlePhases", new { id = territoryPlatoon.PhaseTerritory.TerritoryBattlePhase.Id });
             }
 
@@ -182,11 +184,14 @@ namespace SWGOH.Web.Controllers
         public ActionResult ClosePlatoon(Guid id)
         {
             TerritoryPlatoon platoon = db.TerritoryPlatoons.Find(id);
-            platoon.IsClosed = true;
+            if(platoon.IsClosed == false) platoon.IsClosed = true;
+            else platoon.IsClosed = false;
 
             db.Entry(platoon).State = EntityState.Modified;
             db.SaveChanges();
-            
+
+            HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+
             return RedirectToAction("Details", "TerritoryBattlePhases", new { id = platoon.PhaseTerritory.TerritoryBattlePhase.Id });
         }
 
@@ -251,6 +256,8 @@ namespace SWGOH.Web.Controllers
 
                 db.Entry(territoryPlatoonTo).State = EntityState.Modified;
                 db.SaveChanges();
+
+                HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
 
                 return RedirectToAction("Edit", "TerritoryPlatoons", new { id = territoryPlatoonTo.Id });
             }

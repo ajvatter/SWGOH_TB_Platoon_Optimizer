@@ -1,0 +1,23 @@
+﻿@model IEnumerable<SWGOH.Web.ViewModels.PlatoonAssignmentsByMember>
+
+<table class="table table-bordered table-sm">
+    <tr>
+        <th class="col-md-1">
+            Member
+        </th>
+        <th class="col-md-1">
+            Assignments
+        </th>       
+    </tr>
+    @foreach (var item in Model.OrderBy(x => x.MemberName))
+    {
+        <tr>
+            <td>
+                @item.MemberName
+            </td>
+            <td>
+                @Html.Raw(@item.AssignedCharacters)
+            </td>            
+        </tr>
+    }
+</table>

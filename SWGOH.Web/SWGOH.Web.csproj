@@ -326,6 +326,7 @@
     <Compile Include="ViewModels\MembersWithShip.cs" />
     <Compile Include="ViewModels\MembersWithCharacter.cs" />
     <Compile Include="ViewModels\PhaseTerritoryModel.cs" />
+    <Compile Include="ViewModels\PlatoonAssignmentsByMember.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
     <Compile Include="ViewModels\PlatoonAssignmentsByCharacter.cs" />
     <Compile Include="ViewModels\PlatoonCopyModel.cs" />
@@ -1128,6 +1129,7 @@
     <Content Include="Views\MemberShips\Index.cshtml" />
     <Content Include="Views\MemberShips\ShipCount.cshtml" />
     <Content Include="Views\MemberShips\MembersWithShip.cshtml" />
+    <Content Include="Views\Reports\PlatoonAssignmentsByMember.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

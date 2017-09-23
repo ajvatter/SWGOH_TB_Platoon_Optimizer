@@ -4,11 +4,11 @@
     <h4>@Model.Name</h4>
     <h6>Registered Members: @Model.MemberCount</h6>
     <h6>Galactic Power: @Model.GlacticPower.ToString("###,###,###")</h6>
-    <h6>Character Power: @Model.CharacterPower.ToString("###,###,###")</h6>
-    <h6>Ship Power: @Model.ShipPower.ToString("###,###,###")</h6>
+    @*<h6>Character Power: @Model.CharacterPower.ToString("###,###,###")</h6>
+    <h6>Ship Power: @Model.ShipPower.ToString("###,###,###")</h6>*@
     <h6>Last Sync: @Model.LastScrape.ToString("MM/dd/yy hh:mm tt")</h6>
-    <p>*You can refresh your guild roster once an hour.</p>
-    @if (DateTime.Now < Model.LastScrape.AddHours(1) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
+    <p>*You can refresh your guild roster once every 6 hours.</p>
+    @if (DateTime.Now < Model.LastScrape.AddHours(6) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
     {
         <button class="btn btn-primary disabled">Get Roster</button>        
     }
