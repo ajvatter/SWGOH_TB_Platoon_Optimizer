@@ -218,13 +218,13 @@ namespace SWGOH.Web.Controllers
                 return HttpNotFound();
             }
 
-            if (DateTime.Now < guild.LastScrape.AddHours(1) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
+            if (DateTime.Now < guild.LastScrape.AddHours(6) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
             {
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
                 return RedirectToAction("Details", new { id = id });
             }
 
-            if (User.IsInRole("Administrators"))
+            if (!User.IsInRole("Administrators"))
             {
                 guild.LastScrape = DateTime.Now;
                 db.Entry(guild).State = EntityState.Modified;
