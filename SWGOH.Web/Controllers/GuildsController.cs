@@ -246,7 +246,7 @@ namespace SWGOH.Web.Controllers
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt + "/?stats=gp");
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[2]/div/table/tbody")[0].InnerHtml;
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div/table/tbody")[0].InnerHtml;
 
 
             Regex regexChar = new Regex(@"\n");
@@ -300,7 +300,7 @@ namespace SWGOH.Web.Controllers
                 //}
 
                 string toConvert = memberSplit[6].Replace(">", "");
-                toConvert = toConvert.Replace("</td\n<td class=", "");
+                toConvert = toConvert.Replace(" ", "").Replace("</td\n<tdclass=", "");
                 guildMember.CharacterPower = Convert.ToInt32(toConvert);
                 toConvert = memberSplit[8].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "");
                 guildMember.ShipPower = Convert.ToInt32(toConvert);

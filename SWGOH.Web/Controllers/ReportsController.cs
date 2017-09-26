@@ -86,24 +86,27 @@ namespace SWGOH.Web.Controllers
 
                 foreach (var charAssignment in paByChar)
                 {
-                    string[] members = charAssignment.AssignedMembers.Split(new string[] { "<br/>" }, StringSplitOptions.None);
-                    string[] platoons = charAssignment.AssignedPlatoons.Split(new string[] { "<br/>" }, StringSplitOptions.None);
-                    
-                    for (int i = 0; i < members.Count(); i++)
+                    if (charAssignment.HaveCount != 0)
                     {
-                        if (model.Where(x => x.MemberName.Contains(members[i])).Count() == 0 && members[i] != "")
+                        string[] members = charAssignment.AssignedMembers.Split(new string[] { "<br/>" }, StringSplitOptions.None);
+                        string[] platoons = charAssignment.AssignedPlatoons.Split(new string[] { "<br/>" }, StringSplitOptions.None);
+
+                        for (int i = 0; i < members.Count(); i++)
                         {
-                            PlatoonAssignmentsByMember memAssignment = new ViewModels.PlatoonAssignmentsByMember()
+                            if (model.Where(x => x.MemberName.Contains(members[i])).Count() == 0 && members[i] != "")
                             {
-                                MemberName = members[i],
-                                AssignedCharacters = charAssignment.CharacterName + " - " + platoons[i]
-                            };
-                            model.Add(memAssignment);
-                        }
-                        else if(members[i] != "")
-                        {
-                            var obj = model.FirstOrDefault(x => x.MemberName == members[i]);
-                            if (obj != null) obj.AssignedCharacters = obj.AssignedCharacters + "<br/>" + charAssignment.CharacterName + " - " + platoons[i];
+                                PlatoonAssignmentsByMember memAssignment = new ViewModels.PlatoonAssignmentsByMember()
+                                {
+                                    MemberName = members[i],
+                                    AssignedCharacters = charAssignment.CharacterName + " - " + platoons[i]
+                                };
+                                model.Add(memAssignment);
+                            }
+                            else if (members[i] != "")
+                            {
+                                var obj = model.FirstOrDefault(x => x.MemberName == members[i]);
+                                if (obj != null) obj.AssignedCharacters = obj.AssignedCharacters + "<br/>" + charAssignment.CharacterName + " - " + platoons[i];
+                            }
                         }
                     }
                 }
@@ -112,6 +115,14 @@ namespace SWGOH.Web.Controllers
             }
 
             return PartialView(model);
+        }
+
+        public ActionResult ClearReports(Guid id)
+        {
+            HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + id.ToString());
+            HttpContext.Cache.Remove("PlatoonAssignmentsByMember" + id.ToString());
+
+            return RedirectToAction("PlatoonAssignmentsByCharacter", "Reports", new { id = id });
         }
     }
 }

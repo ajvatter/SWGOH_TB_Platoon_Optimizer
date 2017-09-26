@@ -11,6 +11,8 @@ using SWGOH.Web.DataContexts;
 using SWGOH.Web.ViewModels;
 using SWGOH.Web.Models;
 using System.Web.Caching;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace SWGOH.Web.Controllers
 {
@@ -154,32 +156,44 @@ namespace SWGOH.Web.Controllers
 
             var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
             var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
-            //List<CharCount> charCount = new List<CharCount>();
 
-            List<CharCount> charCount = (List<CharCount>)HttpContext.Cache.Get("CharCount" + id.ToString());
-            if (charCount == null)
-            {
-                charCount = new List<CharCount>();
-                foreach (var character in characters)
+            DataSet ds = new DataSet("Counts");
+            List<CharCount> model = (List<CharCount>)HttpContext.Cache.Get("CharCount" + id.ToString());
+            if (model == null)
+            {                
+
+                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                 {
-                    CharCount newCharCount = new CharCount();
-                    newCharCount.Id = character.Id;
-                    newCharCount.Name = character.DisplayName;
-                    newCharCount.Alignment = character.Alignment;
-                    newCharCount.OneStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 1).Count();
-                    newCharCount.TwoStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 2).Count();
-                    newCharCount.ThreeStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 3).Count();
-                    newCharCount.FourStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 4).Count();
-                    newCharCount.FiveStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 5).Count();
-                    newCharCount.SixStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 6).Count();
-                    newCharCount.SevenStarCount = memberCharacters.Where(x => x.Character_Id == character.Id && x.Stars == 7).Count();
-                    charCount.Add(newCharCount);
+                    SqlCommand sqlComm = new SqlCommand("CharCounts", conn);
+                    sqlComm.Parameters.AddWithValue("@Guild_Id", id);
+
+                    sqlComm.CommandType = CommandType.StoredProcedure;
+
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    da.SelectCommand = sqlComm;
+
+                    da.Fill(ds);
+
+                    model = ds.Tables[0].AsEnumerable().Select(
+                        dataRow => new CharCount
+                        {
+                            Id = dataRow.Field<Guid>("Character_Id"),
+                            Name = dataRow.Field<string>("Name"),
+                            Alignment = dataRow.Field<Alignment>("Alignment"),
+                            OneStarCount = dataRow.Field<int>("OneStarCount"),
+                            TwoStarCount = dataRow.Field<int>("TwoStarCount"),
+                            ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
+                            FourStarCount = dataRow.Field<int>("FourStarCount"),
+                            FiveStarCount = dataRow.Field<int>("FiveStarCount"),
+                            SixStarCount = dataRow.Field<int>("SixStarCount"),
+                            SevenStarCount = dataRow.Field<int>("SevenStarCount"),
+                        }).ToList();
                 }
 
-                HttpContext.Cache.Insert("CharCount" + id.ToString(), charCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                HttpContext.Cache.Insert("CharCount" + id.ToString(), model, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
 
-            return View(charCount);
+            return View(model);
         }
 
         [Authorize]

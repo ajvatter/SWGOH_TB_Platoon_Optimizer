@@ -11,6 +11,8 @@ using SWGOH.Web.DataContexts;
 using SWGOH.Web.Models;
 using SWGOH.Web.ViewModels;
 using System.Web.Caching;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace SWGOH.Web.Controllers
 {
@@ -147,32 +149,43 @@ namespace SWGOH.Web.Controllers
 
             var memberShips = db.MemberShips.Where(x => x.Member.Guild_Id == id);
             var ships = db.Ships.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
-            //List<CharCount> charCount = new List<CharCount>();
 
-            List<ShipCountModel> shipCount = (List<ShipCountModel>)HttpContext.Cache.Get("ShipCount" + id.ToString());
-            if (shipCount == null)
+            DataSet ds = new DataSet("Counts");
+            List<ShipCountModel> model = (List<ShipCountModel>)HttpContext.Cache.Get("ShipCount" + id.ToString());
+            if (model == null)
             {
-                shipCount = new List<ShipCountModel>();
-                foreach (var ship in ships)
+                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                 {
-                    ShipCountModel newShipCount = new ShipCountModel();
-                    newShipCount.Id = ship.Id;
-                    newShipCount.Name = ship.DisplayName;
-                    newShipCount.Alignment = ship.Alignment;
-                    newShipCount.OneStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 1).Count();
-                    newShipCount.TwoStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 2).Count();
-                    newShipCount.ThreeStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 3).Count();
-                    newShipCount.FourStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 4).Count();
-                    newShipCount.FiveStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 5).Count();
-                    newShipCount.SixStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 6).Count();
-                    newShipCount.SevenStarCount = memberShips.Where(x => x.Ship_Id == ship.Id && x.Stars == 7).Count();
-                    shipCount.Add(newShipCount);
+                    SqlCommand sqlComm = new SqlCommand("ShipCounts", conn);
+                    sqlComm.Parameters.AddWithValue("@Guild_Id", id);
+
+                    sqlComm.CommandType = CommandType.StoredProcedure;
+
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    da.SelectCommand = sqlComm;
+
+                    da.Fill(ds);
+
+                    model = ds.Tables[0].AsEnumerable().Select(
+                        dataRow => new ShipCountModel
+                        {
+                            Id = dataRow.Field<Guid>("Ship_Id"),
+                            Name = dataRow.Field<string>("Name"),
+                            Alignment = dataRow.Field<Alignment>("Alignment"),
+                            OneStarCount = dataRow.Field<int>("OneStarCount"),
+                            TwoStarCount = dataRow.Field<int>("TwoStarCount"),
+                            ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
+                            FourStarCount = dataRow.Field<int>("FourStarCount"),
+                            FiveStarCount = dataRow.Field<int>("FiveStarCount"),
+                            SixStarCount = dataRow.Field<int>("SixStarCount"),
+                            SevenStarCount = dataRow.Field<int>("SevenStarCount"),
+                        }).ToList();
                 }
 
-                HttpContext.Cache.Insert("ShipCount" + id.ToString(), shipCount, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                HttpContext.Cache.Insert("ShipCount" + id.ToString(), model, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
 
-            return View(shipCount);
+            return View(model);
         }
 
         [Authorize]

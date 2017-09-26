@@ -10,6 +10,10 @@
 {
     @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = ViewBag.Id }, new { @class = "btn btn-default" })
 }
+@if (User.IsInRole("Administrators"))
+{
+    <span></span>@Html.ActionLink("Re Roll Assignments", "ClearReports", "Reports", new { id = ViewBag.Id }, new { @class = "btn btn-default" })
+}
 <br />
 <br />
 
