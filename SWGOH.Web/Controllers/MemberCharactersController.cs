@@ -13,6 +13,7 @@ using SWGOH.Web.Models;
 using System.Web.Caching;
 using System.Data.SqlClient;
 using System.Configuration;
+using Nop.Web.Framework.Kendoui;
 
 namespace SWGOH.Web.Controllers
 {
@@ -141,59 +142,8 @@ namespace SWGOH.Web.Controllers
 
         [Authorize]
         public ActionResult CharCount(Guid? id)
-        {
-            if (id == null)
-            {
-                if (User.Identity.Name != null && User.Identity.Name != "")
-                {
-                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-
-            var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
-            var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
-
-            DataSet ds = new DataSet("Counts");
-            List<CharCount> model = (List<CharCount>)HttpContext.Cache.Get("CharCount" + id.ToString());
-            if (model == null)
-            {                
-
-                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
-                {
-                    SqlCommand sqlComm = new SqlCommand("CharCounts", conn);
-                    sqlComm.Parameters.AddWithValue("@Guild_Id", id);
-
-                    sqlComm.CommandType = CommandType.StoredProcedure;
-
-                    SqlDataAdapter da = new SqlDataAdapter();
-                    da.SelectCommand = sqlComm;
-
-                    da.Fill(ds);
-
-                    model = ds.Tables[0].AsEnumerable().Select(
-                        dataRow => new CharCount
-                        {
-                            Id = dataRow.Field<Guid>("Character_Id"),
-                            Name = dataRow.Field<string>("Name"),
-                            Alignment = dataRow.Field<Alignment>("Alignment"),
-                            OneStarCount = dataRow.Field<int>("OneStarCount"),
-                            TwoStarCount = dataRow.Field<int>("TwoStarCount"),
-                            ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
-                            FourStarCount = dataRow.Field<int>("FourStarCount"),
-                            FiveStarCount = dataRow.Field<int>("FiveStarCount"),
-                            SixStarCount = dataRow.Field<int>("SixStarCount"),
-                            SevenStarCount = dataRow.Field<int>("SevenStarCount"),
-                        }).ToList();
-                }
-
-                HttpContext.Cache.Insert("CharCount" + id.ToString(), model, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
-            }
-
-            return View(model);
+        {          
+            return View();
         }
 
         [Authorize]
@@ -211,6 +161,56 @@ namespace SWGOH.Web.Controllers
             }
 
             return View(membersWithCharacter);
+        }
+
+        [HttpPost]
+        public virtual ActionResult CharCountData(DataSourceRequest command, CharCount model)
+        {
+            Guid id;
+            if (User.Identity.Name != null && User.Identity.Name != "")
+            {
+                id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var memberCharacters = db.MemberCharacters.Where(x => x.Member.Guild_Id == id);
+            var characters = db.Characters.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
+            var gridModel = new DataSourceResult();
+
+            DataSet ds = new DataSet("Counts");               
+
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
+            {
+                SqlCommand sqlComm = new SqlCommand("CharCounts", conn);
+                sqlComm.Parameters.AddWithValue("@Guild_Id", id);
+
+                sqlComm.CommandType = CommandType.StoredProcedure;
+
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = sqlComm;
+
+                da.Fill(ds);
+
+                gridModel.Data = ds.Tables[0].AsEnumerable().Select(
+                    dataRow => new CharCount
+                    {
+                        Id = dataRow.Field<Guid>("Character_Id"),
+                        Name = dataRow.Field<string>("Name"),
+                        Alignment = dataRow.Field<string>("Alignment"),
+                        OneStarCount = dataRow.Field<int>("OneStarCount"),
+                        TwoStarCount = dataRow.Field<int>("TwoStarCount"),
+                        ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
+                        FourStarCount = dataRow.Field<int>("FourStarCount"),
+                        FiveStarCount = dataRow.Field<int>("FiveStarCount"),
+                        SixStarCount = dataRow.Field<int>("SixStarCount"),
+                        SevenStarCount = dataRow.Field<int>("SevenStarCount"),
+                    }).AsEnumerable().OrderBy(x => x.Name);
+                gridModel.Total = ds.Tables[0].AsEnumerable().Count();               
+            }
+            return Json(gridModel);
         }
 
         protected override void Dispose(bool disposing)

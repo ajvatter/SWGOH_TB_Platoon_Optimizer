@@ -63,7 +63,11 @@ input {
 }
 
 .dsRow {
-    background-color: firebrick
+    background-color: #8e1a1a
+}
+
+.dsRowAlt {
+    background-color: #b22121 !important
 }
 
 

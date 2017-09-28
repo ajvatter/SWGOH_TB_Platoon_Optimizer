@@ -1,6 +1,9 @@
-﻿using SWGOH.Entities;
+﻿using AutoMapper;
+using Nop.Web.Framework.Kendoui;
+using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.Models;
+using SWGOH.Web.ViewModels;
 using System;
 using System.Data;
 using System.Data.Entity;
@@ -24,20 +27,8 @@ namespace SWGOH.Web.Controllers
 
         [Authorize]
         public ActionResult Index(Guid? id)
-        {
-            if (id == null)
-            {
-                if (User.Identity.Name != null && User.Identity.Name != "")
-                {
-                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            var members = db.Members.Where(m => m.Guild.Id == id).OrderBy(x => x.Name);
-            return View(members.ToList());
+        {            
+            return View();
         }
 
         // GET: Members/Details/5
@@ -153,6 +144,32 @@ namespace SWGOH.Web.Controllers
             HttpContext.Cache.Remove("CharCount" + member.Guild_Id.ToString());
 
             return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
+        }
+
+        [HttpPost]
+        public virtual ActionResult MemberList(DataSourceRequest command, Member model)
+        {
+            Guid id;
+            if (User.Identity.Name != null && User.Identity.Name != "")
+            {
+                id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var members = db.Members.ToList();
+            var gridModel = new DataSourceResult();
+            gridModel.Data = members.Where(x => x.Guild_Id == id).Select(x =>
+            {
+                var characterModel = Mapper.Map<Member, MemberModel>(x);
+
+                return characterModel;
+            }).OrderBy(x => x.DisplayName);
+            gridModel.Total = members.Count();
+
+            return Json(gridModel);
         }
 
         protected override void Dispose(bool disposing)

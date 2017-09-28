@@ -33,6 +33,7 @@ namespace SWGOH.Web.Controllers
                 using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                 {
                     SqlCommand sqlComm = new SqlCommand("PlattonAssignmentsByCharacter", conn);
+                    sqlComm.CommandTimeout = 60;
                     //sqlComm.Parameters.AddWithValue("@guildGuid", phase.TerritoryBattle.Guild_Id);
                     sqlComm.Parameters.AddWithValue("@phaseGuid", phase.Id);
 

@@ -1,142 +1,121 @@
 ﻿@model IEnumerable<SWGOH.Web.ViewModels.CharCount>
 
-<div>
-    <h5>* Characters higlighted in red signify that your guild has less than ten at seven stars.</h5>
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item active">
-            <a class="nav-link active" data-toggle="tab" href="#lightside" role="tab">Lightside</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#darkside" role="tab">Darkside</a>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="lightside" role="tabpanel">
-            <table class="table">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        1 Star
-                    </th>
-                    <th>
-                        2 Star
-                    </th>
-                    <th>
-                        3 Star
-                    </th>
-                    <th>
-                        4 Star
-                    </th>
-                    <th>
-                        5 Star
-                    </th>
-                    <th>
-                        6 Star
-                    </th>
-                    <th>
-                        7 Star
-                    </th>
-                </tr>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div id="grid"></div>
+        <script>
+            var rowTemplateString = '<tr class="#: SevenStarCount > 10 ? "dsrow" : "" #" ' +
+                '<td>#: Name #</td>'
+                '</tr>';
 
-                @foreach (var item in Model.Where(x => x.Alignment == SWGOH.Entities.Alignment.LightSide))
-                {
-                    <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
-                        <td>
-                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OneStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TwoStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ThreeStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FourStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FiveStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SixStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SevenStarCount)
-                        </td>
-                    </tr>
-                }
+            $(document).ready(function () {
+                $("#grid").kendoGrid({
+                    dataSource: {
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "@Html.Raw(Url.Action("CharCountData", "MemberCharacters"))",
+                                type: "POST",
+                                dataType: "json",
+                            }
+                        },
+                        schema: {
+                            type: "json",
+                            data: "Data",
+                            total: "Total"
+                        },
+                        pageSize: 15,
+                    },
+                    width: 850,
+                    filterable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true,
+                        buttonCount: 5
+                    },
+                    scrollable: true,
+                    selectable: true,
+                    columns: [
+                    {
+                        field: "Name",
+                        title: "Name",
+                        width: 150
+                    },
+                    {
+                        field: "Alignment",
+                        title: "Alignment",
+                        width: 100
+                    },
+                    {
+                        field: "OneStarCount",
+                        title: "1 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "TwoStarCount",
+                        title: "2 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "ThreeStarCount",
+                        title: "3 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "FourStarCount",
+                        title: "4 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "FiveStarCount",
+                        title: "5 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "SixStarCount",
+                        title: "6 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    {
+                        field: "SevenStarCount",
+                        title: "7 Star",
+                        width: 50,
+                        filterable: false,
+                    },
+                    ],
+                    dataBound: function (e) {
 
-            </table>
-        </div>
-        <div class="tab-pane" id="darkside" role="tabpanel">
-            <table class="table">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        1 Star
-                    </th>
-                    <th>
-                        2 Star
-                    </th>
-                    <th>
-                        3 Star
-                    </th>
-                    <th>
-                        4 Star
-                    </th>
-                    <th>
-                        5 Star
-                    </th>
-                    <th>
-                        6 Star
-                    </th>
-                    <th>
-                        7 Star
-                    </th>
-                </tr>
+                        // iterate the data items and apply row styles where necessary
+                        var dataItems = e.sender.dataSource.view();
+                        for (var j = 0; j < dataItems.length; j++) {
+                            var sevenStarCount = dataItems[j].get("SevenStarCount");
 
-                @foreach (var item in Model.Where(x => x.Alignment == SWGOH.Entities.Alignment.DarkSide))
-                {
-                    <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
-                        <td>
-                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OneStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TwoStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ThreeStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FourStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FiveStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SixStarCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SevenStarCount)
-                        </td>
-                    </tr>
-                }
-
-            </table>
-        </div>
+                            var row = e.sender.tbody.find("[data-uid='" + dataItems[j].uid + "']");
+                            if (sevenStarCount < 10) {
+                                if (j%2 !== 0) {
+                                    row.addClass("dsRowAlt");
+                                }
+                                else {
+                                    row.addClass("dsRow");
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
     </div>
 </div>
+
 <script type="text/javascript">
-    $( document ).ready(function () {
-        document.getElementById('membersCharactersNav').classList.add('active');
-    });
+            $(document).ready(function () {
+                document.getElementById('membersCharactersNav').classList.add('active');
+            });
 </script>

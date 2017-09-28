@@ -48,7 +48,7 @@
                 </tr>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="@(item.NeededCount > item.HaveCount ? "dsRow" : " ")">
                         <td>
                             @item.CharacterName
                         </td>

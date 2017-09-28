@@ -9,7 +9,7 @@ namespace SWGOH.Web.ViewModels
     public class CharCount
     {
         public Guid Id { get; set; }
-        public Alignment Alignment { get; set; }
+        public string Alignment { get; set; }
         public string Name { get; set; }
         public int OneStarCount { get; set; }
         public int TwoStarCount { get; set; }

@@ -1,7 +1,7 @@
-﻿@model IEnumerable<SWGOH.Web.ViewModels.ShipCountModel>
+﻿@model IEnumerable<SWGOH.Web.ViewModels.CharCount>
 
 <div>
-    <h5>* Ships higlighted in red signify that your guild has less than ten at seven stars.</h5>
+    <h5>* Characters higlighted in red signify that your guild has less than ten at seven stars.</h5>
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item active">
             <a class="nav-link active" data-toggle="tab" href="#lightside" role="tab">Lightside</a>
@@ -44,7 +44,7 @@
                 {
                     <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
                         <td>
-                            @Html.ActionLink(item.Name, "MembersWithShip", new { id = item.Id })
+                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.OneStarCount)
@@ -105,7 +105,7 @@
                 {
                     <tr class="@(item.SevenStarCount < 10 ? "dsRow" : " ")">
                         <td>
-                            @Html.ActionLink(item.Name, "MembersWithShip", new { id = item.Id })
+                            @Html.ActionLink(item.Name, "MembersWithCharacter", new { id = item.Id })
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.OneStarCount)
@@ -137,6 +137,6 @@
 </div>
 <script type="text/javascript">
     $( document ).ready(function () {
-        document.getElementById('membersShipsNav').classList.add('active');
+        document.getElementById('membersCharactersNav').classList.add('active');
     });
 </script>

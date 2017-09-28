@@ -119,6 +119,9 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -203,6 +206,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AutoMapperProfiles\MemberMappingProfile.cs" />
+    <Compile Include="AutoMapperProfiles\CharacterMappingProfile.cs" />
     <Compile Include="AutoMapperProfiles\PhaseTerritoryMappingProfile.cs" />
     <Compile Include="AutoMapperProfiles\TerritoryBattleMappingProfile.cs" />
     <Compile Include="AutoMapperProfiles\TerritoryBattlePhaseMappingProfile.cs" />
@@ -226,6 +231,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\SelectExtensions.cs" />
+    <Compile Include="Kendoui\DataSourceRequest.cs" />
+    <Compile Include="Kendoui\DataSourceResult.cs" />
+    <Compile Include="Kendoui\Filter.cs" />
+    <Compile Include="Kendoui\ModelStateExtensions.cs" />
+    <Compile Include="Kendoui\QueryableExtensions.cs" />
+    <Compile Include="Kendoui\Sort.cs" />
     <Compile Include="Migrations\201709040457028_Initial.cs" />
     <Compile Include="Migrations\201709040457028_Initial.Designer.cs">
       <DependentUpon>201709040457028_Initial.cs</DependentUpon>
@@ -321,6 +332,8 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\MemberModel.cs" />
+    <Compile Include="ViewModels\CharacterModel.cs" />
     <Compile Include="ViewModels\CharCount.cs" />
     <Compile Include="ViewModels\GuildInfoModel.cs" />
     <Compile Include="ViewModels\MembersWithShip.cs" />
@@ -1130,6 +1143,10 @@
     <Content Include="Views\MemberShips\ShipCount.cshtml" />
     <Content Include="Views\MemberShips\MembersWithShip.cshtml" />
     <Content Include="Views\Reports\PlatoonAssignmentsByMember.cshtml" />
+    <Content Include="Views\Guilds\Details - Copy.cshtml" />
+    <Content Include="Views\Characters\Index - Copy.cshtml" />
+    <Content Include="Views\Members\Index - Copy.cshtml" />
+    <Content Include="Views\MemberCharacters\CharCount - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

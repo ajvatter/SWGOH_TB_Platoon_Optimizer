@@ -8,6 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
+using Nop.Web.Framework.Kendoui;
+using AutoMapper;
+using SWGOH.Web.ViewModels;
 
 namespace SWGOH.Web.Controllers
 {
@@ -132,6 +135,22 @@ namespace SWGOH.Web.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }    
+        }
+
+        [HttpPost]
+        public virtual ActionResult CharacterList(DataSourceRequest command, Character model)
+        {
+            var characters = db.Characters.ToList();
+            var gridModel = new DataSourceResult();
+            gridModel.Data = characters.Select(x =>
+            {
+                var characterModel = Mapper.Map<Character, CharacterModel>(x);
+
+                return characterModel;
+            }).OrderBy(x => x.DisplayName);
+            gridModel.Total = characters.Count();
+
+            return Json(gridModel);
+        }
     }
 }
