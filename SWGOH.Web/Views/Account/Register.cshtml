@@ -35,7 +35,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button class="btn btn-default" type="button" onclick="addGuild()">Add Guild</button>
+                <button id ="addGuildBtn"class="btn btn-default" type="button" onclick="addGuild()">Add Guild</button>
                 <button class="btn btn-default" type="button" onclick="cancelAdd()">Cancel</button>
             </div>
         </div>
@@ -72,6 +72,7 @@
 <script type="text/javascript">
     function addGuild() {
 
+        document.getElementById("addGuildBtn").className += " disabled"
         var guildUrl = document.getElementById('guildUrl').value;
         var link = '@Url.Action("AddGuild", "Guilds", new { })';
 
@@ -88,6 +89,7 @@
                 }
                 document.getElementById('Guild_Id').value = data.value;
                 document.getElementById('addGuild').style.display = 'none';
+                document.getElementById("addGuildBtn").classList.remove("disabled");
                 alert(data.message);
             }
         });

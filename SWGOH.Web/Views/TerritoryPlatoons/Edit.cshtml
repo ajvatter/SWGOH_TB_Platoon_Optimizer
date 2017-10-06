@@ -14,156 +14,278 @@
     @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = Model.Phase.Id }, new { @class = "btn btn-default" })
 
     <div class="form-horizontal">
-        
+
         <hr />
 
         @Html.HiddenFor(x => x.IsClosed)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.PlatoonNumber)
-        @Html.HiddenFor(model => model.Character1.Id)
-        @Html.HiddenFor(model => model.Character1.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character1.PlatoonPosition)
 
-        @Html.HiddenFor(model => model.Character2.Id)
-        @Html.HiddenFor(model => model.Character2.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character2.PlatoonPosition)
+        @if (Model.Character1 != null)
+        {
+            @Html.HiddenFor(model => model.Character1.Id)
+            @Html.HiddenFor(model => model.Character1.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character1.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character2.Id)
+            @Html.HiddenFor(model => model.Character2.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character2.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character3.Id)
+            @Html.HiddenFor(model => model.Character3.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character3.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character4.Id)
+            @Html.HiddenFor(model => model.Character4.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character4.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character5.Id)
+            @Html.HiddenFor(model => model.Character5.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character5.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character6.Id)
+            @Html.HiddenFor(model => model.Character6.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character6.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character7.Id)
+            @Html.HiddenFor(model => model.Character7.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character7.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character8.Id)
+            @Html.HiddenFor(model => model.Character8.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character8.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character9.Id)
+            @Html.HiddenFor(model => model.Character9.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character9.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character10.Id)
+            @Html.HiddenFor(model => model.Character10.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character10.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character11.Id)
+            @Html.HiddenFor(model => model.Character11.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character11.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character12.Id)
+            @Html.HiddenFor(model => model.Character12.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character12.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character13.Id)
+            @Html.HiddenFor(model => model.Character13.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character13.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character14.Id)
+            @Html.HiddenFor(model => model.Character14.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character14.PlatoonPosition)
+            @Html.HiddenFor(model => model.Character15.Id)
+            @Html.HiddenFor(model => model.Character15.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Character15.PlatoonPosition)
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character1.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character1.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character3.Id)
-        @Html.HiddenFor(model => model.Character3.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character3.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character2.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character2.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character4.Id)
-        @Html.HiddenFor(model => model.Character4.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character4.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character3.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character3.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character5.Id)
-        @Html.HiddenFor(model => model.Character5.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character5.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character4.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character4.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character6.Id)
-        @Html.HiddenFor(model => model.Character6.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character6.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character5.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character5.Character_Id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character6.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character6.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character7.Id)
-        @Html.HiddenFor(model => model.Character7.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character7.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character7.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character7.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character8.Id)
-        @Html.HiddenFor(model => model.Character8.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character8.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character8.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character8.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character9.Id)
-        @Html.HiddenFor(model => model.Character9.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character9.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character9.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character9.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character10.Id)
-        @Html.HiddenFor(model => model.Character10.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character10.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character10.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character10.Character_Id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character11.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character11.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character11.Id)
-        @Html.HiddenFor(model => model.Character11.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character11.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character12.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character12.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character12.Id)
-        @Html.HiddenFor(model => model.Character12.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character12.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character13.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character13.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character13.Id)
-        @Html.HiddenFor(model => model.Character13.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character13.PlatoonPosition)
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character14.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character14.Character_Id, "", new { @class = "text-danger" })
+                </div>
 
-        @Html.HiddenFor(model => model.Character14.Id)
-        @Html.HiddenFor(model => model.Character14.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character14.PlatoonPosition)
-
-        @Html.HiddenFor(model => model.Character15.Id)
-        @Html.HiddenFor(model => model.Character15.TerritoryPlatoon_Id)
-        @Html.HiddenFor(model => model.Character15.PlatoonPosition)
-        <div class="row">
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character1.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character1.Character_Id, "", new { @class = "text-danger" })
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Character15.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Character15.Character_Id, "", new { @class = "text-danger" })
+                </div>
             </div>
 
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character2.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character2.Character_Id, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.Ship1.Id)
+            @Html.HiddenFor(model => model.Ship1.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship1.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship2.Id)
+            @Html.HiddenFor(model => model.Ship2.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship2.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship3.Id)
+            @Html.HiddenFor(model => model.Ship3.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship3.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship4.Id)
+            @Html.HiddenFor(model => model.Ship4.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship4.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship5.Id)
+            @Html.HiddenFor(model => model.Ship5.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship5.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship6.Id)
+            @Html.HiddenFor(model => model.Ship6.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship6.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship7.Id)
+            @Html.HiddenFor(model => model.Ship7.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship7.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship8.Id)
+            @Html.HiddenFor(model => model.Ship8.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship8.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship9.Id)
+            @Html.HiddenFor(model => model.Ship9.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship9.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship10.Id)
+            @Html.HiddenFor(model => model.Ship10.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship10.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship11.Id)
+            @Html.HiddenFor(model => model.Ship11.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship11.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship12.Id)
+            @Html.HiddenFor(model => model.Ship12.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship12.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship13.Id)
+            @Html.HiddenFor(model => model.Ship13.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship13.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship14.Id)
+            @Html.HiddenFor(model => model.Ship14.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship14.PlatoonPosition)
+            @Html.HiddenFor(model => model.Ship15.Id)
+            @Html.HiddenFor(model => model.Ship15.TerritoryPlatoon_Id)
+            @Html.HiddenFor(model => model.Ship15.PlatoonPosition)
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship1.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship1.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship2.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship2.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship3.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship3.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship4.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship4.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship5.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship5.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship6.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship6.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship7.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship7.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship8.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship8.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship9.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship9.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship10.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship10.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship11.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship11.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship12.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship12.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship13.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship13.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship14.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship14.Ship_Id, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-2">
+                    @Html.DropDownListFor(x => x.Ship15.Ship_Id, new SelectList(Model.Ships, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ship15.Ship_Id, "", new { @class = "text-danger" })
+                </div>
             </div>
 
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character3.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character3.Character_Id, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
             </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character4.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character4.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character5.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character5.Character_Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character6.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character6.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character7.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character7.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character8.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character8.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character9.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character9.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character10.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character10.Character_Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character11.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character11.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character12.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character12.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character13.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character13.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character14.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character14.Character_Id, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group col-md-2">
-                @Html.DropDownListFor(x => x.Character15.Character_Id, new SelectList(Model.Items, "Id", "DisplayName"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Character15.Character_Id, "", new { @class = "text-danger" })
-            </div>
-        </div>       
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+        }
     </div>
 }
 

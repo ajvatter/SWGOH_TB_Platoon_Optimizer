@@ -17,6 +17,7 @@ namespace SWGOH.Web.AutoMapperProfiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ShipPower, opt => opt.MapFrom(src => src.ShipPower))
                 .ForMember(dest => dest.CharacterPower, opt => opt.MapFrom(src => src.CharacterPower))
+                .ForMember(dest => dest.GalacticPower, opt => opt.MapFrom(src => src.CharacterPower + src.ShipPower))
                 .ForMember(dest => dest.UrlExt, opt => opt.MapFrom(src => src.UrlExt));
         }
     }

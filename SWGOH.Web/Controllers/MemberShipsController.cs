@@ -13,6 +13,7 @@ using SWGOH.Web.ViewModels;
 using System.Web.Caching;
 using System.Data.SqlClient;
 using System.Configuration;
+using Nop.Web.Framework.Kendoui;
 
 namespace SWGOH.Web.Controllers
 {
@@ -134,58 +135,59 @@ namespace SWGOH.Web.Controllers
 
         [Authorize]
         public ActionResult ShipCount(Guid? id)
+        {            
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ShipCountData(DataSourceRequest command, CharCount model)
         {
-            if (id == null)
+            Guid id;
+            if (User.Identity.Name != null && User.Identity.Name != "")
             {
-                if (User.Identity.Name != null && User.Identity.Name != "")
-                {
-                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             var memberShips = db.MemberShips.Where(x => x.Member.Guild_Id == id);
             var ships = db.Ships.Where(x => x.Id == x.Id).OrderBy(x => x.Name);
+            var gridModel = new DataSourceResult();
 
             DataSet ds = new DataSet("Counts");
-            List<ShipCountModel> model = (List<ShipCountModel>)HttpContext.Cache.Get("ShipCount" + id.ToString());
-            if (model == null)
+
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
             {
-                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
-                {
-                    SqlCommand sqlComm = new SqlCommand("ShipCounts", conn);
-                    sqlComm.Parameters.AddWithValue("@Guild_Id", id);
+                SqlCommand sqlComm = new SqlCommand("ShipCounts", conn);
+                sqlComm.Parameters.AddWithValue("@Guild_Id", id);
 
-                    sqlComm.CommandType = CommandType.StoredProcedure;
+                sqlComm.CommandType = CommandType.StoredProcedure;
 
-                    SqlDataAdapter da = new SqlDataAdapter();
-                    da.SelectCommand = sqlComm;
+                SqlDataAdapter da = new SqlDataAdapter();
+                da.SelectCommand = sqlComm;
 
-                    da.Fill(ds);
+                da.Fill(ds);
 
-                    model = ds.Tables[0].AsEnumerable().Select(
-                        dataRow => new ShipCountModel
-                        {
-                            Id = dataRow.Field<Guid>("Ship_Id"),
-                            Name = dataRow.Field<string>("Name"),
-                            Alignment = dataRow.Field<Alignment>("Alignment"),
-                            OneStarCount = dataRow.Field<int>("OneStarCount"),
-                            TwoStarCount = dataRow.Field<int>("TwoStarCount"),
-                            ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
-                            FourStarCount = dataRow.Field<int>("FourStarCount"),
-                            FiveStarCount = dataRow.Field<int>("FiveStarCount"),
-                            SixStarCount = dataRow.Field<int>("SixStarCount"),
-                            SevenStarCount = dataRow.Field<int>("SevenStarCount"),
-                        }).ToList();
-                }
-
-                HttpContext.Cache.Insert("ShipCount" + id.ToString(), model, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                gridModel.Data = ds.Tables[0].AsEnumerable().Select(
+                    dataRow => new ShipCountModel
+                    {
+                        Id = dataRow.Field<Guid>("Ship_Id"),
+                        Name = dataRow.Field<string>("Name"),
+                        Alignment = dataRow.Field<string>("Alignment"),
+                        OneStarCount = dataRow.Field<int>("OneStarCount"),
+                        TwoStarCount = dataRow.Field<int>("TwoStarCount"),
+                        ThreeStarCount = dataRow.Field<int>("ThreeStarCount"),
+                        FourStarCount = dataRow.Field<int>("FourStarCount"),
+                        FiveStarCount = dataRow.Field<int>("FiveStarCount"),
+                        SixStarCount = dataRow.Field<int>("SixStarCount"),
+                        SevenStarCount = dataRow.Field<int>("SevenStarCount"),
+                    }).AsEnumerable().OrderBy(x => x.Name);
+                gridModel.Total = ds.Tables[0].AsEnumerable().Count();
             }
-
-            return View(model);
+            return Json(gridModel);            
         }
 
         [Authorize]

@@ -46,7 +46,9 @@
     <Compile Include="Character.cs" />
     <Compile Include="MemberCharacter.cs" />
     <Compile Include="MemberShip.cs" />
+    <Compile Include="PhaseReport.cs" />
     <Compile Include="PhaseTerritory.cs" />
+    <Compile Include="PlatoonShip.cs" />
     <Compile Include="PlatoonCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ship.cs" />

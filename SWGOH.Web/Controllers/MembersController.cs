@@ -159,9 +159,9 @@ namespace SWGOH.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var members = db.Members.ToList();
+            var members = db.Members.Where(x => x.Guild_Id == id).ToList();
             var gridModel = new DataSourceResult();
-            gridModel.Data = members.Where(x => x.Guild_Id == id).Select(x =>
+            gridModel.Data = members.Select(x =>
             {
                 var characterModel = Mapper.Map<Member, MemberModel>(x);
 

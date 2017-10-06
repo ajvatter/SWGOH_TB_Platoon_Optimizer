@@ -1,0 +1,97 @@
+﻿@model SWGOH.Web.ViewModels.TerritoryPhaseReportModel
+
+@{
+    SelectList list = ViewBag.PlatoonSelectList;
+}
+
+@using (Html.BeginForm("NewPlatoonAssignments", "Reports", new { id = Model.Id, memberId = Model.MemberId }, FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Id)
+    <div class="form form-inline">
+        <div class="form-group">
+            @Html.DropDownListFor(x => x.MemberId, Model.Members, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Get Assignments" class="btn btn-default" id="search-members" />
+        </div>
+        <div class="form-group">
+            @Html.ActionLink("View All", "NewPlatoonAssignments", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })
+        </div>
+    </div>
+}
+
+</br>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div id="products_grid"></div>
+        <div class="chart-loading"></div>
+        <script>
+            $(document).ready(function () {
+                var products_grid = $("#products_grid").kendoGrid({
+                    dataSource: {
+                        type: "json",
+                        transport: {
+                            read: {
+                                url: "@Html.Raw(Url.Action("NewPlatoonAssignmentsData", "Reports", new { id = Model.Id, memberId = Model.MemberId }))",
+                                type: "POST",
+                                dataType: "json",
+                            }
+                        },
+                        schema: {
+                            type: "json",
+                            data: "Data",
+                            total: "Total"
+                        },
+                        group: { field: "AssignedMember"},
+                        pageSize: 15
+                    },
+                    width: 850,
+                    filterable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: false,
+                        pageSizes: true,
+                        buttonCount: 3,
+                        pageSizes: [15, 25, 50, 100],
+                        numeric: true
+                    },
+                    scrollable: true,                    
+                    columns: [
+                    {
+                        field: "CharacterName",
+                        title: "CharacterName",
+                        width: 150
+                        },
+                    {
+                        field: "AssignedPlatoon",
+                        title: "AssignedPlatoon",
+                        width: 150,
+                    },
+                    {
+                        field: "Stars",
+                        title: "Stars",
+                        width: 150
+                    },
+                    {
+                        field: "Level",
+                        title: "Level",
+                        width: 150
+                    },
+                    {
+                        field: "Gear",
+                        title: "Gear",
+                        width: 150
+                    },
+                    ],                    
+                });
+            });
+
+            //$(document).ready(function () {
+            //    // Spin all loading indicators on the page
+            //    kendo.ui.progress($(".chart-loading"), true);
+            //});
+        </script>       
+    </div>
+</div>

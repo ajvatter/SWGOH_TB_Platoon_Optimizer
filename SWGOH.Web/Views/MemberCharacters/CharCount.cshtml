@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<SWGOH.Web.ViewModels.CharCount>
 
-<div class="panel panel-default">
+<div class="panel panel-default">    
     <div class="panel-body">
+        <h4>* Characters higlighted in red signify that your guild has less than ten at seven stars.</h4>
         <div id="grid"></div>
         <script>
             var rowTemplateString = '<tr class="#: SevenStarCount > 10 ? "dsrow" : "" #" ' +
@@ -40,6 +41,7 @@
                     {
                         field: "Name",
                         title: "Name",
+                        template: '<a href="MembersWithCharacter/#=Id#">#=Name#</a>',
                         width: 150
                     },
                     {

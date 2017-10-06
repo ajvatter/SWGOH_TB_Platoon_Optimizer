@@ -28,46 +28,33 @@
         }
     </div>
     <br />
+    @if (Model.Character1 != null)
+    {
     <div class="row">
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character1.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character1.Member.DisplayName)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character2.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character2.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character3.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character3.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character4.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character4.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character5.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character5.Member.Name)
-                </div>*@
         </div>
     </div>
     <hr />
@@ -76,41 +63,26 @@
             <div>
                 @Html.DisplayFor(model => model.Character6.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character6.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character7.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character7.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character8.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character8.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character9.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character9.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character10.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character10.Member.Name)
-                </div>*@
         </div>
     </div>
     <hr />
@@ -119,45 +91,113 @@
             <div>
                 @Html.DisplayFor(model => model.Character11.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character11.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character12.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character12.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character13.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character13.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character14.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character14.Member.Name)
-                </div>*@
         </div>
         <div class="col-md-2">
             <div>
                 @Html.DisplayFor(model => model.Character15.Character.DisplayName)
             </div>
-            @*<div>
-                    Member: @Html.DisplayFor(model => model.Character15.Member.Name)
-                </div>*@
         </div>
     </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship1.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship2.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship3.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship4.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship5.Ship.DisplayName)
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship6.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship7.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship8.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship9.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship10.Ship.DisplayName)
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship11.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship12.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship13.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship14.Ship.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Ship15.Ship.DisplayName)
+                </div>
+            </div>
+        </div>
+    }
 </div>
-@*<p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>*@

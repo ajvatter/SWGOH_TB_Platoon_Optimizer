@@ -16,7 +16,6 @@ namespace SWGOH.Web.AutoMapperProfiles
                 .ForMember(dest => dest.Phase4, mo => mo.MapFrom(src => src.TerritoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()))
                 .ForMember(dest => dest.Phase5, mo => mo.MapFrom(src => src.TerritoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()))
                 .ForMember(dest => dest.Phase6, mo => mo.MapFrom(src => src.TerritoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()));
-
         }
     }
 }

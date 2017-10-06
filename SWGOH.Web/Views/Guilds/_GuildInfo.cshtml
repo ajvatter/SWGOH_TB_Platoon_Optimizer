@@ -14,7 +14,16 @@
     }
     else
     {
-        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary" })        
+        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary", id="getRoster" })        
     }
     <br /><br />    
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#getRoster').click(function () {
+            document.getElementById("getRoster").className += " disabled"
+            return true; // cancel the event
+        });
+    });
+</script>

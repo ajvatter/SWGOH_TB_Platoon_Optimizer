@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace SWGOH.Entities
 {
-    public class PlatoonCharacter
+    public class PlatoonShip
     {
         [Required]
         public Guid Id { get; set; }
 
         public int PlatoonPosition { get; set; }
 
-        public Guid? Character_Id { get; set; }
+        public Guid? Ship_Id { get; set; }
 
-        [ForeignKey("Character_Id")]
-        public virtual Character Character { get; set; }
+        [ForeignKey("Ship_Id")]
+        public virtual Ship Ship { get; set; }
 
         public Guid TerritoryPlatoon_Id { get; set; }
 

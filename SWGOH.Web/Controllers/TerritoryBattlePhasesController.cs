@@ -47,6 +47,8 @@ namespace SWGOH.Web.Controllers
         {
             ViewBag.Territory1_Id = new SelectList(db.PhaseTerritories, "Id", "Id");
             ViewBag.Territory2_Id = new SelectList(db.PhaseTerritories, "Id", "Id");
+            ViewBag.Territory3_Id = new SelectList(db.PhaseTerritories, "Id", "Id");
+
             return View();
         }
 
@@ -56,7 +58,7 @@ namespace SWGOH.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,RequiredStars,Territory1_Id,HasSecondTerritory,Territory2_Id")] TerritoryBattlePhase territoryBattlePhase)
+        public ActionResult Create(TerritoryBattlePhase territoryBattlePhase)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +94,7 @@ namespace SWGOH.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,RequiredStars,Territory1_Id,HasSecondTerritory,Territory2_Id")] TerritoryBattlePhase territoryBattlePhase)
+        public ActionResult Edit(TerritoryBattlePhase territoryBattlePhase)
         {
             if (ModelState.IsValid)
             {

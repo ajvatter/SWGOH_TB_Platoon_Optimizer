@@ -17,6 +17,8 @@ namespace SWGOH.Entities
 
         public bool HasSecondTerritory { get; set; }
 
+        public bool HasThirdTerritory { get; set; }
+
         public int Phase { get; set; }
 
         public virtual ICollection<PhaseTerritory> PhaseTerritories { get; set; }
@@ -24,22 +26,6 @@ namespace SWGOH.Entities
         public Guid TerritoryBattle_Id { get; set; }
 
         [ForeignKey("TerritoryBattle_Id")]
-        public virtual TerritoryBattle TerritoryBattle { get; set; }
-
-        //public Guid? Territory1_Id { get; set; }
-
-        //[ForeignKey("Territory1_Id")]
-        //public virtual PhaseTerritory Territory1 { get; set; }
-
-
-        //public Guid? Territory2_Id { get; set; }
-
-        //[ForeignKey("Territory2_Id")]
-        //public virtual PhaseTerritory Territory2 { get; set; }      
-
-        //public Guid? TerritoryBattle_Id { get; set; }
-
-        //[ForeignKey("TerritoryBattle_Id")]
-        //public virtual TerritoryBattle TerritoryBattle { get; set; }
+        public virtual TerritoryBattle TerritoryBattle { get; set; }      
     }
 }

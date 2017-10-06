@@ -10,5 +10,6 @@ namespace SWGOH.Web.ViewModels
         public string UrlExt { get; set; }
         public int ShipPower { get; set; }
         public int CharacterPower { get; set; }
+        public int GalacticPower { get; set; }
     }
 }

@@ -23,5 +23,6 @@ namespace SWGOH.Entities
         public virtual Guild Guild { get; set; }
 
         public virtual ICollection<MemberCharacter> MemberCharacters { get; set; }
+        public virtual ICollection<MemberShip> MemberShips { get; set; }
     }
 }

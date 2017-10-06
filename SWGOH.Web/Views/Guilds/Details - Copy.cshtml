@@ -12,7 +12,7 @@
     }
     else
     {
-        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Id }, new { @class = "btn btn-primary", onClick = "this.disabled=true; this.value='Sending…';" })
         <br /><br />
         <p>You can refresh your guild roster every 60 minutes. This is based on your members being up to date on swgoh.gg.</p>
     }

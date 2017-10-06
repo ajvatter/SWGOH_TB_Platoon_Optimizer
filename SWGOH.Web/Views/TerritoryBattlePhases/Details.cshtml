@@ -8,7 +8,8 @@
     <br />
     <p>
         @*@Html.ActionLink("Back to Territory Battle", "Details", "Guilds", new { }, new { @class = "btn btn-default" })*@
-        @Html.ActionLink("Platoon Assignments", "PlatoonAssignmentsByCharacter", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })        
+        @*@Html.ActionLink("Platoon Assignments", "PlatoonAssignmentsByCharacter", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })*@
+        @Html.ActionLink("Platoon Assignments New", "NewPlatoonAssignments", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })
     </p>
     <h2>Phase @Model.Phase - @Model.RequiredStars Stars</h2>
 
@@ -23,6 +24,12 @@
                     <a class="nav-link" data-toggle="tab" href="#bottom" role="tab">Bottom Territory</a>
                 </li>
             }
+            @*@if (Model.HasThirdTerritory == true)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#top" role="tab">Top Territory</a>
+                    </li>
+                }*@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="mid" role="tabpanel">
@@ -34,7 +41,12 @@
                     @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory2.Id })
                 </div>
             }
+            @*@if (Model.HasThirdTerritory == true)
+                {
+                    <div class="tab-pane " id="top" role="tabpanel">
+                        @Html.Action("Details", "PhaseTerritories", new { id = Model.Territory3.Id })
+                    </div>
+                }*@
         </div>
     </div>
 </div>
-
