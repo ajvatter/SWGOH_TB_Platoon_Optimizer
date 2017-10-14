@@ -195,8 +195,9 @@ nav.sidebar, .main {
 @media (min-width: 1330px) {
 
     /*Allow main to be next to Nav*/
+    /*keeps 100% minus nav size*/
     .main {
-        width: calc(100% - 300px); /*keeps 100% minus nav size*/
+        width: calc(100% - 300px); 
         margin-left: 300px;
     }
 
@@ -226,4 +227,11 @@ section {
 
 .table td, th {
     text-align: center !important;
+}
+.container-left-aside{
+    float: left;
+    padding-top: 10px;
+    margin-left: 35px;
+    width: 300px;
+
 }

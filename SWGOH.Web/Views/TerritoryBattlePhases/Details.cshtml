@@ -4,16 +4,19 @@
     ViewBag.Title = "Details";
 }
 
-<div>
-    <br />
-    <p>
-        @*@Html.ActionLink("Back to Territory Battle", "Details", "Guilds", new { }, new { @class = "btn btn-default" })*@
-        @*@Html.ActionLink("Platoon Assignments", "PlatoonAssignmentsByCharacter", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })*@
-        @Html.ActionLink("Platoon Assignments New", "NewPlatoonAssignments", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })
-    </p>
-    <h2>Phase @Model.Phase - @Model.RequiredStars Stars</h2>
-
-    <div>
+<div class="container">
+    <br />    
+    <div class="col-md-12">
+        <div class="col-md-10">
+            <h2>Phase @Model.Phase - @Model.RequiredStars Stars</h2>
+        </div>
+        <div class="col-md-2">
+            <p>
+                @Html.ActionLink("Platoon Assignments", "NewPlatoonAssignments", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })
+            </p>
+        </div>
+    </div>
+    <div >
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item active">
                 <a class="nav-link active" data-toggle="tab" href="#mid" role="tab">Middle Territory</a>

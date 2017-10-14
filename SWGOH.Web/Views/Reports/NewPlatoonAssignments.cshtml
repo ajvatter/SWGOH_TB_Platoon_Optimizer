@@ -3,12 +3,21 @@
 @{
     SelectList list = ViewBag.PlatoonSelectList;
 }
-<h2>Platoon Assignments - Phase @ViewBag.PhaseNumber</h2>
 
-@if (User.Identity.IsAuthenticated)
-{
-    @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = Model.Id }, new { @class = "btn btn-default" })
-}
+
+
+
+<div class="col-md-12">
+    <div class="col-md-10">
+        <h2>Platoon Assignments - Phase @ViewBag.PhaseNumber</h2>
+    </div>
+    <div class="col-md-2">
+        @if (User.Identity.IsAuthenticated)
+            {
+            @Html.ActionLink("Back to Phase", "Details", "TerritoryBattlePhases", new { id = Model.Id }, new { @class = "btn btn-default" })
+        }
+    </div>
+</div>
 <br />
 <br />
 <div class="row">

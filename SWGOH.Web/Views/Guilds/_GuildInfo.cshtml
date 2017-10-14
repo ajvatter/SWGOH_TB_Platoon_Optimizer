@@ -1,29 +1,71 @@
 ﻿@model SWGOH.Web.ViewModels.GuildInfoModel
+<div class="container-left-aside hidden-xs">
+    <div class="panel panel-default">
+        <div class="panel-body" style="text-align:center">
+            <h4>@Model.Name</h4>
+            <h6>Registered Members: @Model.MemberCount</h6>
+            <h6>Galactic Power: @Model.GlacticPower.ToString("###,###,###")</h6>
+            <h6>Character Power: @Model.CharacterPower.ToString("###,###,###")</h6>
+            <h6>Ship Power: @Model.ShipPower.ToString("###,###,###")</h6>
+            <h6>Last Sync: @Model.LastScrape.ToString("MM/dd/yy hh:mm tt")</h6>
+            <p>*You can refresh your guild roster once every 6 hours.</p>
+            @if (DateTime.Now < Model.LastScrape.AddHours(6) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
+            {
+                <button class="btn btn-primary disabled">Get Roster</button>
+            }
+            else
+            {
+                @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary", id = "getRoster" })
+            }
+            <br /><br />
+        </div>
+    </div>
+</div>
 
-<div class="col-md-offset-1 col-md-10">
-    <h4>@Model.Name</h4>
-    <h6>Registered Members: @Model.MemberCount</h6>
-    <h6>Galactic Power: @Model.GlacticPower.ToString("###,###,###")</h6>
-    @*<h6>Character Power: @Model.CharacterPower.ToString("###,###,###")</h6>
-    <h6>Ship Power: @Model.ShipPower.ToString("###,###,###")</h6>*@
-    <h6>Last Sync: @Model.LastScrape.ToString("MM/dd/yy hh:mm tt")</h6>
-    <p>*You can refresh your guild roster once every 6 hours.</p>
-    @if (DateTime.Now < Model.LastScrape.AddHours(6) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
-    {
-        <button class="btn btn-primary disabled">Get Roster</button>        
-    }
-    else
-    {
-        @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary", id="getRoster" })        
-    }
-    <br /><br />    
+<div class ="hidden-sm hidden-md hidden-lg" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class=" main container body-content">
+        <div class="panel panel-default">
+            <div class="panel-body" style="text-align:center">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                @Model.Name
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="card-block">
+
+                            <h6>Registered Members: @Model.MemberCount</h6>
+                            <h6>Galactic Power: @Model.GlacticPower.ToString("###,###,###")</h6>
+                            <h6>Character Power: @Model.CharacterPower.ToString("###,###,###")</h6>
+                            <h6>Ship Power: @Model.ShipPower.ToString("###,###,###")</h6>
+                            <h6>Last Sync: @Model.LastScrape.ToString("MM/dd/yy hh:mm tt")</h6>
+                            <p>*You can refresh your guild roster once every 6 hours.</p>
+                            @if (DateTime.Now < Model.LastScrape.AddHours(6) && !Model.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
+                            {
+                                <button class="btn btn-primary disabled">Get Roster</button>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Get Roster", "GetRoster", new { id = Model.Guild_Id }, new { @class = "btn btn-primary", id = "getRoster" })
+                            }
+                            <br /><br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $('#getRoster').click(function () {
             document.getElementById("getRoster").className += " disabled"
-            return true; // cancel the event
+            return true;
         });
     });
 </script>

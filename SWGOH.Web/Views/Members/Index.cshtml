@@ -35,9 +35,11 @@
                     filterable: true,
                     sortable: true,
                     pageable: {
-                        refresh: true,
+                        refresh: false,
                         pageSizes: true,
-                        buttonCount: 5
+                        buttonCount: 3,
+                        pageSizes: [15, 25, 50],
+                        numeric: true
                     },
                     scrollable: true,
                     columns: [

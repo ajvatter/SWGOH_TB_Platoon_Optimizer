@@ -1426,7 +1426,6 @@
     <Content Include="Views\MemberShips\MembersWithShip - Copy.cshtml" />
     <Content Include="Views\Reports\NewPlatoonAssignments.cshtml" />
     <Content Include="Views\TerritoryBattlePhases\TerritoryPhasePlatoonClosures.cshtml" />
-    <Content Include="Views\MemberCharacters\CharCountForPhase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
