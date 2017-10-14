@@ -193,11 +193,11 @@ namespace SWGOH.Web.Controllers
 
                             try
                             {                               
-                                if(ds.AsEnumerable().Where(x => x.Field<string>("Member_Id") == memberCharacters[assignedChars].Member_Id.ToString()).Count() <= 10) {
+                                if(ds.AsEnumerable().Where(x => x.Field<string>("Member_Id") == memberCharacters[assignedChars].Member_Id.ToString()).Count() < 10) {
                                     row[1] = memberCharacters[assignedChars].Id;
                                     row[3] = memberCharacters[assignedChars].Member_Id;
                                 }
-                                else if(ds.AsEnumerable().Where(x => x.Field<string>("Member_Id") == memberCharacters[assignedChars + 1].Member_Id.ToString()).Count() <= 10)
+                                else if(ds.AsEnumerable().Where(x => x.Field<string>("Member_Id") == memberCharacters[assignedChars + 1].Member_Id.ToString()).Count() < 10)
                                 {
                                     row[1] = memberCharacters[assignedChars + 1].Id;
                                     row[3] = memberCharacters[assignedChars + 1].Member_Id;
