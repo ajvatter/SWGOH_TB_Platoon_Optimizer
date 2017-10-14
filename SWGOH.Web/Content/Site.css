@@ -223,3 +223,7 @@ nav:hover .forAnimate {
 section {
     padding-left: 15px;
 }
+
+.table td, th {
+    text-align: center !important;
+}

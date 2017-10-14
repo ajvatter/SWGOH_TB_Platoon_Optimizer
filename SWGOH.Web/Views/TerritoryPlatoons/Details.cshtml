@@ -17,7 +17,15 @@
         {<span>Closed</span>}
     </h3>
     <div>
-        @Html.ActionLink("Assign Characters", "Edit", "TerritoryPlatoons", new { id = Model.Id }, new { @class = "btn btn-default" })
+        @if (Model.Character1 != null)
+        {
+            @Html.ActionLink("Assign Characters", "Edit", "TerritoryPlatoons", new { id = Model.Id }, new { @class = "btn btn-default" })
+        }
+        else
+        {
+            @Html.ActionLink("Assign Ships", "Edit", "TerritoryPlatoons", new { id = Model.Id }, new { @class = "btn btn-default" })
+
+        }
         @if (Model.IsClosed == false)
         {
             @Html.ActionLink("Close Platoon", "ClosePlatoon", "TerritoryPlatoons", new { id = Model.Id }, new { @class = "btn btn-default" })
@@ -30,89 +38,89 @@
     <br />
     @if (Model.Character1 != null)
     {
-    <div class="row">
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character1.Character.DisplayName)
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character1.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character2.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character3.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character4.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character5.Character.DisplayName)
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character2.Character.DisplayName)
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character6.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character7.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character8.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character9.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character10.Character.DisplayName)
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character3.Character.DisplayName)
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character11.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character12.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character13.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character14.Character.DisplayName)
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div>
+                    @Html.DisplayFor(model => model.Character15.Character.DisplayName)
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character4.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character5.Character.DisplayName)
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character6.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character7.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character8.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character9.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character10.Character.DisplayName)
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character11.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character12.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character13.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character14.Character.DisplayName)
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                @Html.DisplayFor(model => model.Character15.Character.DisplayName)
-            </div>
-        </div>
-    </div>
     }
     else
     {

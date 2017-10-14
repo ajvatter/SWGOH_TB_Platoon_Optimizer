@@ -134,6 +134,14 @@ namespace SWGOH.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult TerritoryPhasePlatoonClosures(Guid id)
+        {
+            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
+
+            var model = Mapper.Map<TerritoryBattlePhase, PlatoonClosureModel>(tbp);
+
+            return View(model);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

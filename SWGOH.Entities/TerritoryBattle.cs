@@ -21,35 +21,6 @@ namespace SWGOH.Entities
         
         public bool IsActive { get; set; }
 
-        public virtual ICollection<TerritoryBattlePhase> TerritoryBattlePhases { get; set; }
-        //public Guid? Phase1_Id { get; set; }
-
-        //[ForeignKey("Phase1_Id")]
-        //public virtual TerritoryBattlePhase Phase1 { get; set; }
-
-        //public Guid? Phase2_Id { get; set; }
-
-        //[ForeignKey("Phase2_Id")]
-        //public virtual TerritoryBattlePhase Phase2 { get; set; }
-
-        //public Guid? Phase3_Id { get; set; }
-
-        //[ForeignKey("Phase3_Id")]
-        //public virtual TerritoryBattlePhase Phase3 { get; set; }
-
-        //public Guid? Phase4_Id { get; set; }
-
-        //[ForeignKey("Phase4_Id")]
-        //public virtual TerritoryBattlePhase Phase4 { get; set; }
-
-        //public Guid? Phase5_Id { get; set; }
-
-        //[ForeignKey("Phase5_Id")]
-        //public virtual TerritoryBattlePhase Phase5 { get; set; }
-
-        //public Guid? Phase6_Id { get; set; }
-
-        //[ForeignKey("Phase6_Id")]
-        //public virtual TerritoryBattlePhase Phase6 { get; set; }
+        public virtual ICollection<TerritoryBattlePhase> TerritoryBattlePhases { get; set; }        
     }
 }

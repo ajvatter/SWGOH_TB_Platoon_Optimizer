@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SWGOH.Entities
 {
@@ -25,12 +21,17 @@ namespace SWGOH.Entities
 
         public Guid? MemberShip_Id { get; set; }
 
-        [ForeignKey("MemberCharacter_Id")]
-        public virtual MemberCharacter MemberShip { get; set; }
+        [ForeignKey("MemberShip_Id")]
+        public virtual MemberShip MemberShip { get; set; }
 
         public Guid? PlatoonCharacter_Id { get; set; }
 
         [ForeignKey("PlatoonCharacter_Id")]
         public virtual PlatoonCharacter PlatoonCharacter { get; set; }
+
+        public Guid? PlatoonShip_Id { get; set; }
+
+        [ForeignKey("PlatoonShip_Id")]
+        public virtual PlatoonShip PlatoonShip { get; set; }
     }
 }
