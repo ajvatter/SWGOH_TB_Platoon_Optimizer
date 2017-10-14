@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using SWGOH.Entities;
 using SWGOH.Web.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace SWGOH.Web.AutoMapperProfiles
 {
@@ -18,7 +14,12 @@ namespace SWGOH.Web.AutoMapperProfiles
                 .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.MemberCharacter.Level))
                 .ForMember(dest => dest.Gear, opt => opt.MapFrom(src => src.MemberCharacter.Gear))
                 .ForMember(dest => dest.AssignedMember, opt => opt.MapFrom(src => src.MemberCharacter.Member.DisplayName))
-                .ForMember(dest => dest.AssignedPlatoon, opt => opt.MapFrom(src => src.PlatoonCharacter.TerritoryPlatoon.PhaseTerritory.PhaseLocation + " - " + src.PlatoonCharacter.TerritoryPlatoon.PlatoonNumber));
+                .ForMember(dest => dest.AssignedPlatoon, opt => opt.MapFrom(src => src.PlatoonCharacter.TerritoryPlatoon.PhaseTerritory.PhaseLocation + " - " + src.PlatoonCharacter.TerritoryPlatoon.PlatoonNumber))
+                .ForMember(dest => dest.ShipName, opt => opt.MapFrom(src => src.PlatoonShip.Ship.DisplayName))
+                .ForMember(dest => dest.ShipStars, opt => opt.MapFrom(src => src.MemberShip.Stars))
+                .ForMember(dest => dest.ShipLevel, opt => opt.MapFrom(src => src.MemberShip.Level))
+                .ForMember(dest => dest.AssignedShipMember, opt => opt.MapFrom(src => src.MemberShip.Member.DisplayName))
+                .ForMember(dest => dest.AssignedShipPlatoon, opt => opt.MapFrom(src => src.PlatoonShip.TerritoryPlatoon.PhaseTerritory.PhaseLocation + " - " + src.PlatoonShip.TerritoryPlatoon.PlatoonNumber));
         }
     }
 }

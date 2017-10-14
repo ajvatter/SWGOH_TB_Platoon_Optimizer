@@ -36,7 +36,7 @@ namespace SWGOH.Web.Controllers
             }
 
             List<TerritoryBattle> territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).OrderByDescending(x => x.StartDate).ToList();
-            List<TerritoryBattleModel> model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleModel>>(territoryBattles);
+            List<TerritoryBattleIndexModel> model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleIndexModel>>(territoryBattles);
             return View(model);
         }
 

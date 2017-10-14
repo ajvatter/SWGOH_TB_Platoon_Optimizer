@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SWGOH.Web.ViewModels.TerritoryBattleModel>
+﻿@model IEnumerable<SWGOH.Web.ViewModels.TerritoryBattleIndexModel>
 
 @{
     ViewBag.Title = "Index";
@@ -50,22 +50,22 @@
                     @Html.DisplayFor(modelItem => item.IsActive)
                 </td>*@
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase5.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase5_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { @class = "btn btn-default" })
             </td>
         </tr>
     }

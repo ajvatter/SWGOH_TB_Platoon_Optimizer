@@ -200,6 +200,8 @@ namespace SWGOH.Web.Controllers
                 HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
                 HttpContext.Cache.Remove("PlatoonAssignments" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
                 HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+                HttpContext.Cache.Remove("ShipPlatoonAssignments" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+                HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
                 db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
 
                 return RedirectToAction("Details", "TerritoryBattlePhases", new { id = territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id });
@@ -237,7 +239,8 @@ namespace SWGOH.Web.Controllers
         public ActionResult ClosePlatoon(Guid id)
         {
             TerritoryPlatoon platoon = db.TerritoryPlatoons.Find(id);
-            if(platoon.IsClosed == false) platoon.IsClosed = true;
+            Guid tbpId = platoon.PhaseTerritory.TerritoryBattlePhase_Id;
+            if (platoon.IsClosed == false) platoon.IsClosed = true;
             else platoon.IsClosed = false;
 
             db.Entry(platoon).State = EntityState.Modified;
@@ -246,10 +249,11 @@ namespace SWGOH.Web.Controllers
             HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
             HttpContext.Cache.Remove("PlatoonAssignments" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
             HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+            HttpContext.Cache.Remove("ShipPlatoonAssignments" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+            HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
 
             db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == platoon.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
-
-            return RedirectToAction("Details", "TerritoryBattlePhases", new { id = platoon.PhaseTerritory.TerritoryBattlePhase.Id });
+            return RedirectToAction("Details", "TerritoryBattlePhases", new { id = tbpId });
         }
 
         public ActionResult CopyPlatoon(Guid id)
@@ -317,6 +321,8 @@ namespace SWGOH.Web.Controllers
                 HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
                 HttpContext.Cache.Remove("PlatoonAssignments" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
                 HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+                HttpContext.Cache.Remove("ShipPlatoonAssignments" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+                HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
 
                 db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
 

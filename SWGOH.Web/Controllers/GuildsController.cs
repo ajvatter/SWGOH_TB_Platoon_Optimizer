@@ -243,6 +243,8 @@ namespace SWGOH.Web.Controllers
             HttpContext.Cache.Remove("CharCount" + id.ToString());
             HttpContext.Cache.Remove("PlatoonAssignments" + id.ToString());
             HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + id.ToString());
+            HttpContext.Cache.Remove("ShipPlatoonAssignments" + id.ToString());
+            HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + id.ToString());
 
             UpdateRoster(id, guild);
 
@@ -295,7 +297,15 @@ namespace SWGOH.Web.Controllers
                     continue;
                 }
             }
-
+            foreach(var member in memberDelete)
+            {
+                var phaseReportChars = db.PhaseReports.Where(x => x.MemberCharacter.Member_Id == member.Id).ToList();
+                db.BulkDelete(phaseReportChars);
+                db = new SwgohDb();
+                var phaseReportShips = db.PhaseReports.Where(x => x.MemberShip.Member_Id == member.Id).ToList();
+                db.BulkDelete(phaseReportShips);
+                db = new SwgohDb();
+            }
             db.BulkDelete(memberDelete);
             db = new SwgohDb();
 
@@ -332,8 +342,15 @@ namespace SWGOH.Web.Controllers
                     newMembers.Add(guildMember);
                 }
 
-                List<MemberCharacter> memberCharacters = guildMember.MemberCharacters.ToList();// db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
+                List<MemberCharacter> memberCharacters = new List<MemberCharacter>();
+                try
+                {
+                    memberCharacters = guildMember.MemberCharacters.ToList();// db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
+                }
+                catch
+                {
 
+                }
                 string charHtml;
 
                 HtmlWeb webMember = new HtmlWeb();
@@ -490,8 +507,11 @@ namespace SWGOH.Web.Controllers
                         newMemberCharacter.Id = Guid.NewGuid();
                     }
                 }
-                db.BulkUpdate(memberCharacters);
-                
+                if (memberCharacters.Count() != 0)
+                {
+                    db.BulkUpdate(memberCharacters);
+                }
+                db = new SwgohDb();
                 List<MemberShip> memberShips = db.MemberShips.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
 
                 string shipHtml;
@@ -586,16 +606,24 @@ namespace SWGOH.Web.Controllers
                         newMemberShip.Id = Guid.NewGuid();
                     }
                 }
-                db.BulkUpdate(memberShips);
+                if (memberShips.Count() != 0)
+                {
+                    db.BulkUpdate(memberShips);
+                }
             }
 
             db.BulkUpdate(updateMembers);
+            db = new SwgohDb();
+
             db.BulkInsert(newMembers);
             db = new SwgohDb();
-            db.BulkInsert(memberCharactersAdd);
-            db.BulkInsert(memberShipsAdd);
 
+            db.BulkInsert(memberCharactersAdd);
             db = new SwgohDb();
+
+            db.BulkInsert(memberShipsAdd);
+            db = new SwgohDb();
+
             var guildUpdate = db.Guilds.Find(id);
             var powers = db.Members.Where(x => x.Guild_Id == id).ToList();
             guildUpdate.CharacterPower = powers.Sum(x => x.CharacterPower);

@@ -39,7 +39,6 @@ namespace SWGOH.Web.Controllers
                 {
                     SqlCommand sqlComm = new SqlCommand("PlattonAssignmentsByCharacter", conn);
                     sqlComm.CommandTimeout = 60;
-                    //sqlComm.Parameters.AddWithValue("@guildGuid", phase.TerritoryBattle.Guild_Id);
                     sqlComm.Parameters.AddWithValue("@phaseGuid", phase.Id);
 
                     sqlComm.CommandType = System.Data.CommandType.StoredProcedure;
@@ -126,10 +125,10 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult NewPlatoonAssignments(Guid id, Guid? memberId)
         {
-            //TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
-            //var model = Mapper.Map<TerritoryBattlePhase, TerritoryBattlePhaseModel>(tbp);
+            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
+            ViewBag.PhaseNumber = tbp.Phase;
 
-            var members = db.Members.Select(s => new
+            var members = db.Members.Where(x => x.Guild_Id == tbp.TerritoryBattle.Guild_Id).Select(s => new
             {
                 Text = s.DisplayName,
                 Value = s.Id
@@ -155,11 +154,10 @@ namespace SWGOH.Web.Controllers
             TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
             DataTable ds = new DataTable();
             IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("PlatoonAssignments" + id.ToString());
-            // db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id);
-            //gridModel = (DataSourceResult)HttpContext.Cache.Get("PlatoonAssignments" + id.ToString());
+            
             if (newReport == null)
             {
-                newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id);
+                newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberShip_Id == null);
                 if (newReport.Count() == 0)
                 {
                     using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
@@ -174,6 +172,7 @@ namespace SWGOH.Web.Controllers
 
                         da.Fill(ds);
 
+                        ds.Columns.Add("Member_Id");
                         Guid? currentCharId = Guid.Empty;
                         List<MemberCharacter> memberCharacters = new List<MemberCharacter>();
                         int assignedChars = 0;
@@ -230,6 +229,92 @@ namespace SWGOH.Web.Controllers
                 {
                     gridModel = newReport.ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
                     HttpContext.Cache.Insert("PlatoonAssignmentsGrid" + id.ToString(), gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                }
+            }
+            return Json(gridModel);
+        }
+
+        [HttpPost]
+        public ActionResult ShipPlatoonAssignmentsData(DataSourceRequest command, Guid id, Guid? memberId)
+        {
+            var gridModel = new DataSourceResult();
+
+            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
+            DataTable ds = new DataTable();
+            IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("ShipPlatoonAssignments" + id.ToString());
+
+            if (newReport == null)
+            {
+                newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberCharacter_Id == null);
+                if (newReport.Count() == 0)
+                {
+                    using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
+                    {
+                        SqlCommand sqlComm = new SqlCommand("sp_RequiredPlatoonShips", conn);
+                        sqlComm.Parameters.AddWithValue("@phaseGuid", id);
+
+                        sqlComm.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        SqlDataAdapter da = new SqlDataAdapter();
+                        da.SelectCommand = sqlComm;
+
+                        da.Fill(ds);
+
+                        Guid? currentShipId = Guid.Empty;
+                        List<MemberShip> memberShips = new List<MemberShip>();
+                        int assignedShips = 0;
+
+                        foreach (DataRow row in ds.Rows)
+                        {
+                            if (currentShipId != row.Field<Guid>("Ship_Id"))
+                            {
+                                currentShipId = row.Field<Guid>("Ship_Id");
+                                memberShips = db.MemberShips.Where(x => x.Ship_Id == currentShipId
+                                                                               && x.Member.Guild_Id == tbp.TerritoryBattle.Guild_Id
+                                                                               && x.Stars >= tbp.RequiredStars)
+                                                                               .OrderBy(x => x.Stars)
+                                                                               .ThenBy(x => x.Level).ToList();
+                                assignedShips = 0;
+                            }
+
+                            try
+                            {
+                                row[1] = memberShips[assignedShips].Id;
+                            }
+                            catch
+                            {
+                                row[1] = DBNull.Value;
+                            }
+                            assignedShips++;
+                        }
+                        newReport = ds.AsEnumerable().Select(
+                            dataRow => new PhaseReport
+                            {
+                                Id = Guid.NewGuid(),
+                                PlatoonShip_Id = dataRow.Field<Guid?>("PlatoonShip_Id"),
+                                PlatoonShip = db.PlatoonShips.Find(dataRow.Field<Guid?>("PlatoonShip_Id")),
+                                TerritoryBattlePhase_Id = dataRow.Field<Guid>("TerritoryBattlePhase_Id"),
+                                TerritoryBattlePhase = db.TerritoryBattlePhases.Find(dataRow.Field<Guid>("TerritoryBattlePhase_Id")),
+                                MemberShip_Id = dataRow.Field<Guid?>("Ship_Id"),
+                                MemberShip = db.MemberShips.Find(dataRow.Field<Guid?>("Ship_Id"))
+                            }).ToList();
+
+                        db.BulkInsert(newReport);
+                    }
+                }
+                HttpContext.Cache.Insert("ShipPlatoonAssignments" + id.ToString(), newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+            }
+            if (memberId.HasValue)
+            {
+                gridModel = newReport.Where(x => x.MemberShip.Member_Id == memberId).ToList().ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
+            }
+            else
+            {
+                gridModel = (DataSourceResult)HttpContext.Cache.Get("ShipPlatoonAssignmentsGrid" + id.ToString());
+                if (gridModel == null)
+                {
+                    gridModel = newReport.ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
+                    HttpContext.Cache.Insert("ShipPlatoonAssignmentsGrid" + id.ToString(), gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
                 }
             }
             return Json(gridModel);

@@ -19,8 +19,7 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
+    <IISExpressSSLPort>44307</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -581,6 +580,14 @@
     <Compile Include="Migrations\201710011600380_PlatoonShips.Designer.cs">
       <DependentUpon>201710011600380_PlatoonShips.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710070142349_PhaseReportShips.cs" />
+    <Compile Include="Migrations\201710070142349_PhaseReportShips.Designer.cs">
+      <DependentUpon>201710070142349_PhaseReportShips.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710070211482_PhaseReportsShips2.cs" />
+    <Compile Include="Migrations\201710070211482_PhaseReportsShips2.Designer.cs">
+      <DependentUpon>201710070211482_PhaseReportsShips2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.Designer.cs">
@@ -607,9 +614,11 @@
     <Compile Include="ViewModels\PlatoonAssignmentsByMember.cs" />
     <Compile Include="ViewModels\PlatoonCharacterModel.cs" />
     <Compile Include="ViewModels\PlatoonAssignmentsByCharacter.cs" />
+    <Compile Include="ViewModels\PlatoonClosureModel.cs" />
     <Compile Include="ViewModels\PlatoonCopyModel.cs" />
     <Compile Include="ViewModels\RequiredPlatoonCharacters.cs" />
     <Compile Include="ViewModels\ShipCountModel.cs" />
+    <Compile Include="ViewModels\TerritoryBattleIndexModel.cs" />
     <Compile Include="ViewModels\TerritoryBattleModel.cs" />
     <Compile Include="ViewModels\TerritoryPhaseReportModel.cs" />
     <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
@@ -1416,6 +1425,8 @@
     <Content Include="Views\MemberCharacters\CharCount - Copy.cshtml" />
     <Content Include="Views\MemberShips\MembersWithShip - Copy.cshtml" />
     <Content Include="Views\Reports\NewPlatoonAssignments.cshtml" />
+    <Content Include="Views\TerritoryBattlePhases\TerritoryPhasePlatoonClosures.cshtml" />
+    <Content Include="Views\MemberCharacters\CharCountForPhase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1498,6 +1509,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710011600380_PlatoonShips.resx">
       <DependentUpon>201710011600380_PlatoonShips.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710070142349_PhaseReportShips.resx">
+      <DependentUpon>201710070142349_PhaseReportShips.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710070211482_PhaseReportsShips2.resx">
+      <DependentUpon>201710070211482_PhaseReportsShips2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>
