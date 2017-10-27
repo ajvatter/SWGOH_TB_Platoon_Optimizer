@@ -34,7 +34,7 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/kendo/2014.1.318/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://use.fontawesome.com/8bd7970907.js"></script>
     <script src="~/Scripts/kendo/2014.1.318/kendo.web.min.js"></script>
@@ -49,94 +49,54 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                @Html.ActionLink("AWC Platoon Optimizer", "Index", "Home", new { area = "" }, new { @class = "navbar-brand  navbar-right hidden-xs" })
-                <ul class="nav navbar-nav hidden-sm hidden-md hidden-lg" style="float:none">
+                <ul class="nav navbar-nav" style="float:none">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li id="membersNav"><a href="@Url.Action("Index", "Home")">AWC Platoon Optimizer<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
-                        <li id="membersNav"><a href="@Url.Action("Index", "Members")">Members<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
-                        <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
-                        <li id="membersShipsNav"><a href="@Url.Action("ShipCount", "MemberShips")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-plane"></span></a></li>
-                        <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tower"></span></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guild Info<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li id="membersNav"><a href="@Url.Action("Index", "Members")">Members</a></li>
+                                <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters</a></li>
+                                <li id="membersShipsNav"><a href="@Url.Action("ShipCount", "MemberShips")">Ships</a></li>
+                                <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles</a></li>
+                            </ul>
+                        </li>
                     }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
                     {
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="@Url.Action("Index", "Characters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                                <li><a href="@Url.Action("Index", "Ships")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                                <li><a href="@Url.Action("Index", "Guilds")">Guilds<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("Index", "Characters")">Characters</a></li>
+                                <li><a href="@Url.Action("Index", "Ships")">Ships</a></li>
+                                <li><a href="@Url.Action("Index", "Guilds")">Guilds</a></li>
                             </ul>
                         </li>
                     }
+                    <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
                     @Html.Partial("_LoginPartial")
-                    <li><a href="@Url.Action("Contact", "Home")">Contact<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
                 </ul>
             </div>
         </div>
     </div>
 
+    @if (User.Identity.IsAuthenticated)
+            {
+        @Html.Action("GuildInfo", "Guilds", new { })
+    }
 
-    <nav class="navbar navbar-inverse sidebar navbar-fixed-top hidden-xs" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                @if (User.Identity.IsAuthenticated)
-                {
-                    @Html.Action("GuildInfo", "Guilds", new { })
-                }
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                <ul class="nav navbar-nav" style="float:none">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li id="membersNav"><a href="@Url.Action("Index", "Members")">Members<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-star"></span></a></li>
-                        <li id="membersCharactersNav"><a href="@Url.Action("CharCount", "MemberCharacters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
-                        <li id="membersShipsNav"><a href="@Url.Action("ShipCount", "MemberShips")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-plane"></span></a></li>
-                        <li id="territoryBattlesNav"><a href="@Url.Action("Index", "TerritoryBattles")">Territory Battles<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-tower"></span></a></li>
-                    }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Administrators"))
-                    {
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                        <ul class="dropdown-menu forAnimate" role="menu">
-                            <li><a href="@Url.Action("Index", "Characters")">Characters<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                            <li><a href="@Url.Action("Index", "Ships")">Ships<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                            <li><a href="@Url.Action("Index", "Guilds")">Guilds<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                        </ul>
-                    </li>
-                    }
-                    @Html.Partial("_LoginPartial")
-                    <li><a href="@Url.Action("Contact", "Home")">Contact<span style="font-size:16px;" class="pull-right hidden-xs showopacity"></span></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
     <div class="main">
         <div class="container body-content">
             @RenderBody()
             <hr />
             <footer>
-                <p>&copy; @DateTime.Now.Year - AWC Platoon Optimizer</p>
-                <p>AWC Platoon Optimizer is not affiliated with EA, EA Capital Games, Disney or Lucasfilm LTD.</p>
-                <p>@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Home", new { }, new { })</p>
+                <p>&copy; @DateTime.Now.Year - AWC Platoon Optimizer  |  AWC Platoon Optimizer is not affiliated with EA, EA Capital Games, Disney or Lucasfilm LTD.  |  @Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Home", new { }, new { })</p>
             </footer>
         </div>
     </div>
-
-
-
 </body>
 </html>
 <script type="text/javascript">

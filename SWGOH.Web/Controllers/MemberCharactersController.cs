@@ -151,7 +151,10 @@ namespace SWGOH.Web.Controllers
         {
             var guildId = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
             var character = db.Characters.Where(x => x.Id == id).FirstOrDefault();
-            var membersCharacters = db.MemberCharacters.Where(x => x.Character_Id == character.Id && x.Member.Guild_Id == guildId).OrderBy(x => x.Member.Name);
+            var membersCharacters = db.MemberCharacters
+                .Where(x => x.Character_Id == character.Id && x.Member.Guild_Id == guildId)
+                .OrderByDescending(x => x.Level)
+                .ThenByDescending(x => x.Gear);
 
             MembersWithCharacter membersWithCharacter = new MembersWithCharacter() { Character = character, MembersCharacters = new List<MemberCharacter>() };
 
@@ -159,6 +162,7 @@ namespace SWGOH.Web.Controllers
             {
                 membersWithCharacter.MembersCharacters.Add(member);
             }
+
 
             return View(membersWithCharacter);
         }

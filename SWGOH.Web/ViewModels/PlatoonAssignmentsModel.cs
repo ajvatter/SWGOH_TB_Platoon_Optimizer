@@ -8,6 +8,7 @@
         public int Stars { get; set; }        
         public int Level { get; set; }
         public int Gear { get; set; }
+        public int Power { get; set; }
 
         public string ShipName { get; set; }
         public string AssignedShipMember { get; set; }

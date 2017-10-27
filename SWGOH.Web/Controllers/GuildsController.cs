@@ -284,7 +284,7 @@ namespace SWGOH.Web.Controllers
             foreach (var member in listMembers)
             {
                 string[] memberSplit = member.Split('"');
-                memberExt.Add("https://swgoh.gg" + memberSplit[1] + "collection/");
+                memberExt.Add("https://swgoh.gg" + memberSplit[3] + "collection/");
             }
 
             foreach (var member in members)
@@ -313,13 +313,13 @@ namespace SWGOH.Web.Controllers
             {
                 Member guildMember = new Member();
                 string[] memberSplit = member.Split('"');
-                string charHref = "https://swgoh.gg" + memberSplit[1] + "collection/";
-                string shipHref = "https://swgoh.gg" + memberSplit[1] + "ships/";
-                string name = Regex.Replace(memberSplit[2], "(?s).*?(?<=<strong>)", String.Empty); // memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
+                string charHref = "https://swgoh.gg" + memberSplit[3] + "collection/";
+                string shipHref = "https://swgoh.gg" + memberSplit[3] + "ships/";
+                string name = Regex.Replace(memberSplit[4], "(?s).*?(?<=<strong>)", String.Empty); // memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
                 name = name.Remove(name.IndexOf("</strong>"));
 
-                string toConvertChar = memberSplit[6].Replace(">", "").Replace(" ", "").Replace("</td\n<tdclass=", "");
-                string toConvertShip = memberSplit[8].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "");
+                string toConvertChar = memberSplit[8].Replace(">", "").Replace(" ", "").Replace("</td\n<tdclass=", "");
+                string toConvertShip = memberSplit[10].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "");
 
                 if (members.Any(x => x.UrlExt.Equals(charHref)))
                 {
@@ -435,11 +435,19 @@ namespace SWGOH.Web.Controllers
                             default:
                                 break;
                         }
-                        //newMemberCharacter.Gear = item.Trim().Substring(43, 2).Replace("<", "");
                     }
                     else if (item.Contains("<div class=\"collection-char-gp\""))
                     {
-                        newMemberCharacter.Power = item.Trim().Substring(83).Replace("\">", "");
+                        try
+                        {
+                            var toConvert = item.Substring(0, item.LastIndexOf('/'));
+                            toConvert = toConvert.Substring(toConvert.LastIndexOf('r') + 2);
+                            newMemberCharacter.Power = Convert.ToInt32(toConvert);
+                        }
+                        catch
+                        {
+                            newMemberCharacter.Power = 0;
+                        }
                     }
                     else if (item.Contains("<div class=\"star") && !item.Contains("inactive"))
                     {

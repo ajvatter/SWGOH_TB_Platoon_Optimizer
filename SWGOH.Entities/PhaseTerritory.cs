@@ -18,7 +18,9 @@ namespace SWGOH.Entities
 
         public Guid TerritoryBattlePhase_Id { get; set; }
 
+        public int? PointsEarned { get; set; }
+
         [ForeignKey("TerritoryBattlePhase_Id")]
-        public virtual TerritoryBattlePhase TerritoryBattlePhase { get; set; }      
+        public virtual TerritoryBattlePhase TerritoryBattlePhase { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace SWGOH.Entities
 {
     public class Character
@@ -18,6 +17,7 @@ namespace SWGOH.Entities
         public Alignment Alignment { get; set; }
 
         public virtual ICollection<MemberCharacter> MemberCharacters { get; set; }
+        public virtual ICollection<CharacterClassifier> CharacterClassifiers { get; set; }
     }
     public enum Alignment
     {

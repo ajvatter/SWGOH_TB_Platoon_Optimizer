@@ -13,6 +13,7 @@ namespace SWGOH.Web.AutoMapperProfiles
                 .ForMember(dest => dest.Stars, opt => opt.MapFrom(src => src.MemberCharacter.Stars))
                 .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.MemberCharacter.Level))
                 .ForMember(dest => dest.Gear, opt => opt.MapFrom(src => src.MemberCharacter.Gear))
+                .ForMember(dest => dest.Power, opt => opt.MapFrom(src => src.MemberCharacter.Power))
                 .ForMember(dest => dest.AssignedMember, opt => opt.MapFrom(src => src.MemberCharacter.Member.DisplayName))
                 .ForMember(dest => dest.AssignedPlatoon, opt => opt.MapFrom(src => src.PlatoonCharacter.TerritoryPlatoon.PhaseTerritory.PhaseLocation + " - " + src.PlatoonCharacter.TerritoryPlatoon.PlatoonNumber))
                 .ForMember(dest => dest.ShipName, opt => opt.MapFrom(src => src.PlatoonShip.Ship.DisplayName))
