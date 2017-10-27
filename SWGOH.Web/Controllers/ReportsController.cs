@@ -154,7 +154,7 @@ namespace SWGOH.Web.Controllers
             TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
             DataTable ds = new DataTable();
             IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("PlatoonAssignments" + id.ToString());
-            
+
             if (newReport == null)
             {
                 newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberShip_Id == null);
@@ -185,7 +185,8 @@ namespace SWGOH.Web.Controllers
                                 memberCharacters = db.MemberCharacters.Where(x => x.Character_Id == currentCharId
                                                                                && x.Member.Guild_Id == tbp.TerritoryBattle.Guild_Id
                                                                                && x.Stars >= tbp.RequiredStars)
-                                                                               .OrderBy(x => x.Stars)
+                                                                               .OrderBy(x => x.Power)
+                                                                               .ThenBy(x => x.Stars)
                                                                                .ThenBy(x => x.Level)
                                                                                .ThenBy(x => x.Gear).ToList();
                                 assignedChars = 0;
@@ -215,8 +216,8 @@ namespace SWGOH.Web.Controllers
 
                         db.BulkInsert(newReport);
                     }
-                }            
-                    HttpContext.Cache.Insert("PlatoonAssignments" + id.ToString(), newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                }
+                HttpContext.Cache.Insert("PlatoonAssignments" + id.ToString(), newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
             if (memberId.HasValue)
             {

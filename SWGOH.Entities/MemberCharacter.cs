@@ -15,7 +15,7 @@ namespace SWGOH.Entities
         public int Level { get; set; }
         public int Gear { get; set; }
         public int? Stars { get; set; }
-        public string Power { get; set; }
+        public int Power { get; set; }
         public Guid Character_Id { get; set; }
         public Guid Member_Id { get; set; }
 

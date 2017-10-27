@@ -4,17 +4,17 @@
     Layout = null;
 }
 <div class="row">
-    @if (Model.Bottom1 != null)
+    @if (Model.Top1 != null)
     {
         <div class="col-md-4">
             <table class="table table-responsive table-bordered table-striped">
                 <tr class="text-center">
-                    <th colspan="2">Bottom Territory</th>
+                    <th colspan="2">Top Territory</th>
                 </tr>
                 <tr>
-                    <td class="@(Model.Bottom1 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Top1 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 1
-                        @if (Model.Bottom1 == true)
+                        @if (Model.Top1 == true)
                         {
                             @: - Closed
                         }
@@ -23,9 +23,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Bottom4 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Top4 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 4
-                        @if (Model.Bottom4 == true)
+                        @if (Model.Top4 == true)
                         {
                             @: - Closed
                         }
@@ -36,9 +36,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="@(Model.Bottom2 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Top2 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 2
-                        @if (Model.Bottom2 == true)
+                        @if (Model.Top2 == true)
                         {
                             @: - Closed
                         }
@@ -47,9 +47,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Bottom5 == true ? "dsRow col-md-2" : "col-md-2 ")">
+                    <td class="@(Model.Top5 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 5
-                        @if (Model.Bottom5 == true)
+                        @if (Model.Top5 == true)
                         {
                             @: - Closed
                         }
@@ -60,9 +60,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="@(Model.Bottom3 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Top3 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 3
-                        @if (Model.Bottom3 == true)
+                        @if (Model.Top3 == true)
                         {
                             @: - Closed
                         }
@@ -71,9 +71,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Bottom6 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Top6 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 6
-                        @if (Model.Bottom6 == true)
+                        @if (Model.Top6 == true)
                         {
                             @: - Closed
                         }
@@ -168,17 +168,17 @@
             </table>
         </div>
     }
-    @if (Model.Top1 != null)
+    @if (Model.Bottom1 != null)
     {
         <div class="col-md-4">
             <table class="table table-responsive table-bordered table-striped">
                 <tr class="text-center">
-                    <th colspan="2">Top Territory</th>
+                    <th colspan="2">Bottom Territory</th>
                 </tr>
                 <tr>
-                    <td class="@(Model.Top1 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom1 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 1
-                        @if (Model.Top1 == true)
+                        @if (Model.Bottom1 == true)
                         {
                             @: - Closed
                         }
@@ -187,9 +187,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Top4 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom4 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 4
-                        @if (Model.Top4 == true)
+                        @if (Model.Bottom4 == true)
                         {
                             @: - Closed
                         }
@@ -200,9 +200,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="@(Model.Top2 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom2 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 2
-                        @if (Model.Top2 == true)
+                        @if (Model.Bottom2 == true)
                         {
                             @: - Closed
                         }
@@ -211,9 +211,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Top5 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom5 == true ? "dsRow col-md-2" : "col-md-2 ")">
                         Platoon 5
-                        @if (Model.Top5 == true)
+                        @if (Model.Bottom5 == true)
                         {
                             @: - Closed
                         }
@@ -224,9 +224,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="@(Model.Top3 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom3 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 3
-                        @if (Model.Top3 == true)
+                        @if (Model.Bottom3 == true)
                         {
                             @: - Closed
                         }
@@ -235,9 +235,9 @@
                             @: - Open
                         }
                     </td>
-                    <td class="@(Model.Top6 == true ? "dsRow col-md-2" : " col-md-2")">
+                    <td class="@(Model.Bottom6 == true ? "dsRow col-md-2" : " col-md-2")">
                         Platoon 6
-                        @if (Model.Top6 == true)
+                        @if (Model.Bottom6 == true)
                         {
                             @: - Closed
                         }
@@ -250,4 +250,5 @@
             </table>
         </div>
     }
+
 </div>

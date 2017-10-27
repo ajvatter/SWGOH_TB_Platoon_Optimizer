@@ -472,6 +472,7 @@
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\MemberShipsController.cs" />
     <Compile Include="Controllers\PhaseTerritoriesController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ShipsController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
@@ -587,6 +588,18 @@
     <Compile Include="Migrations\201710070211482_PhaseReportsShips2.cs" />
     <Compile Include="Migrations\201710070211482_PhaseReportsShips2.Designer.cs">
       <DependentUpon>201710070211482_PhaseReportsShips2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710221649549_CharacterClassifiers.cs" />
+    <Compile Include="Migrations\201710221649549_CharacterClassifiers.Designer.cs">
+      <DependentUpon>201710221649549_CharacterClassifiers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710260003069_TerritoryPoints.cs" />
+    <Compile Include="Migrations\201710260003069_TerritoryPoints.Designer.cs">
+      <DependentUpon>201710260003069_TerritoryPoints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710260146521_PowerToInt.cs" />
+    <Compile Include="Migrations\201710260146521_PowerToInt.Designer.cs">
+      <DependentUpon>201710260146521_PowerToInt.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
@@ -1426,6 +1439,7 @@
     <Content Include="Views\MemberShips\MembersWithShip - Copy.cshtml" />
     <Content Include="Views\Reports\NewPlatoonAssignments.cshtml" />
     <Content Include="Views\TerritoryBattlePhases\TerritoryPhasePlatoonClosures.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1514,6 +1528,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710070211482_PhaseReportsShips2.resx">
       <DependentUpon>201710070211482_PhaseReportsShips2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710221649549_CharacterClassifiers.resx">
+      <DependentUpon>201710221649549_CharacterClassifiers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710260003069_TerritoryPoints.resx">
+      <DependentUpon>201710260003069_TerritoryPoints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710260146521_PowerToInt.resx">
+      <DependentUpon>201710260146521_PowerToInt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

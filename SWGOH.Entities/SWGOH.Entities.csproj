@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterClassifier.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Guild.cs" />
     <Compile Include="Character.cs" />

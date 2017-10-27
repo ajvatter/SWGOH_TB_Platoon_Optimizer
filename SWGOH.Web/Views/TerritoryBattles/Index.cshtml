@@ -12,9 +12,6 @@
         <th>
             Start Date
         </th>
-        @*<th>
-                Is Active
-            </th>*@
         <th>
             Phase 1
         </th>
@@ -33,10 +30,12 @@
         <th>
             Phase 6
         </th>
-        @*<th>
-                Stars Earned
+        @if (User.IsInRole("Administrators"))
+        {
+            <th>
+                Actions
             </th>
-            <th></th>*@
+        }
     </tr>
 
     @foreach (var item in Model)
@@ -45,10 +44,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
-
-            @*<td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>*@
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { @class = "btn btn-default" })
             </td>
@@ -67,13 +62,20 @@
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { @class = "btn btn-default" })
             </td>
+            @if (User.IsInRole("Administrators"))
+            {
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+
+                </td>
+            }
         </tr>
     }
 
 </table>
 
 <script type="text/javascript">
-    $( document ).ready(function () {
+    $(document).ready(function () {
         document.getElementById('territoryBattlesNav').classList.add('active');
     });
 </script>

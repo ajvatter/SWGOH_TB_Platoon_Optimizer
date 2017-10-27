@@ -498,7 +498,7 @@ namespace SWGOH.Web.Controllers
         }
 
         // GET: TerritoryBattles/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Administrators")]
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -514,12 +514,28 @@ namespace SWGOH.Web.Controllers
         }
 
         // POST: TerritoryBattles/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Administrators")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
             TerritoryBattle territoryBattle = db.TerritoryBattles.Find(id);
+
+            db.PlatoonShips.RemoveRange(db.PlatoonShips.Where(x => x.TerritoryPlatoon.PhaseTerritory.TerritoryBattlePhase.TerritoryBattle_Id == id).ToList());
+            db.SaveChanges();
+
+            db.PlatoonCharacters.RemoveRange(db.PlatoonCharacters.Where(x => x.TerritoryPlatoon.PhaseTerritory.TerritoryBattlePhase.TerritoryBattle_Id == id).ToList());
+            db.SaveChanges();
+
+            db.TerritoryPlatoons.RemoveRange(db.TerritoryPlatoons.Where(x => x.PhaseTerritory.TerritoryBattlePhase.TerritoryBattle_Id == id).ToList());
+            db.SaveChanges();
+
+            db.PhaseTerritories.RemoveRange(db.PhaseTerritories.Where(x => x.TerritoryBattlePhase.TerritoryBattle_Id == id).ToList());
+            db.SaveChanges();
+
+            db.TerritoryBattlePhases.RemoveRange(db.TerritoryBattlePhases.Where(x => x.TerritoryBattle_Id == id).ToList());
+            db.SaveChanges();
+
             db.TerritoryBattles.Remove(territoryBattle);
             db.SaveChanges();
             return RedirectToAction("Index");
