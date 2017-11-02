@@ -20,5 +20,7 @@ namespace SWGOH.Entities
         public Alignment Alignment { get; set; }
 
         public virtual ICollection<MemberShip> MemberShips { get; set; }
+        public string BaseId { get; set; }
+        public int MaxPower { get; set; }
     }
 }

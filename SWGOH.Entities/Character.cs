@@ -15,7 +15,8 @@ namespace SWGOH.Entities
         [StringLength(255)]
         public string UrlExt { get; set; }
         public Alignment Alignment { get; set; }
-
+        public string BaseId { get; set; }
+        public int MaxPower { get; set; }
         public virtual ICollection<MemberCharacter> MemberCharacters { get; set; }
         public virtual ICollection<CharacterClassifier> CharacterClassifiers { get; set; }
     }
