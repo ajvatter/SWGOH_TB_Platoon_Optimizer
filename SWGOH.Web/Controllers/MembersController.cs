@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EntityFramework.BulkExtensions;
 using Nop.Web.Framework.Kendoui;
 using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
@@ -132,13 +133,21 @@ namespace SWGOH.Web.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Officers")]
         public ActionResult DeleteConfirmed(Guid id)
-        {            
+        {
+            var phaseReportChars = db.PhaseReports.Where(x => x.MemberCharacter.Member_Id == id).ToList();
+            db.BulkDelete(phaseReportChars);
+            db = new SwgohDb();
+            var phaseReportShips = db.PhaseReports.Where(x => x.MemberShip.Member_Id == id).ToList();
+            db.BulkDelete(phaseReportShips);
+            db = new SwgohDb();
+
             Member member = db.Members.Find(id);
             Guild guild = db.Guilds.Find(member.Guild_Id);
             guild.CharacterPower = guild.CharacterPower - member.CharacterPower;
             guild.ShipPower = guild.ShipPower - member.ShipPower;
             db.Entry(guild).State = EntityState.Modified;
             db.Members.Remove(member);
+            db.Entry(guild).State = EntityState.Modified;
             db.SaveChanges();
 
             HttpContext.Cache.Remove("CharCount" + member.Guild_Id.ToString());

@@ -30,12 +30,9 @@
         <th>
             Phase 6
         </th>
-        @if (User.IsInRole("Administrators"))
-        {
-            <th>
-                Actions
-            </th>
-        }
+        <th>
+            Actions
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -62,13 +59,15 @@
             <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase6_Id }, new { @class = "btn btn-default" })
             </td>
-            @if (User.IsInRole("Administrators"))
-            {
-                <td>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            <td>
+                @Html.ActionLink("Manage Results", "ManageResults", new { id = item.Id }, new { @class = "btn btn-default" })
 
-                </td>
-            }
+                
+                @if (User.IsInRole("Administrators"))
+                {
+                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                }
+            </td>
         </tr>
     }
 

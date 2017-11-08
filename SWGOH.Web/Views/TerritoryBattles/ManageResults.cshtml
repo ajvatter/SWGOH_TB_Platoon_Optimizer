@@ -1,0 +1,297 @@
+﻿@model SWGOH.Web.ViewModels.TerritoryBattleResultsModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-10">
+            <h2>Territory Battle - @Model.StartDate</h2>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div id="accordion" role="tablist">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Phase 1 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase1" id="phase1onestar" class="phase1" value="885000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase1" id="phase1twostar" class="phase1" value="6580000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase1" id="phase1threestar" class="phase1" value="45600000">3 Star</label>
+                            @*@Html.EditorFor(model => model.Phase1Points, new { htmlAttributes = new { @name = "amount", id="amount", onkeyup = "phase1()" } })*@
+                            @Html.EditorFor(model => model.Phase1Points, new { htmlAttributes = new { @name = "Phase1Points", id = "Phase1Points" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Phase 2 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Top Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase2UpperChar" class="phase2UpperChar" value="1900000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase2UpperChar" class="phase2UpperChar" value="19800000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase2UpperChar" class="phase2UpperChar" value="55000000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase2TopCharPoints, new { htmlAttributes = new { @name = "Phase2TopCharPoints", id = "Phase2TopCharPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Bottom Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase2LowerChar" class="phase2LowerChar" value="1900000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase2LowerChar" class="phase2LowerChar" value="15400000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase2LowerChar" class="phase2LowerChar" value="43800000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase2BottomCharPoints, new { htmlAttributes = new { @name = "Phase2BottomCharPoints", id = "Phase2BottomCharPoints" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            Phase 3 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Fleet Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase3Fleet" class="phase3Fleet" value="1920000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3Fleet" class="phase3Fleet" value="16500000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3Fleet" class="phase3Fleet" value="26300000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase3FleetPoints, new { htmlAttributes = new { @name = "Phase3FleetPoints", id = "Phase3FleetPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Top Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase3UpperChar" class="phase3UpperChar" value="3510000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3UpperChar" class="phase3UpperChar" value="27600000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3UpperChar" class="phase3UpperChar" value="64800000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase3TopCharPoints, new { htmlAttributes = new { @name = "Phase3TopCharPoints", id = "Phase3TopCharPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Bottom Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase3LowerChar" class="phase3LowerChar" value="3510000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3LowerChar" class="phase3LowerChar" value="22400000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase3LowerChar" class="phase3LowerChar" value="52200000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase3BottomCharPoints, new { htmlAttributes = new { @name = "Phase3BottomCharPoints", id = "Phase3BottomCharPoints" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFive">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            Phase 4 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Fleet Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase4Fleet" class="phase4Fleet" value="2176000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4Fleet" class="phase4Fleet" value="18700000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4Fleet" class="phase4Fleet" value="29800000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase4FleetPoints, new { htmlAttributes = new { @name = "Phase4FleetPoints", id = "Phase4FleetPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Top Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase4UpperChar" class="phase4UpperChar" value="5220000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4UpperChar" class="phase4UpperChar" value="34700000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4UpperChar" class="phase4UpperChar" value="78100000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase4TopCharPoints, new { htmlAttributes = new { @name = "Phase4TopCharPoints", id = "Phase4TopCharPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Bottom Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase4LowerChar" class="phase4LowerChar" value="5220000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4LowerChar" class="phase4LowerChar" value="28300000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase4LowerChar" class="phase4LowerChar" value="62600000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase4BottomCharPoints, new { htmlAttributes = new { @name = "Phase4BottomCharPoints", id = "Phase4BottomCharPoints" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingSix">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                            Phase 5 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseSix" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Fleet Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase5Fleet" class="phase5Fleet" value="18000000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5Fleet" class="phase5Fleet" value="34000000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5Fleet" class="phase5Fleet" value="50000000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase5FleetPoints, new { htmlAttributes = new { @name = "Phase5FleetPoints", id = "Phase5FleetPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Top Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase5UpperChar" class="phase5UpperChar" value="14100000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5UpperChar" class="phase5UpperChar" value="49300000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5UpperChar" class="phase5UpperChar" value="89800000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase5TopCharPoints, new { htmlAttributes = new { @name = "Phase5TopCharPoints", id = "Phase5TopCharPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Bottom Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase5LowerChar" class="phase5LowerChar" value="11100000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5LowerChar" class="phase5LowerChar" value="41000000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase5LowerChar" class="phase5LowerChar" value="71600000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase5BottomCharPoints, new { htmlAttributes = new { @name = "Phase5BottomCharPoints", id = "Phase5BottomCharPoints" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingSeven">
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                            Phase 6 Results
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseSeven" class="collapse" role="tabpanel" aria-labelledby="headingSeven" data-parent="#accordion">
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <h4>Fleet Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase6Fleet" class="phase6Fleet" value="21600000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6Fleet" class="phase6Fleet" value="40800000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6Fleet" class="phase6Fleet" value="60000000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase6FleetPoints, new { htmlAttributes = new { @name = "Phase6FleetPoints", id = "Phase6FleetPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Top Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase6UpperChar" class="phase6UpperChar" value="31000000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6UpperChar" class="phase6UpperChar" value="72000000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6UpperChar" class="phase6UpperChar" value="100000000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase6TopCharPoints, new { htmlAttributes = new { @name = "Phase6TopCharPoints", id = "Phase6TopCharPoints" } })
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Bottom Char Territory</h4>
+                            <label class="radio-inline"><input type="radio" name="phase6LowerChar" class="phase6LowerChar" value="26400000">1 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6LowerChar" class="phase6LowerChar" value="59300000">2 Star</label>
+                            <label class="radio-inline"><input type="radio" name="phase6LowerChar" class="phase6LowerChar" value="81500000">3 Star</label>
+                            @Html.EditorFor(model => model.Phase6BottomCharPoints, new { htmlAttributes = new { @name = "Phase6BottomCharPoints", id = "Phase6BottomCharPoints" } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('.phase1').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase1Points').val(selectedValue);
+        });
+
+        $('.phase2UpperChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase2TopCharPoints').val(selectedValue);
+        });
+        $('.phase2LowerChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase2BottomCharPoints').val(selectedValue);
+        });
+
+        $('.phase3Fleet').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase3FleetPoints').val(selectedValue);
+        });
+        $('.phase3UpperChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase3TopCharPoints').val(selectedValue);
+        });
+        $('.phase3LowerChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase3BottomCharPoints').val(selectedValue);
+        });
+
+        $('.phase4Fleet').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase4FleetPoints').val(selectedValue);
+        });
+        $('.phase4UpperChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase4TopCharPoints').val(selectedValue);
+        });
+        $('.phase4LowerChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase4BottomCharPoints').val(selectedValue);
+        });
+
+        $('.phase5Fleet').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase5FleetPoints').val(selectedValue);
+        });
+        $('.phase5UpperChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase5TopCharPoints').val(selectedValue);
+        });
+        $('.phase5LowerChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase5BottomCharPoints').val(selectedValue);
+        });
+
+        $('.phase6Fleet').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase6FleetPoints').val(selectedValue);
+        });
+        $('.phase6UpperChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase6TopCharPoints').val(selectedValue);
+        });
+        $('.phase6LowerChar').change(function (e) {
+            var selectedValue = $(this).val();
+            $('#Phase6BottomCharPoints').val(selectedValue);
+        });
+
+
+
+
+
+
+
+        //function phase1() {
+        //    var amount = document.getElementById("amount");
+        //    if (amount.value >= 45600000) {
+        //        $('#phase1threestar').checked = true;
+        //    }
+        //    else if (amount.value >= 6580000) {
+        //        $('#phase1twostar').checked = true;
+        //    }
+        //    else if (amount.value >= 885000) {
+        //        $('#phase1onestar').checked = true;
+        //    }
+        //}
+    </script>
+}

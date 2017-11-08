@@ -632,6 +632,7 @@
     <Compile Include="ViewModels\RequiredPlatoonCharacters.cs" />
     <Compile Include="ViewModels\ShipCountModel.cs" />
     <Compile Include="ViewModels\TerritoryBattleIndexModel.cs" />
+    <Compile Include="ViewModels\TerritoryBattleResultsModel.cs" />
     <Compile Include="ViewModels\TerritoryBattleModel.cs" />
     <Compile Include="ViewModels\TerritoryPhaseReportModel.cs" />
     <Compile Include="ViewModels\TerritoryBattlePhaseModel.cs" />
@@ -1440,6 +1441,7 @@
     <Content Include="Views\Reports\NewPlatoonAssignments.cshtml" />
     <Content Include="Views\TerritoryBattlePhases\TerritoryPhasePlatoonClosures.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\TerritoryBattles\ManageResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

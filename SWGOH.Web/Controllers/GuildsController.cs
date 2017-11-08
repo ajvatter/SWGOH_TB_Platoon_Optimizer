@@ -442,7 +442,7 @@ namespace SWGOH.Web.Controllers
                         {
                             var toConvert = item.Substring(0, item.LastIndexOf('/'));
                             toConvert = toConvert.Substring(toConvert.LastIndexOf('r') + 2);
-                            newMemberCharacter.Power = Convert.ToInt32(toConvert);
+                            newMemberCharacter.Power = Convert.ToInt32(toConvert.Replace(",", ""));
                         }
                         catch
                         {

@@ -40,6 +40,70 @@ namespace SWGOH.Web.Controllers
             return View(model);
         }
 
+        public ActionResult ManageResults(Guid id)
+        {
+            var tb = db.TerritoryBattles.Find(id);
+
+            var model = Mapper.Map<TerritoryBattle, TerritoryBattleResultsModel>(tb);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult ManageResults(TerritoryBattleResultsModel territoryBattleResultsModel)
+        {
+            if (ModelState.IsValid)
+            {
+                List<PhaseTerritory> phaseTerritories = db.PhaseTerritories
+                    .Where(x => x.TerritoryBattlePhase.TerritoryBattle_Id == territoryBattleResultsModel.Id).ToList();
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 1).TotalPointsEarned =
+                    territoryBattleResultsModel.Phase1Points;
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 2 && x.PhaseLocation == "Middle").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase2TopCharPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 2 && x.PhaseLocation == "Bottom").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase2BottomCharPoints;
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 3 && x.PhaseLocation == "Top").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase3FleetPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 3 && x.PhaseLocation == "Middle").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase3TopCharPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 3 && x.PhaseLocation == "Bottom").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase3BottomCharPoints;
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 4 && x.PhaseLocation == "Top").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase4FleetPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 4 && x.PhaseLocation == "Middle").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase4TopCharPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 4 && x.PhaseLocation == "Bottom").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase4BottomCharPoints;
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 5 && x.PhaseLocation == "Top").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase5FleetPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 5 && x.PhaseLocation == "Middle").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase5TopCharPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 5 && x.PhaseLocation == "Bottom").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase5BottomCharPoints;
+
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 6 && x.PhaseLocation == "Top").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase6FleetPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 6 && x.PhaseLocation == "Middle").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase6TopCharPoints;
+                phaseTerritories.FirstOrDefault(x => x.TerritoryBattlePhase.Phase == 6 && x.PhaseLocation == "Bottom").TotalPointsEarned =
+                    territoryBattleResultsModel.Phase6BottomCharPoints;
+
+                db = new SwgohDb();
+                db.BulkUpdate(phaseTerritories);
+                //db.Entry(territoryBattle).State = EntityState.Modified;
+                //db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(territoryBattleResultsModel);
+        }
+
         // GET: TerritoryBattles/Details/5
         [Authorize]
         public ActionResult Details(Guid? id)
