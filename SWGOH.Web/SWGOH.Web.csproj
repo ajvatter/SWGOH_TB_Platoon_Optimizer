@@ -473,6 +473,7 @@
     <Compile Include="Controllers\MemberShipsController.cs" />
     <Compile Include="Controllers\PhaseTerritoriesController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ShipsController.cs" />
     <Compile Include="Controllers\TerritoryBattlePhasesController.cs" />
@@ -600,6 +601,18 @@
     <Compile Include="Migrations\201710260146521_PowerToInt.cs" />
     <Compile Include="Migrations\201710260146521_PowerToInt.Designer.cs">
       <DependentUpon>201710260146521_PowerToInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711220057430_GuildEvents.cs" />
+    <Compile Include="Migrations\201711220057430_GuildEvents.Designer.cs">
+      <DependentUpon>201711220057430_GuildEvents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801132315041_ReportGuildId.cs" />
+    <Compile Include="Migrations\201801132315041_ReportGuildId.Designer.cs">
+      <DependentUpon>201801132315041_ReportGuildId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802160310434_RefreshReportParameter.cs" />
+    <Compile Include="Migrations\201802160310434_RefreshReportParameter.Designer.cs">
+      <DependentUpon>201802160310434_RefreshReportParameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\IdentityMigrations\201709041524384_Initial.cs" />
@@ -1442,6 +1455,7 @@
     <Content Include="Views\TerritoryBattlePhases\TerritoryPhasePlatoonClosures.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\TerritoryBattles\ManageResults.cshtml" />
+    <Content Include="Views\Tools\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1539,6 +1553,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710260146521_PowerToInt.resx">
       <DependentUpon>201710260146521_PowerToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711220057430_GuildEvents.resx">
+      <DependentUpon>201711220057430_GuildEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801132315041_ReportGuildId.resx">
+      <DependentUpon>201801132315041_ReportGuildId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802160310434_RefreshReportParameter.resx">
+      <DependentUpon>201802160310434_RefreshReportParameter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\IdentityMigrations\201709041524384_Initial.resx">
       <DependentUpon>201709041524384_Initial.cs</DependentUpon>

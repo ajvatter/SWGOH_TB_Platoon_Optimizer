@@ -79,7 +79,8 @@ namespace SWGOH.Web.Controllers
             }
             TerritoryPlatoonModel model = Mapper.Map<TerritoryPlatoon, TerritoryPlatoonModel>(territoryPlatoon);
 
-            model.Items = db.Characters.Where(x => x.Alignment == Alignment.LightSide).OrderBy(x => x.DisplayName);           
+            model.Items = db.Characters.OrderBy(x => x.DisplayName);
+            //model.Items = db.Characters.Where(x => x.Alignment == Alignment.LightSide).OrderBy(x => x.DisplayName);           
             model.Ships = db.Ships.OrderBy(x => x.DisplayName);
             return View(model);
         }
@@ -97,38 +98,23 @@ namespace SWGOH.Web.Controllers
 
                 if (territoryPlatoon.PlatoonCharacters.Count() != 0)
                 {
-                    List<PlatoonCharacter> pcUpdate = new List<PlatoonCharacter>();
+                    var pcUpdate = new List<PlatoonCharacter>();
 
-                    var character1 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character1.Id).FirstOrDefault();
-                    var character2 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character2.Id).FirstOrDefault();
-                    var character3 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character3.Id).FirstOrDefault();
-                    var character4 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character4.Id).FirstOrDefault();
-                    var character5 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character5.Id).FirstOrDefault();
-                    var character6 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character6.Id).FirstOrDefault();
-                    var character7 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character7.Id).FirstOrDefault();
-                    var character8 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character8.Id).FirstOrDefault();
-                    var character9 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character9.Id).FirstOrDefault();
-                    var character10 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character10.Id).FirstOrDefault();
-                    var character11 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character11.Id).FirstOrDefault();
-                    var character12 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character12.Id).FirstOrDefault();
-                    var character13 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character13.Id).FirstOrDefault();
-                    var character14 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character14.Id).FirstOrDefault();
-                    var character15 = territoryPlatoon.PlatoonCharacters.Where(x => x.Id == territoryPlatoonModel.Character15.Id).FirstOrDefault();
-                    character1 = territoryPlatoonModel.Character1;
-                    character2 = territoryPlatoonModel.Character2;
-                    character3 = territoryPlatoonModel.Character3;
-                    character4 = territoryPlatoonModel.Character4;
-                    character5 = territoryPlatoonModel.Character5;
-                    character6 = territoryPlatoonModel.Character6;
-                    character7 = territoryPlatoonModel.Character7;
-                    character8 = territoryPlatoonModel.Character8;
-                    character9 = territoryPlatoonModel.Character9;
-                    character10 = territoryPlatoonModel.Character10;
-                    character11 = territoryPlatoonModel.Character11;
-                    character12 = territoryPlatoonModel.Character12;
-                    character13 = territoryPlatoonModel.Character13;
-                    character14 = territoryPlatoonModel.Character14;
-                    character15 = territoryPlatoonModel.Character15;
+                    var character1 = territoryPlatoonModel.Character1;
+                    var character2 = territoryPlatoonModel.Character2;
+                    var character3 = territoryPlatoonModel.Character3;
+                    var character4 = territoryPlatoonModel.Character4;
+                    var character5 = territoryPlatoonModel.Character5;
+                    var character6 = territoryPlatoonModel.Character6;
+                    var character7 = territoryPlatoonModel.Character7;
+                    var character8 = territoryPlatoonModel.Character8;
+                    var character9 = territoryPlatoonModel.Character9;
+                    var character10 = territoryPlatoonModel.Character10;
+                    var character11 = territoryPlatoonModel.Character11;
+                    var character12 = territoryPlatoonModel.Character12;
+                    var character13 = territoryPlatoonModel.Character13;
+                    var character14 = territoryPlatoonModel.Character14;
+                    var character15 = territoryPlatoonModel.Character15;
                     pcUpdate.Add(character1);
                     pcUpdate.Add(character2);
                     pcUpdate.Add(character3);
@@ -148,38 +134,23 @@ namespace SWGOH.Web.Controllers
                 }
                 else
                 {
-                    List<PlatoonShip> psUpdate = new List<PlatoonShip>();
+                    var psUpdate = new List<PlatoonShip>();
 
-                    var ship1 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship1.Id).FirstOrDefault();
-                    var ship2 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship2.Id).FirstOrDefault();
-                    var ship3 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship3.Id).FirstOrDefault();
-                    var ship4 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship4.Id).FirstOrDefault();
-                    var ship5 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship5.Id).FirstOrDefault();
-                    var ship6 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship6.Id).FirstOrDefault();
-                    var ship7 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship7.Id).FirstOrDefault();
-                    var ship8 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship8.Id).FirstOrDefault();
-                    var ship9 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship9.Id).FirstOrDefault();
-                    var ship10 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship10.Id).FirstOrDefault();
-                    var ship11 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship11.Id).FirstOrDefault();
-                    var ship12 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship12.Id).FirstOrDefault();
-                    var ship13 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship13.Id).FirstOrDefault();
-                    var ship14 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship14.Id).FirstOrDefault();
-                    var ship15 = territoryPlatoon.PlatoonShips.Where(x => x.Id == territoryPlatoonModel.Ship15.Id).FirstOrDefault();
-                    ship1 = territoryPlatoonModel.Ship1;
-                    ship2 = territoryPlatoonModel.Ship2;
-                    ship3 = territoryPlatoonModel.Ship3;
-                    ship4 = territoryPlatoonModel.Ship4;
-                    ship5 = territoryPlatoonModel.Ship5;
-                    ship6 = territoryPlatoonModel.Ship6;
-                    ship7 = territoryPlatoonModel.Ship7;
-                    ship8 = territoryPlatoonModel.Ship8;
-                    ship9 = territoryPlatoonModel.Ship9;
-                    ship10 = territoryPlatoonModel.Ship10;
-                    ship11 = territoryPlatoonModel.Ship11;
-                    ship12 = territoryPlatoonModel.Ship12;
-                    ship13 = territoryPlatoonModel.Ship13;
-                    ship14 = territoryPlatoonModel.Ship14;
-                    ship15 = territoryPlatoonModel.Ship15;
+                    var ship1 = territoryPlatoonModel.Ship1;
+                    var ship2 = territoryPlatoonModel.Ship2;
+                    var ship3 = territoryPlatoonModel.Ship3;
+                    var ship4 = territoryPlatoonModel.Ship4;
+                    var ship5 = territoryPlatoonModel.Ship5;
+                    var ship6 = territoryPlatoonModel.Ship6;
+                    var ship7 = territoryPlatoonModel.Ship7;
+                    var ship8 = territoryPlatoonModel.Ship8;
+                    var ship9 = territoryPlatoonModel.Ship9;
+                    var ship10 = territoryPlatoonModel.Ship10;
+                    var ship11 = territoryPlatoonModel.Ship11;
+                    var ship12 = territoryPlatoonModel.Ship12;
+                    var ship13 = territoryPlatoonModel.Ship13;
+                    var ship14 = territoryPlatoonModel.Ship14;
+                    var ship15 = territoryPlatoonModel.Ship15;
                     psUpdate.Add(ship1);
                     psUpdate.Add(ship2);
                     psUpdate.Add(ship3);
@@ -197,12 +168,13 @@ namespace SWGOH.Web.Controllers
                     psUpdate.Add(ship15);
                     db.BulkUpdate(psUpdate);
                 }
-                HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("PlatoonAssignments" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("ShipPlatoonAssignments" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
+
+                var tbp = db.TerritoryBattlePhases.Find(territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id);
+
+                tbp.RefreshReport = true;
+
+                db.Entry(tbp).State = EntityState.Modified;
+                db.SaveChanges();
 
                 return RedirectToAction("Details", "TerritoryBattlePhases", new { id = territoryPlatoon.PhaseTerritory.TerritoryBattlePhase_Id });
             }
@@ -246,22 +218,18 @@ namespace SWGOH.Web.Controllers
             db.Entry(platoon).State = EntityState.Modified;
             db.SaveChanges();
 
-            HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-            HttpContext.Cache.Remove("PlatoonAssignments" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-            HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-            HttpContext.Cache.Remove("ShipPlatoonAssignments" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-            HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + platoon.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+            var tbp = db.TerritoryBattlePhases.Find(platoon.PhaseTerritory.TerritoryBattlePhase_Id);
 
-            db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == platoon.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
+            tbp.RefreshReport = true;
+
+            db.Entry(tbp).State = EntityState.Modified;
+            db.SaveChanges();
+
             return RedirectToAction("Details", "TerritoryBattlePhases", new { id = tbpId });
         }
 
         public ActionResult CopyPlatoon(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             TerritoryPlatoon territoryPlatoon = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == id);
             if (territoryPlatoon == null)
             {
@@ -299,32 +267,31 @@ namespace SWGOH.Web.Controllers
                 TerritoryPlatoon territoryPlatoonFrom = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == platoonCopyModel.SelectedPlatoonId);
                 TerritoryPlatoon territoryPlatoonTo = db.TerritoryPlatoons.Include(x => x.PlatoonCharacters).SingleOrDefault(x => x.Id == platoonCopyModel.CopyToPlatoonId);
 
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 1).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 1).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 2).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 2).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 3).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 3).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 4).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 4).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 5).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 5).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 6).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 6).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 7).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 7).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 8).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 8).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 9).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 9).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 10).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 10).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 11).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 11).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 12).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 12).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 13).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 13).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 14).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 14).FirstOrDefault().Character_Id;
-                territoryPlatoonTo.PlatoonCharacters.Where(x => x.PlatoonPosition == 15).FirstOrDefault().Character_Id = territoryPlatoonFrom.PlatoonCharacters.Where(x => x.PlatoonPosition == 15).FirstOrDefault().Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 1).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 1).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 2).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 2).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 3).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 3).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 4).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 4).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 5).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 5).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 6).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 6).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 7).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 7).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 8).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 8).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 9).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 9).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 10).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 10).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 11).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 11).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 12).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 12).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 13).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 13).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 14).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 14).Character_Id;
+                territoryPlatoonTo.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 15).Character_Id = territoryPlatoonFrom.PlatoonCharacters.FirstOrDefault(x => x.PlatoonPosition == 15).Character_Id;
 
                 db.Entry(territoryPlatoonTo).State = EntityState.Modified;
                 db.SaveChanges();
 
-                HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("PlatoonAssignments" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("ShipPlatoonAssignments" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
-                HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id.ToString());
+                var tbp = db.TerritoryBattlePhases.Find(territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id);
 
-                db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == territoryPlatoonTo.PhaseTerritory.TerritoryBattlePhase_Id).ToList());
+                tbp.RefreshReport = true;
+
+                db.Entry(tbp).State = EntityState.Modified;
+                db.SaveChanges();
 
                 return RedirectToAction("Edit", "TerritoryPlatoons", new { id = territoryPlatoonTo.Id });
             }

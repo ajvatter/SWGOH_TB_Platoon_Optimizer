@@ -6,11 +6,9 @@ using SWGOH.Web.Models;
 using SWGOH.Web.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -76,9 +74,9 @@ namespace SWGOH.Web.Controllers
         {
             if (id == null)
             {
-                if (User.Identity.Name != null && User.Identity.Name != "")
+                if (!string.IsNullOrEmpty(User.Identity.Name))
                 {
-                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                    id = userDb.Users.FirstOrDefault(x => x.UserName == User.Identity.Name)?.Guild_Id;
                 }
                 else
                 {
@@ -98,7 +96,7 @@ namespace SWGOH.Web.Controllers
         public PartialViewResult GuildInfo()
         {
 
-            var id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+            var id = userDb.Users.FirstOrDefault(x => x.UserName == User.Identity.Name).Guild_Id;
 
             Guild guild = db.Guilds.Find(id);
 
@@ -107,7 +105,7 @@ namespace SWGOH.Web.Controllers
                 Guild_Id = guild.Id,
                 Name = guild.Name,
                 LastScrape = guild.LastScrape,
-                MemberCount = db.Members.Where(x => x.Guild.Id == guild.Id).Count(),
+                MemberCount = db.Members.Count(x => x.Guild.Id == guild.Id),
                 GlacticPower = guild.ShipPower + guild.CharacterPower,
                 CharacterPower = guild.CharacterPower,
                 ShipPower = guild.ShipPower
@@ -216,11 +214,8 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult GetRoster(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Guild guild = db.Guilds.Find(id);
+            var guild = db.Guilds.Find(id);
+
             if (guild == null)
             {
                 return HttpNotFound();
@@ -229,7 +224,7 @@ namespace SWGOH.Web.Controllers
             if (DateTime.Now < guild.LastScrape.AddHours(6) && !guild.LastScrape.Equals(DateTime.Parse("1900-01-01 00:00:00.000")) && !User.IsInRole("Administrators"))
             {
                 ViewBag.Error = "Please wait until " + guild.LastScrape.AddHours(1).ToShortTimeString() + " to run again.";
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Details", new { id });
             }
 
             if (!User.IsInRole("Administrators"))
@@ -240,15 +235,21 @@ namespace SWGOH.Web.Controllers
                 db = new SwgohDb();
             }
 
-            HttpContext.Cache.Remove("CharCount" + id.ToString());
-            HttpContext.Cache.Remove("PlatoonAssignments" + id.ToString());
-            HttpContext.Cache.Remove("PlatoonAssignmentsGrid" + id.ToString());
-            HttpContext.Cache.Remove("ShipPlatoonAssignments" + id.ToString());
-            HttpContext.Cache.Remove("ShipPlatoonAssignmentsGrid" + id.ToString());
+            var tbps = db.TerritoryBattlePhases.Where(x => x.TerritoryBattle.Guild_Id == id);
 
+            foreach (var tbp in tbps)
+            {
+                tbp.RefreshReport = true;
+            }
+
+            db.BulkUpdate(tbps);
+
+            var db1 = new SwgohDb();
+            var toDelete = db1.PhaseReports.Where(x => x.GuildId == id);
+            db.BulkDelete(toDelete);
             UpdateRoster(id, guild);
 
-            return RedirectToAction("Index", "Members", new { id = id });
+            return RedirectToAction("Index", "Members", new { id });
         }
 
         private void UpdateRoster(Guid id, Guild guild)
@@ -257,18 +258,18 @@ namespace SWGOH.Web.Controllers
             IEnumerable<Character> characters = db.Characters.ToList();
             IEnumerable<Ship> ships = db.Ships.ToList();
             
-
             HtmlWeb web = new HtmlWeb();
-            HtmlAgilityPack.HtmlDocument doc = web.Load(guild.UrlExt + "/?stats=gp");
+            HtmlDocument doc = web.Load(guild.UrlExt + "gp/");
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div/table/tbody")[0].InnerHtml;
-
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul")[0].InnerHtml;
 
             Regex regexChar = new Regex(@"\n");
             Regex regex = new Regex(@"<tr>");
             string[] substrings = regex.Split(guildMemberTable);
-
+            
             List<string> listMembers = substrings.ToList();
+
+            listMembers.RemoveRange(0,2);
 
             listMembers.Remove("\n");            
 
@@ -291,10 +292,9 @@ namespace SWGOH.Web.Controllers
             {
                 if (!memberExt.Any(x => x.Contains(member.UrlExt)))
                 {
-                    memberDelete.Add(db.Members.Where(x => x.UrlExt == member.UrlExt).FirstOrDefault());
+                    memberDelete.Add(db.Members.FirstOrDefault(x => x.UrlExt == member.UrlExt));
                     db.SaveChanges();
                     db = new SwgohDb();
-                    continue;
                 }
             }
             foreach(var member in memberDelete)
@@ -316,14 +316,14 @@ namespace SWGOH.Web.Controllers
                 string charHref = "https://swgoh.gg" + memberSplit[3] + "collection/";
                 string shipHref = "https://swgoh.gg" + memberSplit[3] + "ships/";
                 string name = Regex.Replace(memberSplit[4], "(?s).*?(?<=<strong>)", String.Empty); // memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
-                name = name.Remove(name.IndexOf("</strong>"));
+                name = name.Remove(name.IndexOf("</strong>", StringComparison.Ordinal));
 
                 string toConvertChar = memberSplit[8].Replace(">", "").Replace(" ", "").Replace("</td\n<tdclass=", "");
-                string toConvertShip = memberSplit[10].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "");
+                string toConvertShip = memberSplit[10].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "").Replace("</tbody\n</table\n</div\n</li\n", "");
 
                 if (members.Any(x => x.UrlExt.Equals(charHref)))
                 {
-                    guildMember = members.Where(x => x.UrlExt.Equals(charHref)).FirstOrDefault();
+                    guildMember = members.FirstOrDefault(x => x.UrlExt.Equals(charHref));
                     guildMember.Name = name;
                     guildMember.DisplayName = HttpUtility.HtmlDecode(name);
                     guildMember.CharacterPower = Convert.ToInt32(toConvertChar);
@@ -342,7 +342,7 @@ namespace SWGOH.Web.Controllers
                     newMembers.Add(guildMember);
                 }
 
-                List<MemberCharacter> memberCharacters = new List<MemberCharacter>();
+                var memberCharacters = new List<MemberCharacter>();
                 try
                 {
                     memberCharacters = guildMember.MemberCharacters.ToList();// db.MemberCharacters.Where(x => x.Member_Id.Equals(guildMember.Id)).ToList();
@@ -353,8 +353,7 @@ namespace SWGOH.Web.Controllers
                 }
                 string charHtml;
 
-                HtmlWeb webMember = new HtmlWeb();
-                HtmlAgilityPack.HtmlDocument docMember = web.Load(charHref);
+                HtmlDocument docMember = web.Load(charHref);
                 try
                 {
                     charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]")[0].InnerHtml;
@@ -380,9 +379,11 @@ namespace SWGOH.Web.Controllers
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"collection-char collection-char-dark-side\">"));
                 listCharacters.RemoveAll(x => x.Equals("<div class=\"col-xs-6 col-sm-3 col-md-3 col-lg-2\">"));
 
-                MemberCharacter newMemberCharacter = new MemberCharacter();
-                newMemberCharacter.Member_Id = guildMember.Id;
-                newMemberCharacter.Id = Guid.NewGuid();
+                var newMemberCharacter = new MemberCharacter
+                {
+                    Member_Id = guildMember.Id,
+                    Id = Guid.NewGuid()
+                };
 
                 foreach (var item in listCharacters)
                 {
@@ -393,7 +394,7 @@ namespace SWGOH.Web.Controllers
                     else if (item.Contains("<div class=\"char-portrait-full-gear-level\">"))
                     {
                         var romanNum = Regex.Replace(item, "(?s).*?(?<=\">)", String.Empty); 
-                        romanNum = romanNum.Remove(romanNum.IndexOf("</"));
+                        romanNum = romanNum.Remove(romanNum.IndexOf("</", StringComparison.Ordinal));
                         switch (romanNum)
                         {
                             case "I":
@@ -432,8 +433,6 @@ namespace SWGOH.Web.Controllers
                             case "XII":
                                 newMemberCharacter.Gear = 12;
                                 break;
-                            default:
-                                break;
                         }
                     }
                     else if (item.Contains("<div class=\"collection-char-gp\""))
@@ -466,27 +465,27 @@ namespace SWGOH.Web.Controllers
                         {
                             if (charName.Contains("Fulcrum"))
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Ahsoka Tano (Fulcrum)")).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Equals("Ahsoka Tano (Fulcrum)")).Id;
                             }
                             else if (charName.Equals("Ahsoka Tano") || charName.Equals("hsoka Tano"))
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Ahsoka Tano")).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Equals("Ahsoka Tano")).Id;
                             }
                             else if (charName.Equals("Jawa"))
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Jawa")).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Equals("Jawa")).Id;
                             }
                             else if (charName.Equals("Han Solo"))
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Han Solo")).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Equals("Han Solo")).Id;
                             }
                             else if (charName.Equals("Stormtrooper"))
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Equals("Stormtrooper")).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Equals("Stormtrooper")).Id;
                             }
                             else
                             {
-                                newMemberCharacter.Character_Id = charNames.Where(x => x.Name.Substring(1).Contains(charName)).FirstOrDefault().Id;
+                                newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Substring(1).Contains(charName)).Id;
                             }
                         }
 
@@ -494,14 +493,14 @@ namespace SWGOH.Web.Controllers
                         {
                             if (memberCharacters.Any(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)))
                             {
-                                MemberCharacter memberCharacterUpdate = memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault();
+                                MemberCharacter memberCharacterUpdate = memberCharacters.FirstOrDefault(x => x.Character_Id.Equals(newMemberCharacter.Character_Id));
 
                                 memberCharacterUpdate.Level = newMemberCharacter.Level;
                                 memberCharacterUpdate.Power = newMemberCharacter.Power;
                                 memberCharacterUpdate.Stars = newMemberCharacter.Stars;
                                 memberCharacterUpdate.Gear = newMemberCharacter.Gear;
 
-                                memberCharacters.Remove(memberCharacters.Where(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)).FirstOrDefault());
+                                memberCharacters.Remove(memberCharacters.FirstOrDefault(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)));
                                 memberCharacters.Add(memberCharacterUpdate);
                             }
                             else
@@ -510,9 +509,11 @@ namespace SWGOH.Web.Controllers
 
                             }
                         }
-                        newMemberCharacter = new MemberCharacter();
-                        newMemberCharacter.Member_Id = guildMember.Id;
-                        newMemberCharacter.Id = Guid.NewGuid();
+                        newMemberCharacter = new MemberCharacter
+                        {
+                            Member_Id = guildMember.Id,
+                            Id = Guid.NewGuid()
+                        };
                     }
                 }
                 if (memberCharacters.Count() != 0)
@@ -524,8 +525,7 @@ namespace SWGOH.Web.Controllers
 
                 string shipHtml;
 
-                HtmlWeb webShip = new HtmlWeb();
-                HtmlAgilityPack.HtmlDocument docShip = web.Load(shipHref);
+                HtmlDocument docShip = web.Load(shipHref);
                 try
                 {
                     shipHtml = docShip.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div")[0].InnerHtml;
@@ -561,9 +561,11 @@ namespace SWGOH.Web.Controllers
                 listShips.RemoveAll(x => x.StartsWith("<div class=\"star star"));
                 listShips.RemoveAll(x => x.StartsWith("<div class=\"char-portrait"));
 
-                MemberShip newMemberShip = new MemberShip();
-                newMemberShip.Member_Id = guildMember.Id;
-                newMemberShip.Id = Guid.NewGuid();
+                MemberShip newMemberShip = new MemberShip
+                {
+                    Member_Id = guildMember.Id,
+                    Id = Guid.NewGuid()
+                };
 
                 foreach (var item in listShips)
                 {
@@ -582,7 +584,7 @@ namespace SWGOH.Web.Controllers
                     }
                     else if (item.Contains("<div class=\"collection-ship-name\">"))
                     {
-                        string shipName = Regex.Replace(item, "<.*?>", String.Empty);
+                        var shipName = Regex.Replace(item, "<.*?>", string.Empty);
                         IEnumerable<Ship> shipNames = ships.Where(x => x.Name.Equals(shipName.Trim())).ToList();
 
                         if (shipNames.Count() == 1)
@@ -594,13 +596,13 @@ namespace SWGOH.Web.Controllers
                         {
                             if (memberShips.Any(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)))
                             {
-                                MemberShip memberShipUpdate = memberShips.Where(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)).FirstOrDefault();
+                                MemberShip memberShipUpdate = memberShips.FirstOrDefault(x => x.Ship_Id.Equals(newMemberShip.Ship_Id));
 
                                 memberShipUpdate.Level = newMemberShip.Level;
                                 memberShipUpdate.Power = newMemberShip.Power;
                                 memberShipUpdate.Stars = newMemberShip.Stars;
 
-                                memberShips.Remove(memberShips.Where(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)).FirstOrDefault());
+                                memberShips.Remove(memberShips.FirstOrDefault(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)));
                                 memberShips.Add(memberShipUpdate);
                             }
                             else
@@ -609,12 +611,14 @@ namespace SWGOH.Web.Controllers
 
                             }
                         }
-                        newMemberShip = new MemberShip();
-                        newMemberShip.Member_Id = guildMember.Id;
-                        newMemberShip.Id = Guid.NewGuid();
+                        newMemberShip = new MemberShip
+                        {
+                            Member_Id = guildMember.Id,
+                            Id = Guid.NewGuid()
+                        };
                     }
                 }
-                if (memberShips.Count() != 0)
+                if (memberShips.Count != 0)
                 {
                     db.BulkUpdate(memberShips);
                 }

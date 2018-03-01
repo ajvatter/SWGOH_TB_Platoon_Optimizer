@@ -1,9 +1,44 @@
-﻿@model IEnumerable<SWGOH.Web.ViewModels.TerritoryBattleIndexModel>
+﻿@using SWGOH.Entities
+@model IEnumerable<SWGOH.Web.ViewModels.TerritoryBattleIndexModel>
 
 @{
     ViewBag.Title = "Index";
 }
 
+<div class="col-md-4">
+<table class="table table-responsive table-bordered table-striped">
+    <tr>
+        <th colspan="2">
+            Static Assignment Reports
+        </th>
+    </tr>
+    <tr>
+        <td>
+            @Html.ActionLink("Phase 1 Light Side", "NewPlatoonAssignments", "Reports", new { id = "71d89b52-b916-4857-b4bb-676dc2e61e8f", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })         
+        </td>
+        <td>
+            @*@Html.ActionLink("Phase 1 DS", "NewPlatoonAssignments", "Reports", new { id = "5bcfa797-43be-4976-a1d4-85d906a12af0", guildId = item.Guild.Id }, new { @class = "btn btn-default" })*@
+            <button disabled>Phase 1 Dark Side WIP</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.ActionLink("Phase 2 Light Side", "NewPlatoonAssignments", "Reports", new { id = "4193b7d2-f864-4d20-8e2c-8f18e4f0969c", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })
+        </td>
+        <td>
+            @Html.ActionLink("Phase 2 Dark Side", "NewPlatoonAssignments", "Reports", new { id = "4565fbc0-fd6c-4698-8013-41ce98141a79", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.ActionLink("Phase 3 Light Side", "NewPlatoonAssignments", "Reports", new { id = "bfa2eee5-289f-488a-9a1d-5da3a75fc9c2", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })
+        </td>
+        <td>
+            @Html.ActionLink("Phase 3 Dark Side", "NewPlatoonAssignments", "Reports", new { id = "88fc67aa-92ba-422c-9083-2d51dc1d4698", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })
+        </td>
+    </tr>
+</table>
+</div>
 <p>
     @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-default" })
 </p>
@@ -11,15 +46,6 @@
     <tr>
         <th>
             Start Date
-        </th>
-        <th>
-            Phase 1
-        </th>
-        <th>
-            Phase 2
-        </th>
-        <th>
-            Phase 3
         </th>
         <th>
             Phase 4
@@ -42,15 +68,6 @@
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
             <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase1_Id }, new { @class = "btn btn-default" })
-            </td>
-            <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase2_Id }, new { @class = "btn btn-default" })
-            </td>
-            <td>
-                @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase3_Id }, new { @class = "btn btn-default" })
-            </td>
-            <td>
                 @Html.ActionLink("View Phase", "Details", "TerritoryBattlePhases", new { id = item.Phase4_Id }, new { @class = "btn btn-default" })
             </td>
             <td>
@@ -62,10 +79,10 @@
             <td>
                 @Html.ActionLink("Manage Results", "ManageResults", new { id = item.Id }, new { @class = "btn btn-default" })
 
-                
+
                 @if (User.IsInRole("Administrators"))
                 {
-                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 }
             </td>
         </tr>

@@ -3,9 +3,11 @@ using SWGOH.Entities;
 using SWGOH.Web.DataContexts;
 using SWGOH.Web.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Caching;
@@ -13,8 +15,6 @@ using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using EntityFramework.BulkExtensions;
-using Kendo.Mvc;
-using System.Linq.Expressions;
 
 namespace SWGOH.Web.Controllers
 {
@@ -122,8 +122,7 @@ namespace SWGOH.Web.Controllers
             return PartialView(model);
         }
 
-
-        public ActionResult NewPlatoonAssignments(Guid id, Guid? memberId)
+        public ActionResult NewPlatoonAssignments(Guid id, Guid? memberId, Guid? guildId = null)
         {
             TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
             ViewBag.PhaseNumber = tbp.Phase;
@@ -140,42 +139,65 @@ namespace SWGOH.Web.Controllers
             {
                 Members = selectList,
                 MemberId = memberId,
-                Id = id
+                Id = id,
             };
+
+            ViewBag.GuildId = guildId;
+
+            if (tbp.RefreshReport)
+            {
+                foreach (DictionaryEntry key in HttpContext.Cache)
+                {
+                    HttpContext.Cache.Remove(key.Key.ToString());
+                }
+
+                db.BulkDelete(db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id).ToList());
+
+                db = new SwgohDb();
+                var tbpUpdate = db.TerritoryBattlePhases.Find(id);
+                tbpUpdate.RefreshReport = false;
+
+                db.Entry(tbpUpdate).State = EntityState.Modified;
+                db.SaveChanges();
+                db = new SwgohDb();
+            }
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult NewPlatoonAssignmentsData(DataSourceRequest command, Guid id, Guid? memberId)
+        public ActionResult NewPlatoonAssignmentsData(DataSourceRequest command, Guid id, Guid? memberId, Guid? guildId = null)
         {
-            var gridModel = new DataSourceResult();
+            DataSourceResult gridModel;
 
-            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
-            DataTable ds = new DataTable();
-            IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("PlatoonAssignments" + id.ToString());
+            var tbp = db.TerritoryBattlePhases.Find(id);
+            if (guildId == null)
+            {
+                guildId = tbp.TerritoryBattle.Guild_Id;
+            }
+            var ds = new DataTable();
+            var newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("PlatoonAssignments" + id + guildId);
 
             if (newReport == null)
             {
-                newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberShip_Id == null);
+                newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.GuildId == guildId && x.MemberShip_Id == null);
                 if (newReport.Count() == 0)
                 {
-                    using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
+                    using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                     {
-                        SqlCommand sqlComm = new SqlCommand("sp_RequiredPlatoonCharacters", conn);
+                        var sqlComm = new SqlCommand("sp_RequiredPlatoonCharacters", conn);
                         sqlComm.Parameters.AddWithValue("@phaseGuid", id);
 
                         sqlComm.CommandType = System.Data.CommandType.StoredProcedure;
 
-                        SqlDataAdapter da = new SqlDataAdapter();
-                        da.SelectCommand = sqlComm;
+                        var da = new SqlDataAdapter {SelectCommand = sqlComm};
 
                         da.Fill(ds);
 
                         ds.Columns.Add("Member_Id");
                         Guid? currentCharId = Guid.Empty;
-                        List<MemberCharacter> memberCharacters = new List<MemberCharacter>();
-                        int assignedChars = 0;
+                        var memberCharacters = new List<MemberCharacter>();
+                        var assignedChars = 0;
 
                         foreach (DataRow row in ds.Rows)
                         {
@@ -183,7 +205,7 @@ namespace SWGOH.Web.Controllers
                             {
                                 currentCharId = row.Field<Guid>("Character_Id");
                                 memberCharacters = db.MemberCharacters.Where(x => x.Character_Id == currentCharId
-                                                                               && x.Member.Guild_Id == tbp.TerritoryBattle.Guild_Id
+                                                                               && x.Member.Guild_Id == guildId
                                                                                && x.Stars >= tbp.RequiredStars)
                                                                                .OrderBy(x => x.Power)
                                                                                .ThenBy(x => x.Stars)
@@ -211,25 +233,26 @@ namespace SWGOH.Web.Controllers
                                 TerritoryBattlePhase_Id = dataRow.Field<Guid>("TerritoryBattlePhase_Id"),
                                 TerritoryBattlePhase = db.TerritoryBattlePhases.Find(dataRow.Field<Guid>("TerritoryBattlePhase_Id")),
                                 MemberCharacter_Id = dataRow.Field<Guid?>("Character_Id"),
-                                MemberCharacter = db.MemberCharacters.Find(dataRow.Field<Guid?>("Character_Id"))
+                                MemberCharacter = db.MemberCharacters.Find(dataRow.Field<Guid?>("Character_Id")),
+                                GuildId = guildId
                             }).ToList();
 
                         db.BulkInsert(newReport);
                     }
                 }
-                HttpContext.Cache.Insert("PlatoonAssignments" + id.ToString(), newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                HttpContext.Cache.Insert("PlatoonAssignments" + id + guildId, newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
             if (memberId.HasValue)
             {
-                gridModel = newReport.Where(x => x.MemberCharacter.Member_Id == memberId).ToList().ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
+                gridModel = newReport.Where(x => x.MemberCharacter.Member_Id == memberId).ToList().ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
             }
             else
             {
-                gridModel = (DataSourceResult)HttpContext.Cache.Get("PlatoonAssignmentsGrid" + id.ToString());
+                gridModel = (DataSourceResult)HttpContext.Cache.Get("PlatoonAssignmentsGrid" + id + guildId);
                 if (gridModel == null)
                 {
-                    gridModel = newReport.ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
-                    HttpContext.Cache.Insert("PlatoonAssignmentsGrid" + id.ToString(), gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                    gridModel = newReport.ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                    HttpContext.Cache.Insert("PlatoonAssignmentsGrid" + id + guildId, gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
                 }
             }
             return Json(gridModel);
@@ -361,8 +384,10 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult ClearReports(Guid id)
         {
-            HttpContext.Cache.Remove("PlatoonAssignmentsByCharacter" + id.ToString());
-            HttpContext.Cache.Remove("PlatoonAssignmentsByMember" + id.ToString());
+            foreach (DictionaryEntry key in HttpContext.Cache)
+            {
+                HttpContext.Cache.Remove(key.Key.ToString());
+            }
 
             return RedirectToAction("PlatoonAssignmentsByCharacter", "Reports", new { id = id });
         }

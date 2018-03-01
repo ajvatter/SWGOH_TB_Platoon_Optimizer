@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuildEvent.cs" />
     <Compile Include="CharacterClassifier.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="Guild.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="GuildEventSchedule.cs" />
     <Compile Include="MemberCharacter.cs" />
     <Compile Include="MemberShip.cs" />
     <Compile Include="PhaseReport.cs" />

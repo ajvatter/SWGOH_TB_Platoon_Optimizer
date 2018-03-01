@@ -24,5 +24,7 @@ namespace SWGOH.Entities
 
         [ForeignKey("TerritoryBattle_Id")]
         public virtual TerritoryBattle TerritoryBattle { get; set; }      
+
+        public bool RefreshReport { get; set; }
     }
 }

@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewBag.Title = "Deployment Calculator";
+}
+
+<h2>How much can be deployed?</h2>
+<h5>This tool helps guild members to determine if they can deploy or not. To use this you need to know the target stars your guild is aiming for. For combat points this is estimating on an average of 5 waves being completed plus 70,000 for the combat team. The combats remaining field should be the total of all remaining combats to be completed for a territory, not special missions. This tool works on the assumption that every member will complete those combats which may not be the case in later phases.</h5>
+
+<form action="" id="deployForm" onsubmit="return false;">
+    <fieldset>
+        <div>
+            <label>Phase: </label>
+            <br/>
+            <input type="radio" name="selectedphase" value="1" />
+            Phase 1
+            <br />
+            <input type="radio" name="selectedphase" value="2" />
+            Phase 2
+            <br />
+            <input type="radio" name="selectedphase" value="3" />
+            Phase 3
+            <br />
+            <input type="radio" name="selectedphase" value="4" />
+            Phase 4
+            <br />
+            <input type="radio" name="selectedphase" value="5" />
+            Phase 5
+            <br />
+            <input type="radio" name="selectedphase" value="6" />
+            Phase 6
+        </div>
+        <br />
+        <div>
+            <label>Territory: </label>
+            <br />
+            <input type="radio" name="selectedterritory" value="Middle" />
+            Middle
+            <br />
+            <input type="radio" name="selectedterritory" value="Bottom" />
+            Bottom
+        </div>
+        <br />
+        <div>
+            <label>Target Stars: </label>
+            <br />
+            <input type="radio" name="targetstars" value="1" />
+            1 Star
+            <br />
+            <input type="radio" name="targetstars" value="2" />
+            2 Star
+            <br />
+            <input type="radio" name="targetstars" value="3" />
+            3 Star
+        </div>
+        <br />
+        <p>
+            <label for='remainingcombats' class="inlinelabel">
+                Ramaining Combat: 
+            </label>
+            <input type="number" id="remainingcombats" name='remainingcombats' />
+        </p>
+
+        <p>
+            <label for='currentpoints' class="inlinelabel">
+                Current Points: 
+            </label>
+            <input type="number" id="currentpoints" name='currentpoints' />
+        </p>
+        <button class="btn btn-primary" onclick="calculateTotal()">Calculate</button>
+        <h3 id="toDeploy" class="text-danger"></h3>
+    </fieldset>
+</form>
+
+<script type="text/javascript">
+    //Set up an associative array
+    //The keys represent the size of the cake
+    //The values represent the cost of the cake i.e A 10" cake cost's $35
+    var territoryStarPoints = new Array();
+    territoryStarPoints["11Middle"] = 885000;
+    territoryStarPoints["12Middle"] = 6580000;
+    territoryStarPoints["13Middle"] = 45600000;
+    territoryStarPoints["11Bottom"] = 885000;
+    territoryStarPoints["12Bottom"] = 6580000;
+    territoryStarPoints["13Bottom"] = 45600000;
+    territoryStarPoints["21Middle"] = 1900000;
+    territoryStarPoints["22Middle"] = 19800000;
+    territoryStarPoints["23Middle"] = 55000000;
+    territoryStarPoints["21Bottom"] = 1900000;
+    territoryStarPoints["22Bottom"] = 15400000;
+    territoryStarPoints["23Bottom"] = 43800000;
+    territoryStarPoints["31Middle"] = 3510000;
+    territoryStarPoints["32Middle"] = 27600000;
+    territoryStarPoints["33Middle"] = 64800000;
+    territoryStarPoints["31Bottom"] = 3510000;
+    territoryStarPoints["32Bottom"] = 22400000;
+    territoryStarPoints["33Bottom"] = 52200000;
+    territoryStarPoints["41Middle"] = 5220000;
+    territoryStarPoints["42Middle"] = 34700000;
+    territoryStarPoints["43Middle"] = 78100000;
+    territoryStarPoints["41Bottom"] = 5220000;
+    territoryStarPoints["42Bottom"] = 28300000;
+    territoryStarPoints["43Bottom"] = 62600000;
+    territoryStarPoints["51Middle"] = 14100000;
+    territoryStarPoints["52Middle"] = 49300000;
+    territoryStarPoints["53Middle"] = 89800000;
+    territoryStarPoints["51Bottom"] = 11100000;
+    territoryStarPoints["52Bottom"] = 41000000;
+    territoryStarPoints["53Bottom"] = 71600000;
+    territoryStarPoints["61Middle"] = 31000000;
+    territoryStarPoints["62Middle"] = 72000000;
+    territoryStarPoints["63Middle"] = 100000000;
+    territoryStarPoints["61Bottom"] = 26400000;
+    territoryStarPoints["62Bottom"] = 59300000;
+    territoryStarPoints["63Bottom"] = 81500000;
+
+    var territoryCombatPoints = new Array();
+    territoryCombatPoints["1"] = 290000;
+    territoryCombatPoints["2"] = 300000;
+    territoryCombatPoints["3"] = 350000;
+    territoryCombatPoints["4"] = 390000;
+    territoryCombatPoints["5"] = 425000;
+    territoryCombatPoints["6"] = 500000;   
+
+    function calculateTotal() {
+        var theForm = document.forms["deployForm"];
+
+        var phase = theForm.elements["selectedphase"].value;
+        var targetstars = theForm.elements["targetstars"].value;
+        var territory = theForm.elements["selectedterritory"].value;
+        var remainingcombats = theForm.elements["remainingcombats"].value;
+        var currentpoints = theForm.elements["currentpoints"].value;
+
+        var divobj = document.getElementById('toDeploy');
+        divobj.style.display = 'block';
+
+        if (!phase) {
+            divobj.innerHTML = "Select a phase!";
+            return false;
+        }
+        if (!territory) {
+            divobj.innerHTML = "Select a territory!";
+            return false;
+        }
+        if (!targetstars) {
+            divobj.innerHTML = "Select target stars!";
+            return false;
+        }
+        if (!remainingcombats) {
+            divobj.innerHTML = "Enter the total remaining combats!";
+            return false;
+        }
+        if (!currentpoints) {
+            divobj.innerHTML = "Enter the current points in the phase!";
+            return false;
+        }
+
+        var targetpoints = territoryStarPoints[phase.toString() + targetstars.toString() + territory];
+        var combatvalue = territoryCombatPoints[phase.toString()];
+
+        var remainingdeploy = targetpoints - currentpoints - (remainingcombats * combatvalue);
+       
+        //display the result        
+        if (remainingdeploy > 0) {
+            divobj.innerHTML = "You can deploy up to " + remainingdeploy + " points.";
+        } else {
+            divobj.innerHTML = "Don't deploy. Remaining combat should get the star!";
+        }
+        //divobj.innerHTML = "Total Price For the Cake $" + cakePrice;
+
+    }
+</script>
+
+
