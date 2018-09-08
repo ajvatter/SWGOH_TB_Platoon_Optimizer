@@ -214,6 +214,7 @@ namespace SWGOH.Web.Controllers
 
         public ActionResult GetRoster(Guid id)
         {
+            
             var guild = db.Guilds.Find(id);
 
             if (guild == null)
@@ -241,7 +242,7 @@ namespace SWGOH.Web.Controllers
             {
                 tbp.RefreshReport = true;
             }
-
+            db = new SwgohDb();
             db.BulkUpdate(tbps);
 
             var db1 = new SwgohDb();
@@ -254,6 +255,7 @@ namespace SWGOH.Web.Controllers
 
         private void UpdateRoster(Guid id, Guild guild)
         {
+            db = new SwgohDb();
             IEnumerable<Member> members = db.Members.Include(x => x.MemberCharacters).Include(x => x.MemberShips).Where(x => x.Guild_Id == id).ToList();
             IEnumerable<Character> characters = db.Characters.ToList();
             IEnumerable<Ship> ships = db.Ships.ToList();
@@ -261,7 +263,7 @@ namespace SWGOH.Web.Controllers
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(guild.UrlExt + "gp/");
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul")[0].InnerHtml;
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul")[0].InnerHtml;
 
             Regex regexChar = new Regex(@"\n");
             Regex regex = new Regex(@"<tr>");
@@ -356,7 +358,7 @@ namespace SWGOH.Web.Controllers
                 HtmlDocument docMember = web.Load(charHref);
                 try
                 {
-                    charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]")[0].InnerHtml;
+                    charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul/li[3]")[0].InnerHtml;
                 }
                 catch
                 {
@@ -528,7 +530,7 @@ namespace SWGOH.Web.Controllers
                 HtmlDocument docShip = web.Load(shipHref);
                 try
                 {
-                    shipHtml = docShip.DocumentNode.SelectNodes("/html/body/div[3]/div[2]/div[2]/ul/li[3]/div")[0].InnerHtml;
+                    shipHtml = docShip.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul/li[3]/div")[0].InnerHtml;
                 }
                 catch
                 {
