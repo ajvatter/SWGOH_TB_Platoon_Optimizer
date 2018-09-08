@@ -171,9 +171,9 @@ namespace SWGOH.Web.Controllers
         public virtual ActionResult CharCountData(DataSourceRequest command, CharCount model)
         {
             Guid id;
-            if (User.Identity.Name != null && User.Identity.Name != "")
+            if (!string.IsNullOrEmpty(User.Identity.Name))
             {
-                id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                id = userDb.Users.FirstOrDefault(x => x.UserName == User.Identity.Name).Guild_Id;
             }
             else
             {

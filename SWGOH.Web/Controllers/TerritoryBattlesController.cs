@@ -25,9 +25,9 @@ namespace SWGOH.Web.Controllers
         {
             if (id == null)
             {
-                if (User.Identity.Name != null && User.Identity.Name != "")
+                if (!string.IsNullOrEmpty(User.Identity.Name))
                 {
-                    id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
+                    id = userDb.Users.FirstOrDefault(x => x.UserName == User.Identity.Name)?.Guild_Id;
                 }
                 else
                 {
@@ -35,8 +35,9 @@ namespace SWGOH.Web.Controllers
                 }
             }
 
-            List<TerritoryBattle> territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).OrderByDescending(x => x.StartDate).ToList();
-            List<TerritoryBattleIndexModel> model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleIndexModel>>(territoryBattles);
+
+            var territoryBattles = db.TerritoryBattles.Where(x => x.Guild_Id == id).OrderByDescending(x => x.StartDate).ToList();
+            var model = Mapper.Map<List<TerritoryBattle>, List<TerritoryBattleIndexModel>>(territoryBattles);
             return View(model);
         }
 
@@ -112,7 +113,7 @@ namespace SWGOH.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TerritoryBattle territoryBattle = db.TerritoryBattles.Include(x => x.TerritoryBattlePhases).SingleOrDefault(y => y.Id == id);
+            var territoryBattle = db.TerritoryBattles.Include(x => x.TerritoryBattlePhases).SingleOrDefault(y => y.Id == id);
             if (territoryBattle == null)
             {
                 return HttpNotFound();
@@ -121,51 +122,22 @@ namespace SWGOH.Web.Controllers
             TerritoryBattleModel model = Mapper.Map<TerritoryBattle, TerritoryBattleModel>(territoryBattle);
             return View(model);
         }
-
-        // POST: TerritoryBattles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+       
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize]
         public ActionResult Create()
         {
-            TerritoryBattle territoryBattle = new TerritoryBattle();
-
-            territoryBattle.Id = Guid.NewGuid();
-            territoryBattle.Guild_Id = userDb.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Guild_Id;
-            territoryBattle.StartDate = DateTime.Now;
-            territoryBattle.IsActive = true;
+            var territoryBattle = new TerritoryBattle
+            {
+                Id = Guid.NewGuid(),
+                Guild_Id = userDb.Users.FirstOrDefault(x => x.UserName == User.Identity.Name).Guild_Id,
+                StartDate = DateTime.Now,
+                IsActive = true
+            };
 
             List<TerritoryBattlePhase> territoryBattlePhases = new List<TerritoryBattlePhase>()
             {
-                new TerritoryBattlePhase()
-                {
-                    Id = Guid.NewGuid(),
-                    HasSecondTerritory = false,
-                    HasThirdTerritory = false,
-                    RequiredStars = 2,
-                    Phase = 1,
-                    TerritoryBattle_Id = territoryBattle.Id,
-                },
-                new TerritoryBattlePhase()
-                {
-                    Id = Guid.NewGuid(),
-                    HasSecondTerritory = true,
-                    HasThirdTerritory = false,
-                    RequiredStars = 3,
-                    Phase = 2,
-                    TerritoryBattle_Id = territoryBattle.Id,
-                },
-                new TerritoryBattlePhase()
-                {
-                    Id = Guid.NewGuid(),
-                    HasSecondTerritory = true,
-                    HasThirdTerritory = true,
-                    RequiredStars = 4,
-                    Phase = 3,
-                    TerritoryBattle_Id = territoryBattle.Id,
-                },
                 new TerritoryBattlePhase()
                 {
                     Id = Guid.NewGuid(),
@@ -200,106 +172,64 @@ namespace SWGOH.Web.Controllers
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 1).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 1).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Bottom",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 2).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Bottom",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Top",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 3).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 4)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Bottom",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Top",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 4).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 5)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Bottom",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6)
                 },
                 new PhaseTerritory()
                 {
                     Id = Guid.NewGuid(),
                     PhaseLocation = "Top",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 5).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Middle",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Bottom",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()
-                },
-                new PhaseTerritory()
-                {
-                    Id = Guid.NewGuid(),
-                    PhaseLocation = "Top",
-                    TerritoryBattlePhase_Id = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault().Id,
-                    TerritoryBattlePhase = territoryBattlePhases.Where(x => x.Phase == 6).FirstOrDefault()
+                    TerritoryBattlePhase_Id = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6).Id,
+                    TerritoryBattlePhase = territoryBattlePhases.FirstOrDefault(x => x.Phase == 6)
                 },
             };
 
@@ -313,49 +243,49 @@ namespace SWGOH.Web.Controllers
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 1,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     },
                     new TerritoryPlatoon()
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 2,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     },
                     new TerritoryPlatoon()
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 3,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     },
                     new TerritoryPlatoon()
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 4,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     },
                     new TerritoryPlatoon()
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 5,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     },
                     new TerritoryPlatoon()
                     {
                         Id = Guid.NewGuid(),
                         PlatoonNumber = 6,
-                        PhaseTerritory_Id = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault().Id,
-                        PhaseTerritory = phaseTerritories.Where(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).FirstOrDefault()
+                        PhaseTerritory_Id = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase).Id,
+                        PhaseTerritory = phaseTerritories.FirstOrDefault(x => x.PhaseLocation == "Middle" && x.TerritoryBattlePhase.Phase == phaseTerritory.Phase)
                     }
                 };
 
                 territoryPlatoons.AddRange(territoryPlatoonsAdd);
 
-                if(phaseTerritory.HasSecondTerritory == true)
+                if(phaseTerritory.HasSecondTerritory)
                 {
                     territoryPlatoonsAdd = new List<TerritoryPlatoon>()
                     {
@@ -407,7 +337,7 @@ namespace SWGOH.Web.Controllers
                 }
 
 
-                if (phaseTerritory.HasThirdTerritory == true)
+                if (phaseTerritory.HasThirdTerritory)
                 {
                     territoryPlatoonsAdd = new List<TerritoryPlatoon>()
                     {
@@ -466,7 +396,7 @@ namespace SWGOH.Web.Controllers
             {
                 if (platoon.PhaseTerritory.PhaseLocation != "Top")
                 {
-                    List<PlatoonCharacter> platoonCharactersAdd = new List<PlatoonCharacter>()
+                    var platoonCharactersAdd = new List<PlatoonCharacter>()
                     {
                         new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 1, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },
                         new PlatoonCharacter(){ Id = Guid.NewGuid(), PlatoonPosition = 2, TerritoryPlatoon_Id = platoon.Id, TerritoryPlatoon = platoon },

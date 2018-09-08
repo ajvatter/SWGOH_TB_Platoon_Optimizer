@@ -33,5 +33,10 @@ namespace SWGOH.Entities
 
         [ForeignKey("PlatoonShip_Id")]
         public virtual PlatoonShip PlatoonShip { get; set; }
+
+        public Guid? GuildId { get; set; }
+
+        [ForeignKey("GuildId")]
+        public virtual Guild Guild { get; set; }        
     }
 }

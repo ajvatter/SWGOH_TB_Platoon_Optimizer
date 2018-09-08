@@ -1,18 +1,15 @@
 namespace SWGOH.Web.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<SWGOH.Web.DataContexts.SwgohDb>
+    internal sealed class Configuration : DbMigrationsConfiguration<DataContexts.SwgohDb>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(SWGOH.Web.DataContexts.SwgohDb context)
+        protected override void Seed(DataContexts.SwgohDb context)
         {
             //  This method will be called after migrating to the latest version.
 

@@ -19,13 +19,6 @@ namespace SWGOH.Web.Controllers
         private SwgohDb db = new SwgohDb();
         private ApplicationDbContext userDb = new ApplicationDbContext();
 
-        // GET: Members
-        //public ActionResult Index()
-        //{
-        //    var members = db.Members.Include(m => m.Guild);
-        //    return View(members.ToList());
-        //}
-
         [Authorize]
         public ActionResult Index(Guid? id)
         {            
@@ -150,7 +143,14 @@ namespace SWGOH.Web.Controllers
             db.Entry(guild).State = EntityState.Modified;
             db.SaveChanges();
 
-            HttpContext.Cache.Remove("CharCount" + member.Guild_Id.ToString());
+            var tbps = db.TerritoryBattlePhases.Where(x => x.TerritoryBattle.Guild_Id == guild.Id);
+
+            foreach (var tbp in tbps)
+            {
+                tbp.RefreshReport = true;
+            }
+
+            db.BulkUpdate(tbps);
 
             return RedirectToAction("Details", "Guilds", new { id = member.Guild_Id });
         }

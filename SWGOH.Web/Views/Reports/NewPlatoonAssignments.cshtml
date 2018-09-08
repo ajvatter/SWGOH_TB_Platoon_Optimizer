@@ -1,7 +1,7 @@
 ﻿@model SWGOH.Web.ViewModels.TerritoryPhaseReportModel
 
 @{
-    SelectList list = ViewBag.PlatoonSelectList;
+    ViewBag.Title = "Phase " + ViewBag.PhaseNumber + " Assignments";
 }
 
 
@@ -65,7 +65,7 @@
                                         read: {
                                             url: "@Html.Raw(Url.Action("NewPlatoonAssignmentsData", "Reports", new { id = Model.Id, memberId = Model.MemberId }))",
                                             type: "POST",
-                                            dataType: "json",
+                                            dataType: "json"
                                         }
                                     },
                                     schema: {
@@ -81,7 +81,6 @@
                                 sortable: true,
                                 pageable: {
                                     refresh: false,
-                                    pageSizes: true,
                                     buttonCount: 3,
                                     pageSizes: [15, 25, 50, 100],
                                     numeric: true
@@ -97,7 +96,7 @@
                                 {
                                     field: "AssignedPlatoon",
                                     title: "AssignedPlatoon",
-                                    width: 150,
+                                    width: 150
                                 },
                                 {
                                     field: "Power",
@@ -118,14 +117,14 @@
                                     field: "Gear",
                                     title: "Gear",
                                     width: 150
-                                },
+                                }
                                 ],
                                 dataBound: function (e) {
 
                                     // iterate the data items and apply row styles where necessary
                                     var dataItems = e.sender.dataSource.view();
                                     for (var j = 0; j < dataItems.length; j++) {
-                                        for (i = 0; i < dataItems[j].items.length; i++) {
+                                        for (var i = 0; i < dataItems[j].items.length; i++) {
                                             var Stars = dataItems[j].items[i].get("Stars");
 
                                             var row = e.sender.tbody.find("[data-uid='" + dataItems[j].items[i].uid + "']");
@@ -159,7 +158,7 @@
                                         read: {
                                             url: "@Html.Raw(Url.Action("ShipPlatoonAssignmentsData", "Reports", new { id = Model.Id, memberId = Model.MemberId }))",
                                             type: "POST",
-                                            dataType: "json",
+                                            dataType: "json"
                                         }
                                     },
                                     schema: {
@@ -175,7 +174,6 @@
                                 sortable: true,
                                 pageable: {
                                     refresh: false,
-                                    pageSizes: true,
                                     buttonCount: 3,
                                     pageSizes: [15, 25, 50, 100],
                                     numeric: true
@@ -191,7 +189,7 @@
                                 {
                                     field: "AssignedShipPlatoon",
                                     title: "AssignedPlatoon",
-                                    width: 150,
+                                    width: 150
                                 },
                                 {
                                     field: "ShipStars",
@@ -202,14 +200,14 @@
                                     field: "ShipLevel",
                                     title: "Level",
                                     width: 150
-                                },
+                                }
                                 ],
                                 dataBound: function (e) {
 
                                     // iterate the data items and apply row styles where necessary
                                     var dataItems = e.sender.dataSource.view();
                                     for (var j = 0; j < dataItems.length; j++) {
-                                        for (i = 0; i < dataItems[j].items.length; i++) {
+                                        for (var i = 0; i < dataItems[j].items.length; i++) {
                                             var ShipStars = dataItems[j].items[i].get("ShipStars");
 
                                             var row = e.sender.tbody.find("[data-uid='" + dataItems[j].items[i].uid + "']");

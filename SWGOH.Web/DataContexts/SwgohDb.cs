@@ -27,6 +27,7 @@ namespace SWGOH.Web.DataContexts
         public DbSet<Ship> Ships { get; set; }
         public DbSet<MemberShip> MemberShips { get; set; }
         public DbSet<PhaseReport> PhaseReports { get; set; }
-       
+        public DbSet<GuildEvent> GuildEvents { get; set; }
+        public DbSet<GuildEventSchedule> GuildEventSchedules { get; set; }
     }
 }
