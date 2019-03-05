@@ -133,7 +133,7 @@ namespace SWGOH.Web.Controllers
                 Value = s.Id
             }).OrderBy(x => x.Text).AsEnumerable();
 
-            SelectList selectList = new SelectList(members, "Value", "Text");
+            SelectList selectList = new SelectList(members.ToList(), "Value", "Text");
 
             TerritoryPhaseReportModel model = new TerritoryPhaseReportModel()
             {
@@ -181,7 +181,7 @@ namespace SWGOH.Web.Controllers
             if (newReport == null)
             {
                 newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.GuildId == guildId && x.MemberShip_Id == null);
-                if (newReport.Count() == 0)
+                if (!newReport.Any())
                 {
                     using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                     {
@@ -244,7 +244,18 @@ namespace SWGOH.Web.Controllers
             }
             if (memberId.HasValue)
             {
-                gridModel = newReport.Where(x => x.MemberCharacter.Member_Id == memberId).ToList().ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                try
+                {
+                    gridModel = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.GuildId == guildId && x.MemberShip_Id == null && x.MemberCharacter.Member_Id == memberId).ToList()
+                        .ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                    //var gridModel2 = newReport.Where(x => x.MemberCharacter.Member_Id == memberId).ToList();
+                    //gridModel = newReport.Where(x => x.MemberCharacter.Member_Id == memberId).ToList()
+                       // .ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                }
+                catch (Exception exception)
+                {
+                    gridModel = null;
+                }
             }
             else
             {
@@ -265,12 +276,12 @@ namespace SWGOH.Web.Controllers
 
             TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
             DataTable ds = new DataTable();
-            IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("ShipPlatoonAssignments" + id.ToString());
+            IEnumerable<PhaseReport> newReport = (IEnumerable<PhaseReport>)HttpContext.Cache.Get("ShipPlatoonAssignments" + id);
 
             if (newReport == null)
             {
                 newReport = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberCharacter_Id == null);
-                if (newReport.Count() == 0)
+                if (!newReport.Any())
                 {
                     using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SwgohDb"].ConnectionString))
                     {
@@ -296,7 +307,8 @@ namespace SWGOH.Web.Controllers
                                 memberShips = db.MemberShips.Where(x => x.Ship_Id == currentShipId
                                                                                && x.Member.Guild_Id == tbp.TerritoryBattle.Guild_Id
                                                                                && x.Stars >= tbp.RequiredStars)
-                                                                               .OrderBy(x => x.Stars)
+                                                                               .OrderBy(x => x.ShipPower)
+                                                                               .ThenBy(x => x.Stars)                                    
                                                                                .ThenBy(x => x.Level).ToList();
                                 assignedShips = 0;
                             }
@@ -326,19 +338,21 @@ namespace SWGOH.Web.Controllers
                         db.BulkInsert(newReport);
                     }
                 }
-                HttpContext.Cache.Insert("ShipPlatoonAssignments" + id.ToString(), newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                HttpContext.Cache.Insert("ShipPlatoonAssignments" + id, newReport, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
             }
             if (memberId.HasValue)
             {
-                gridModel = newReport.Where(x => x.MemberShip.Member_Id == memberId).ToList().ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
+                //gridModel = newReport.Where(x => x.MemberShip.Member_Id == memberId).ToList().ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                gridModel = db.PhaseReports.Where(x => x.TerritoryBattlePhase_Id == id && x.MemberCharacter_Id == null & x.MemberShip.Member_Id == memberId)
+                    .ToList().ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
             }
             else
             {
                 gridModel = (DataSourceResult)HttpContext.Cache.Get("ShipPlatoonAssignmentsGrid" + id.ToString());
                 if (gridModel == null)
                 {
-                    gridModel = newReport.ToDataSourceResult(command, newGrid => Mapper.Map<PhaseReport, PlatoonAssignmentsModel>(newGrid));
-                    HttpContext.Cache.Insert("ShipPlatoonAssignmentsGrid" + id.ToString(), gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
+                    gridModel = newReport.ToDataSourceResult(command, Mapper.Map<PhaseReport, PlatoonAssignmentsModel>);
+                    HttpContext.Cache.Insert("ShipPlatoonAssignmentsGrid" + id, gridModel, null, Cache.NoAbsoluteExpiration, new TimeSpan(24, 0, 0));
                 }
             }
             return Json(gridModel);

@@ -7,10 +7,25 @@
 <div class="container">
     <br />    
     <div class="col-md-12">
-        <div class="col-md-10">
+        <div class="col-md-6">
             <h2>Phase @Model.Phase - @Model.RequiredStars Stars</h2>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-6">
+            <p>
+                @Html.ActionLink("Darkside", "ChangeAlignment", "TerritoryBattlePhases", new { id = Model.Id, alignment = 2 }, new { @class = "btn btn-default" })
+            </p>
+            <p>
+                @Html.ActionLink("Lightside", "ChangeAlignment", "TerritoryBattlePhases", new { id = Model.Id, alignment = 1 }, new { @class = "btn btn-default" })
+            </p>
+            <p>
+                @Html.ActionLink("Phase 4", "ChangePhase", "TerritoryBattlePhases", new { id = Model.Id, phase = 4 }, new { @class = "btn btn-default" })
+            </p>
+            <p>
+                @Html.ActionLink("Phase 5", "ChangePhase", "TerritoryBattlePhases", new { id = Model.Id, phase = 5 }, new { @class = "btn btn-default" })
+            </p>
+            <p>
+                @Html.ActionLink("Phase 6", "ChangePhase", "TerritoryBattlePhases", new { id = Model.Id, phase = 6 }, new { @class = "btn btn-default" })
+            </p>
             <p>
                 @Html.ActionLink("Platoon Assignments", "NewPlatoonAssignments", "Reports", new { id = Model.Id }, new { @class = "btn btn-default" })
             </p>

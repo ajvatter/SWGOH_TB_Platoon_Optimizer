@@ -263,15 +263,15 @@ namespace SWGOH.Web.Controllers
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(guild.UrlExt + "gp/");
 
-            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul")[0].InnerHtml;
-
+            string guildMemberTable = doc.DocumentNode.SelectNodes("/html/body/div[3]/div[1]")[0].InnerHtml;
+            guildMemberTable = guildMemberTable.Substring(guildMemberTable.IndexOf("<tbody>") + 7);
             Regex regexChar = new Regex(@"\n");
             Regex regex = new Regex(@"<tr>");
             string[] substrings = regex.Split(guildMemberTable);
-            
+            //substrings = substrings.Skip(1).ToArray();
             List<string> listMembers = substrings.ToList();
 
-            listMembers.RemoveRange(0,2);
+            //listMembers.RemoveRange(0,2);
 
             listMembers.Remove("\n");            
 
@@ -287,7 +287,7 @@ namespace SWGOH.Web.Controllers
             foreach (var member in listMembers)
             {
                 string[] memberSplit = member.Split('"');
-                memberExt.Add("https://swgoh.gg" + memberSplit[3] + "collection/");
+                memberExt.Add("https://swgoh.gg" + memberSplit[3] + "characters/");
             }
 
             foreach (var member in members)
@@ -315,13 +315,14 @@ namespace SWGOH.Web.Controllers
             {
                 Member guildMember = new Member();
                 string[] memberSplit = member.Split('"');
-                string charHref = "https://swgoh.gg" + memberSplit[3] + "collection/";
+                string charHref = "https://swgoh.gg" + memberSplit[3] + "characters/";
                 string shipHref = "https://swgoh.gg" + memberSplit[3] + "ships/";
                 string name = Regex.Replace(memberSplit[4], "(?s).*?(?<=<strong>)", String.Empty); // memberSplit[2].Substring(10).Replace("</strong>\n</a>\n</td>\n<td class=", "");
                 name = name.Remove(name.IndexOf("</strong>", StringComparison.Ordinal));
 
                 string toConvertChar = memberSplit[8].Replace(">", "").Replace(" ", "").Replace("</td\n<tdclass=", "");
-                string toConvertShip = memberSplit[10].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "").Replace("</tbody\n</table\n</div\n</li\n", "");
+                string toConvertShip = memberSplit[10].Replace(" ", "").Replace(">", "").Replace("</td\n</tr\n", "")
+                    .Replace("</tbody\n</table\n</div\n</li\n", "").Replace("</ul\n</div\n", "");
 
                 if (members.Any(x => x.UrlExt.Equals(charHref)))
                 {
@@ -358,9 +359,9 @@ namespace SWGOH.Web.Controllers
                 HtmlDocument docMember = web.Load(charHref);
                 try
                 {
-                    charHtml = docMember.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul/li[3]")[0].InnerHtml;
+                    charHtml = docMember.DocumentNode.SelectNodes("//li[@class='media list-group-item p-a collection-char-list']")[0].InnerHtml;
                 }
-                catch
+                catch (Exception ex)
                 {
                     continue;
                 }
@@ -450,13 +451,16 @@ namespace SWGOH.Web.Controllers
                             newMemberCharacter.Power = 0;
                         }
                     }
-                    else if (item.Contains("<div class=\"star") && !item.Contains("inactive"))
+                    else if (item.Contains("<div class=\"star ") && !item.Contains("star-inactive"))
                     {
                         newMemberCharacter.Stars = Convert.ToInt16(item.Trim().Substring(21, 1));
                     }
-                    else if (item.Contains("<div class=\"collection-char-name\">"))
+                    else if (item.Contains("<img class=\"char-portrait-full-img\""))
                     {
-                        string charName = Regex.Replace(item, "<.*?>", String.Empty);
+                        var startIndex = item.IndexOf("alt=") + 5;
+                        var endIndex = item.IndexOf("height=") - 2 - startIndex;
+                        //string charName = Regex.Replace(item, "<.*?>", String.Empty);
+                        string charName = item.Substring(startIndex, endIndex);
                         IEnumerable<Character> charNames = characters.Where(x => x.Name.Equals(charName.Trim())).ToList();
 
                         if (charNames.Count() == 1)
@@ -489,8 +493,10 @@ namespace SWGOH.Web.Controllers
                             {
                                 newMemberCharacter.Character_Id = charNames.FirstOrDefault(x => x.Name.Substring(1).Contains(charName)).Id;
                             }
-                        }
-
+                        }                        
+                    }
+                    else if (item.Contains("<div class=\"collection-char-name\">"))
+                    {
                         if (newMemberCharacter.Stars != null)
                         {
                             if (memberCharacters.Any(x => x.Character_Id.Equals(newMemberCharacter.Character_Id)))
@@ -530,7 +536,7 @@ namespace SWGOH.Web.Controllers
                 HtmlDocument docShip = web.Load(shipHref);
                 try
                 {
-                    shipHtml = docShip.DocumentNode.SelectNodes("/html/body/div[3]/div[3]/div[2]/ul/li[3]/div")[0].InnerHtml;
+                    shipHtml = docShip.DocumentNode.SelectNodes("//li[@class='media list-group-item p-a collection-char-list']")[0].InnerHtml;
                 }
                 catch
                 {
@@ -578,21 +584,39 @@ namespace SWGOH.Web.Controllers
                     else if (item.Contains("\"Power "))
                     {
                         newMemberShip.Power = item.Trim().Substring(83).Replace("\">", "");
+                        try
+                        {
+                            var toConvert = item.Substring(0, item.LastIndexOf('/'));
+                            toConvert = toConvert.Substring(toConvert.LastIndexOf('r') + 2);
+                            newMemberShip.ShipPower = Convert.ToInt32(toConvert.Replace(",", ""));
+                        }
+                        catch
+                        {
+                            newMemberShip.ShipPower = 0;
+                        }
                     }
                     else if (item.Contains("ship-portrait-full-star") && !item.Contains("ship-portrait-full-star-inactive") && !item.Contains("stars"))
                     {
                         if (newMemberShip.Stars == null) newMemberShip.Stars = 1;
                         else newMemberShip.Stars = newMemberShip.Stars + 1;
                     }
-                    else if (item.Contains("<div class=\"collection-ship-name\">"))
+                    else if (item.Contains("<a class=\"collection-ship-name-link\""))
                     {
-                        var shipName = Regex.Replace(item, "<.*?>", string.Empty);
+                        var startIndex = item.IndexOf(">") + 1;
+                        var endIndex = item.IndexOf("</a") - startIndex;
+                        //string charName = Regex.Replace(item, "<.*?>", String.Empty);
+                        string shipName = item.Substring(startIndex, endIndex);
+                        //var shipName = Regex.Replace(item, "<.*?>", string.Empty);
                         IEnumerable<Ship> shipNames = ships.Where(x => x.Name.Equals(shipName.Trim())).ToList();
 
                         if (shipNames.Count() == 1)
                         {
                             newMemberShip.Ship_Id = shipNames.FirstOrDefault().Id;
-                        }                        
+                        }
+                        else
+                        {
+                            var blah = 1;
+                        }
 
                         if (newMemberShip.Stars != null)
                         {
@@ -603,6 +627,7 @@ namespace SWGOH.Web.Controllers
                                 memberShipUpdate.Level = newMemberShip.Level;
                                 memberShipUpdate.Power = newMemberShip.Power;
                                 memberShipUpdate.Stars = newMemberShip.Stars;
+                                memberShipUpdate.ShipPower = newMemberShip.ShipPower;
 
                                 memberShips.Remove(memberShips.FirstOrDefault(x => x.Ship_Id.Equals(newMemberShip.Ship_Id)));
                                 memberShips.Add(memberShipUpdate);

@@ -1,0 +1,5 @@
+﻿CREATE TABLE Guild(
+   id       VARCHAR(11) NOT NULL PRIMARY KEY
+  ,name     VARCHAR(20) NOT NULL
+  ,required INTEGER  NOT NULL
+);

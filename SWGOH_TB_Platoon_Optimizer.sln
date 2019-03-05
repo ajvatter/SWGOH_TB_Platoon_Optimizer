@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWGOH.Entities", "SWGOH.Ent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWGOH.Web", "SWGOH.Web\SWGOH.Web.csproj", "{1B72BEC0-3C1B-4052-ABE0-5827BC11CE93}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SWGOH.Database", "SWGOH.Database\SWGOH.Database.sqlproj", "{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{1B72BEC0-3C1B-4052-ABE0-5827BC11CE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B72BEC0-3C1B-4052-ABE0-5827BC11CE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B72BEC0-3C1B-4052-ABE0-5827BC11CE93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E9CC80-9413-4AB2-84B6-46FED81B4DD0}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

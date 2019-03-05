@@ -5,7 +5,7 @@
     ViewBag.Title = "Index";
 }
 
-<div class="col-md-4">
+@*<div class="col-md-4">
 <table class="table table-responsive table-bordered table-striped">
     <tr>
         <th colspan="2">
@@ -17,7 +17,7 @@
             @Html.ActionLink("Phase 1 Light Side", "NewPlatoonAssignments", "Reports", new { id = "71d89b52-b916-4857-b4bb-676dc2e61e8f", guildId = ViewBag.GuildId }, new { @class = "btn btn-default" })         
         </td>
         <td>
-            @*@Html.ActionLink("Phase 1 DS", "NewPlatoonAssignments", "Reports", new { id = "5bcfa797-43be-4976-a1d4-85d906a12af0", guildId = item.Guild.Id }, new { @class = "btn btn-default" })*@
+            @Html.ActionLink("Phase 1 DS", "NewPlatoonAssignments", "Reports", new { id = "5bcfa797-43be-4976-a1d4-85d906a12af0", guildId = item.Guild.Id }, new { @class = "btn btn-default" })
             <button disabled>Phase 1 Dark Side WIP</button>
         </td>
     </tr>
@@ -38,7 +38,7 @@
         </td>
     </tr>
 </table>
-</div>
+</div>*@
 <p>
     @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-default" })
 </p>

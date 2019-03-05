@@ -142,6 +142,26 @@ namespace SWGOH.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult ChangeAlignment(Guid id, Alignment alignment)
+        {
+            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
+
+            tbp.Alignment = alignment;
+            db.SaveChanges();
+            return RedirectToAction("Details", tbp);
+        }
+
+        public ActionResult ChangePhase(Guid id, int phase)
+        {
+            TerritoryBattlePhase tbp = db.TerritoryBattlePhases.Find(id);
+
+            tbp.Phase = phase;
+            tbp.RequiredStars = phase + 1;
+            db.SaveChanges();
+            return RedirectToAction("Details", tbp);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

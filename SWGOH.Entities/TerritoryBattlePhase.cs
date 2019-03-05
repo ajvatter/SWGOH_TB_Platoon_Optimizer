@@ -26,5 +26,6 @@ namespace SWGOH.Entities
         public virtual TerritoryBattle TerritoryBattle { get; set; }      
 
         public bool RefreshReport { get; set; }
+        public Alignment Alignment { get; set; }
     }
 }
